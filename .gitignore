@@ -1,0 +1,2 @@
+# Machine-local codegraph cache (symlink into ~/.omo); not portable across clones.
+.codegraph
