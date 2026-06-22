@@ -1,0 +1,431 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Adaptive Agent OS 的 Ads-first strategy sign-off blueprint。">
+  <link rel="icon" href="data:,">
+  <title>Adaptive Agent OS - Ads First Strategy Sign-off</title>
+  <style>
+:root{--surface-primary:#F7F4EC;--surface-secondary:#FFFFFF;--surface-elevated:#EFE8DA;--text-primary:#17211F;--text-secondary:#58645E;--text-tertiary:#7C867F;--border-default:#D8D0C1;--border-subtle:#E8E1D5;--accent-primary:#2F6F4E;--accent-secondary:#B0762E;--accent-critical:#9A463D;--accent-info:#496B7A;--space-1:4px;--space-2:8px;--space-3:12px;--space-4:16px;--space-5:20px;--space-6:24px;--space-8:32px;--space-10:40px;--space-12:48px;--space-16:64px;--radius:8px;--max:1320px;}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{margin:0;background:var(--surface-primary);color:var(--text-primary);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;font-size:16px;line-height:1.65;letter-spacing:0;}
+a{color:inherit;text-decoration:none;}
+.page{min-height:100dvh;}
+.wrap{width:min(100% - 32px,var(--max));margin:0 auto;}
+.topbar{position:sticky;top:0;z-index:3;border-bottom:1px solid var(--border-default);background:color-mix(in srgb,var(--surface-primary) 92%,white 8%);}
+.topbar .wrap{display:flex;align-items:center;justify-content:space-between;gap:var(--space-4);padding:var(--space-3) 0;}
+.brand{display:flex;align-items:center;gap:var(--space-3);min-width:0;}
+.mark{display:grid;width:32px;height:32px;place-items:center;border:1px solid var(--border-default);border-radius:var(--radius);color:var(--accent-primary);font-family:SFMono-Regular,ui-monospace,Menlo,Consolas,monospace;font-size:13px;font-weight:700;}
+.brand strong{display:block;font-size:14px;line-height:1.2;}
+.brand span{display:block;color:var(--text-secondary);font-size:12px;line-height:1.25;}
+.nav{display:flex;flex-wrap:wrap;gap:var(--space-2);justify-content:flex-end;}
+.nav a{border:1px solid transparent;border-radius:var(--radius);color:var(--text-secondary);font-size:13px;padding:6px 10px;transition:border-color 120ms ease-out,color 120ms ease-out,background-color 120ms ease-out;}
+.nav a:hover,.nav a:focus-visible{border-color:var(--border-default);color:var(--text-primary);background:var(--surface-secondary);outline:none;}
+.hero{border-bottom:1px solid var(--border-default);background:var(--surface-primary);padding:var(--space-16) 0 var(--space-12);}
+.hero-grid{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(320px,0.8fr);gap:var(--space-10);align-items:end;}
+.eyebrow{color:var(--accent-primary);font-family:SFMono-Regular,ui-monospace,Menlo,Consolas,monospace;font-size:12px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;}
+h1,h2,h3,p{margin:0;}
+h1{max-width:900px;margin-top:var(--space-4);font-size:clamp(30px,5vw,40px);font-weight:760;line-height:1.08;letter-spacing:0;}
+.lead{max-width:760px;margin-top:var(--space-5);color:var(--text-secondary);font-size:18px;line-height:1.65;}
+.formula{display:grid;gap:var(--space-3);border:1px solid var(--border-default);border-radius:var(--radius);background:var(--surface-secondary);padding:var(--space-5);}
+.formula-title{color:var(--text-tertiary);font-family:SFMono-Regular,ui-monospace,Menlo,Consolas,monospace;font-size:12px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;}
+.formula-line{display:flex;align-items:center;justify-content:space-between;gap:var(--space-3);border-top:1px solid var(--border-subtle);padding-top:var(--space-3);color:var(--text-secondary);font-size:14px;}
+.formula-line strong{color:var(--text-primary);font-weight:720;}
+.band{border-bottom:1px solid var(--border-default);padding:var(--space-12) 0;}
+.band.alt{background:var(--surface-secondary);}
+.band.decision{background:var(--surface-elevated);}
+.section-head{display:grid;grid-template-columns:minmax(0,0.7fr) minmax(0,1fr);gap:var(--space-8);align-items:start;margin-bottom:var(--space-8);}
+h2{font-size:clamp(24px,3vw,32px);font-weight:720;line-height:1.18;letter-spacing:0;}
+.section-head p{color:var(--text-secondary);font-size:16px;}
+.strategy-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:var(--space-3);}
+.lock{min-height:138px;border:1px solid var(--border-default);border-radius:var(--radius);background:var(--surface-secondary);padding:var(--space-4);}
+.lock b{display:block;margin-bottom:var(--space-2);color:var(--accent-primary);font-size:15px;}
+.lock span{color:var(--text-secondary);font-size:14px;}
+.layers{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--space-4);}
+.layer{border:1px solid var(--border-default);border-radius:var(--radius);background:var(--surface-secondary);overflow:hidden;transition:transform 120ms ease-out,border-color 120ms ease-out;}
+.layer:hover{border-color:color-mix(in srgb,var(--accent-primary) 45%,var(--border-default));transform:translateY(-2px);}
+.layer-head{border-bottom:1px solid var(--border-subtle);padding:var(--space-5);}
+.layer-kicker{display:inline-flex;margin-bottom:var(--space-3);border:1px solid currentColor;border-radius:999px;padding:2px 9px;font-family:SFMono-Regular,ui-monospace,Menlo,Consolas,monospace;font-size:12px;font-weight:700;}
+.layer.truth .layer-kicker{color:var(--accent-primary);}
+.layer.work .layer-kicker{color:var(--accent-info);}
+.layer.learning .layer-kicker{color:var(--accent-secondary);}
+.layer h3{font-size:20px;font-weight:760;line-height:1.28;}
+.layer-head p{margin-top:var(--space-3);color:var(--text-secondary);font-size:15px;}
+.kv{display:grid;}
+.kv div{display:grid;grid-template-columns:82px minmax(0,1fr);gap:var(--space-4);border-bottom:1px solid var(--border-subtle);padding:var(--space-4) var(--space-5);}
+.kv div:last-child{border-bottom:none;}
+.kv dt{margin:0;color:var(--text-tertiary);font-family:SFMono-Regular,ui-monospace,Menlo,Consolas,monospace;font-size:12px;font-weight:700;text-transform:uppercase;}
+.kv dd{margin:0;color:var(--text-secondary);font-size:14px;}
+.flow{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:var(--space-2);}
+.step{position:relative;min-height:150px;border:1px solid var(--border-default);border-radius:var(--radius);background:var(--surface-primary);padding:var(--space-4);}
+.step:not(:last-child)::after{content:"";position:absolute;top:50%;right:-9px;width:14px;height:1px;background:var(--border-default);}
+.step-number{color:var(--accent-info);font-family:SFMono-Regular,ui-monospace,Menlo,Consolas,monospace;font-size:12px;font-weight:700;}
+.step b{display:block;margin:var(--space-2) 0;font-size:15px;line-height:1.35;}
+.step span{color:var(--text-secondary);font-size:13px;}
+.two-col{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:var(--space-4);}
+.panel{border:1px solid var(--border-default);border-radius:var(--radius);background:var(--surface-secondary);padding:var(--space-5);}
+.panel h3{margin-bottom:var(--space-3);font-size:19px;}
+.panel p{color:var(--text-secondary);font-size:15px;}
+.role-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--space-4);margin-top:var(--space-6);}
+.role-card{border:1px solid var(--border-default);border-radius:var(--radius);background:var(--surface-primary);padding:var(--space-5);}
+.role-card h3{color:var(--accent-info);font-size:18px;}
+.role-card ul,.panel ul,.decision-list,.schema-list{margin:var(--space-4) 0 0;padding:0;list-style:none;}
+.role-card li,.panel li,.schema-list li{border-top:1px solid var(--border-subtle);padding:var(--space-3) 0;color:var(--text-secondary);font-size:14px;}
+.schema{display:grid;grid-template-columns:0.72fr 1fr;gap:var(--space-4);align-items:stretch;}
+.schema-box{border:1px solid var(--border-default);border-radius:var(--radius);background:var(--surface-primary);padding:var(--space-5);}
+.schema-box h3{margin-bottom:var(--space-4);color:var(--accent-primary);}
+.schema-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 var(--space-4);}
+.schema-list li{min-height:76px;}
+.schema-list b{display:block;color:var(--text-primary);}
+.refs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:var(--space-3);}
+.ref{border:1px solid var(--border-default);border-radius:var(--radius);background:var(--surface-secondary);padding:var(--space-4);}
+.ref b{display:block;margin-bottom:var(--space-2);color:var(--text-primary);font-size:14px;line-height:1.3;}
+.ref span{display:block;color:var(--text-secondary);font-size:13px;}
+.ref small{display:block;margin-top:var(--space-3);color:var(--accent-critical);font-size:12px;line-height:1.45;}
+.decision-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:var(--space-4);}
+.decision-list li{display:grid;grid-template-columns:22px minmax(0,1fr);gap:var(--space-3);align-items:start;border-top:1px solid var(--border-subtle);padding:var(--space-4) 0;color:var(--text-secondary);}
+.decision-list li:first-child{border-top:none;padding-top:0;}
+input[type="checkbox"]{width:18px;height:18px;margin:3px 0 0;accent-color:var(--accent-primary);}
+input[type="checkbox"]:focus-visible{outline:2px solid var(--accent-info);outline-offset:2px;}
+.decision-list b{display:block;color:var(--text-primary);font-size:15px;}
+.decision-list small{color:var(--text-tertiary);font-size:13px;}
+.note{border-left:3px solid var(--accent-secondary);background:color-mix(in srgb,var(--surface-elevated) 70%,white 30%);padding:var(--space-4) var(--space-5);color:var(--text-secondary);font-size:15px;}
+.footer{padding:var(--space-8) 0;color:var(--text-tertiary);font-size:13px;}
+.mono{font-family:SFMono-Regular,ui-monospace,Menlo,Consolas,monospace;}
+@media (max-width:1180px){.strategy-grid,.refs{grid-template-columns:repeat(3,minmax(0,1fr));}
+.flow{grid-template-columns:repeat(4,minmax(0,1fr));}
+.step:not(:last-child)::after{display:none;}
+}
+@media (max-width:980px){.hero-grid,.section-head,.layers,.two-col,.schema,.decision-grid{grid-template-columns:1fr;}
+.formula{max-width:680px;}
+.role-grid{grid-template-columns:1fr;}
+}
+@media (max-width:720px){.wrap{width:min(100% - 24px,var(--max));}
+.topbar{position:static;}
+.topbar .wrap{align-items:flex-start;flex-direction:column;}
+.nav{justify-content:flex-start;}
+.hero,.band{padding:var(--space-10) 0;}
+.strategy-grid,.refs,.flow,.schema-list{grid-template-columns:1fr;}
+.kv div{grid-template-columns:1fr;gap:var(--space-2);}
+}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto !important;transition:none !important;}
+}
+
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="topbar">
+      <div class="wrap">
+        <a class="brand" href="#top" aria-label="回到顶部">
+          <span class="mark">OS</span>
+          <span>
+            <strong>Adaptive Agent OS</strong>
+            <span>Ads first sign-off blueprint</span>
+          </span>
+        </a>
+        <nav class="nav" aria-label="页面导航">
+          <a href="#strategy">策略锁定</a>
+          <a href="#layers">三层设计</a>
+          <a href="#business">业务闭环</a>
+          <a href="#agents">Agent 设计</a>
+          <a href="#roles">Role 设计</a>
+          <a href="#signoff">Sign-off</a>
+        </nav>
+      </div>
+    </header>
+    <main id="top">
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="wrap hero-grid">
+          <div>
+            <div class="eyebrow">Strategy Blueprint</div>
+            <h1 id="hero-title">我们在做 Adaptive Agent OS。Ads 是第一条真实闭环，不是最终边界。</h1>
+            <p class="lead">
+              核心目标不是再堆几个 agent，而是把一个混乱行业的运营图谱建出来，让 agent 在图谱上按角色、证据、权限和学习回写去跑。
+              Jetpartner 是 v0 试点，30x Ads 是第一台确定性 domain engine。
+            </p>
+          </div>
+          <aside class="formula" aria-label="系统公式">
+            <div class="formula-title">System Formula</div>
+            <div class="formula-line"><strong>Adaptive Agent OS</strong><span>通用操作系统骨架</span></div>
+            <div class="formula-line"><strong>Ads vertical</strong><span>第一个行业执行面</span></div>
+            <div class="formula-line"><strong>Jetpartner</strong><span>第一个 tenant truth overlay</span></div>
+            <div class="formula-line"><strong>30x Ads</strong><span>确定性广告执行引擎</span></div>
+            <div class="formula-line"><strong>GEB + OMO</strong><span>学习回写 + 执行治理</span></div>
+          </aside>
+        </div>
+      </section>
+      <section class="band alt" id="strategy" aria-labelledby="strategy-title">
+        <div class="wrap">
+          <div class="section-head">
+            <h2 id="strategy-title">Strategy Lock</h2>
+            <p>这版蓝图先锁战略取舍。通用 OS 可以扩展到 SEO、Content、Lifecycle，但 v0 必须用 Ads/Jetpartner 证明一条真实运营闭环。</p>
+          </div>
+          <div class="strategy-grid" aria-label="战略锁定项">
+            <div class="lock"><b>OS first</b><span>先设计 Adaptive Agent OS 的通用骨架，再把 Ads 当第一个 vertical mount。</span></div>
+            <div class="lock"><b>Ads first</b><span>广告账户有数据、权限、报告、proposal、approval gate，最容易证明闭环。</span></div>
+            <div class="lock"><b>Jetpartner first</b><span>它有真实 tenant truth：qualified lead 优先、private aviation intent、人工审批边界。</span></div>
+            <div class="lock"><b>Read-only first</b><span>v0 只做观察、诊断、proposal 和 evidence，不自动改 Google Ads。</span></div>
+            <div class="lock"><b>Evidence first</b><span>每个判断都必须能回到 artifact、report、query、memory 或 workflow record。</span></div>
+            <div class="lock"><b>Delta first</b><span>session 先沉淀 semantic delta。稳定后才升级为 skill candidate。</span></div>
+          </div>
+        </div>
+      </section>
+      <section class="band" id="layers" aria-labelledby="layers-title">
+        <div class="wrap">
+          <div class="section-head">
+            <h2 id="layers-title">三层设计，以及每层为什么存在</h2>
+            <p>三层不是 L1-L6 的大而全层级，而是把系统复杂度切成三个不会互相污染的面：Truth 决定相信什么，Work 决定怎么做，Learning 决定怎么变聪明。</p>
+          </div>
+          <div class="layers">
+            <article class="layer truth">
+              <div class="layer-head">
+                <span class="layer-kicker">Layer 1</span>
+                <h3>Truth Layer - 运营图谱和事实边界</h3>
+                <p>把 tenant truth、industry truth、role memory 从 base agent 里拆出去。</p>
+              </div>
+              <dl class="kv">
+                <div><dt>What</dt><dd>Jetpartner truth、private aviation intent、qualified lead 标准、权限边界。</dd></div>
+                <div><dt>Why</dt><dd>如果把所有客户事实塞进 agent prompt，OS 会膨胀、冲突、不可 scale。</dd></div>
+                <div><dt>Owns</dt><dd>tenant overlay、industry overlay、approved examples、permissions。</dd></div>
+                <div><dt>Not</dt><dd>不保存通用 agent 指令，不把 Jetpartner 写死进 base agent。</dd></div>
+              </dl>
+            </article>
+            <article class="layer work">
+              <div class="layer-head">
+                <span class="layer-kicker">Layer 2</span>
+                <h3>Work Layer - 角色、workflow、engine、验证</h3>
+                <p>让 agent 不靠聊天临场发挥，而是按 typed workflow 和 execution governance 工作。</p>
+              </div>
+              <dl class="kv">
+                <div><dt>What</dt><dd>agent-role package、capability registry、Flyte-style DAG、30x Ads、OMO loop。</dd></div>
+                <div><dt>Why</dt><dd>Agent 负责判断和编排，domain engine 负责确定性执行，OMO 负责证据和 review gate。</dd></div>
+                <div><dt>Owns</dt><dd>plan、delegate、observe、proposal、approval gate、readback、QA。</dd></div>
+                <div><dt>Not</dt><dd>不让 prompt 直接 mutate 账户，不让 OMO 变成广告 API 引擎。</dd></div>
+              </dl>
+            </article>
+            <article class="layer learning">
+              <div class="layer-head">
+                <span class="layer-kicker">Layer 3</span>
+                <h3>Learning Layer - session delta 到 skill factory</h3>
+                <p>把每次运营交互沉淀为可审计学习，不让每个 session 都变成新 skill。</p>
+              </div>
+              <dl class="kv">
+                <div><dt>What</dt><dd>GEB semantic delta、memory patch、skill patch、session distillation、optional Record &amp; Replay。</dd></div>
+                <div><dt>Why</dt><dd>大多数学习发生在 session 内部，先分类写回，稳定可复现才进入 skill candidate。</dd></div>
+                <div><dt>Owns</dt><dd>tenant-only delta、industry playbook、workflow patch、new skill candidate、protocol update。</dd></div>
+                <div><dt>Not</dt><dd>不自动安装未经验证的新 skill，不把学习垃圾写进全局协议。</dd></div>
+              </dl>
+            </article>
+          </div>
+        </div>
+      </section>
+      <section class="band alt" id="business" aria-labelledby="business-title">
+        <div class="wrap">
+          <div class="section-head">
+            <h2 id="business-title">业务逻辑：Jetpartner v0 怎么跑</h2>
+            <p>v0 只验证一个真实动作：Jetpartner Ads Read-only Review Loop。它输出 proposal、evidence、approval gate、semantic delta 和 skill candidate decision。</p>
+          </div>
+          <div class="flow" aria-label="Jetpartner v0 业务流程">
+            <div class="step"><span class="step-number">01</span><b>User asks</b><span>“看看最近有没有垃圾流量，qualified lead 为什么不行。”</span></div>
+            <div class="step"><span class="step-number">02</span><b>Resolve Truth</b><span>读取 Jetpartner memory、permissions、qualified lead rules。</span></div>
+            <div class="step"><span class="step-number">03</span><b>Observe</b><span>调用 30x Ads/read-only artifacts，不直接改账户。</span></div>
+            <div class="step"><span class="step-number">04</span><b>Classify</b><span>按 private aviation intent、search term、lead quality 归因。</span></div>
+            <div class="step"><span class="step-number">05</span><b>Draft Proposal</b><span>生成 negative keyword、budget、landing 或 tracking 建议。</span></div>
+            <div class="step"><span class="step-number">06</span><b>Review Gate</b><span>列 evidence、risk、dry-run plan，等待人类批准。</span></div>
+            <div class="step"><span class="step-number">07</span><b>Learn</b><span>写 semantic delta，判断是否只是 memory patch 或 skill candidate。</span></div>
+          </div>
+          <div class="note" style="margin-top: var(--space-6);">
+            这不是 dashboard，也不是 auto-apply agent。第一条闭环必须先证明：agent 能看懂业务真值，能安全提出操作方案，能留下证据，能把经验写回。
+          </div>
+        </div>
+      </section>
+      <section class="band" id="agents" aria-labelledby="agents-title">
+        <div class="wrap">
+          <div class="section-head">
+            <h2 id="agents-title">Agent 逻辑：谁做什么，怎么协作</h2>
+            <p>OMO 里单个 agent 好用，不是因为角色名字多，而是因为它把身份、边界、工具、证据、review gate 和完成标准合成一个可执行角色。</p>
+          </div>
+          <div class="two-col">
+            <article class="panel">
+              <h3>运行时 orchestrator</h3>
+              <p>Base agent 接到任务后不直接输出答案，而是先解析 tenant、选择 role package、生成 typed workflow，再把能力路由给正确工具和 reviewer。</p>
+              <ul>
+                <li><strong>Resolve</strong> - 找 tenant truth、industry truth、permissions。</li>
+                <li><strong>Select</strong> - 选 ads-adaptive-agent，加 Jetpartner overlay。</li>
+                <li><strong>Build</strong> - 生成 search-term-review / lead-quality-review DAG。</li>
+                <li><strong>Route</strong> - 30x Ads 执行观察，roles 做判断，GEB 做回写。</li>
+                <li><strong>Verify</strong> - OMO evidence + QA + review gate。</li>
+              </ul>
+            </article>
+            <article class="panel">
+              <h3>协作角色组</h3>
+              <p>这些 role 不是“多开几个聊天机器人”，而是把运营任务拆成可审计职责。每个 role 都有输入、输出、权限和失败标准。</p>
+              <ul>
+                <li><strong>Explorer</strong> - 查本地事实、repo、artifact、历史报告。</li>
+                <li><strong>Librarian</strong> - 查外部规则、平台文档、行业依据。</li>
+                <li><strong>Metis</strong> - 找风险、冲突、隐藏假设和反例。</li>
+                <li><strong>Plan</strong> - 写可执行 workflow 和验收标准。</li>
+                <li><strong>Momus</strong> - 挑计划毛病，阻止幻觉执行。</li>
+                <li><strong>Executor / QA</strong> - 执行 read-only steps，做 evidence readback。</li>
+              </ul>
+            </article>
+          </div>
+          <div class="role-grid" aria-label="Agent 分组">
+            <article class="role-card">
+              <h3>Business Agent</h3>
+              <ul>
+                <li><strong>ads-adaptive-operator</strong> - 通用 Ads operator。</li>
+                <li><strong>jetpartners-ads-operator</strong> - tenant overlay，只持有 Jetpartner truth。</li>
+                <li><strong>private-aviation-intent-judge</strong> - 行业 intent playbook，可复用到类似客户。</li>
+              </ul>
+            </article>
+            <article class="role-card">
+              <h3>Execution Agents</h3>
+              <ul>
+                <li><strong>explorer / librarian</strong> - evidence collection。</li>
+                <li><strong>plan / executor</strong> - workflow construction and run。</li>
+                <li><strong>momus / QA gate</strong> - review, readback, contradiction check。</li>
+              </ul>
+            </article>
+            <article class="role-card">
+              <h3>Learning Agents</h3>
+              <ul>
+                <li><strong>session-distiller</strong> - 从对话里抽取 learning delta。</li>
+                <li><strong>GEB keeper</strong> - 决定写到 L1/L2/L3、tenant memory 或 industry playbook。</li>
+                <li><strong>skill-curator</strong> - 只有稳定流程才产出 skill candidate。</li>
+              </ul>
+            </article>
+          </div>
+        </div>
+      </section>
+      <section class="band alt" id="roles" aria-labelledby="roles-title">
+        <div class="wrap">
+          <div class="section-head">
+            <h2 id="roles-title">Role 怎么设计</h2>
+            <p>agent-role 的价值是把“谁在做事”变成 package boundary：身份、记忆、权限、工具、MCP/capability 边界、生命周期、非目标。OMO 的价值是把这个 role 变成能完成事的执行协议。</p>
+          </div>
+          <div class="schema">
+            <article class="schema-box">
+              <h3>Role Package Schema</h3>
+              <ul class="schema-list">
+                <li><b>identity</b>这个 role 是谁，服务哪个工作面。</li>
+                <li><b>purpose</b>它存在的唯一目标是什么。</li>
+                <li><b>when_to_use</b>什么时候被 orchestrator 选中。</li>
+                <li><b>inputs</b>需要哪些 truth、artifact、tools。</li>
+                <li><b>capability_surface</b>允许调用哪些能力：browser、repo、ads engine、CRM、docs。</li>
+                <li><b>mcp_boundary</b>每个 MCP/tool 的 read/write/dry-run/apply 权限。</li>
+                <li><b>outputs</b>必须产出什么 artifact。</li>
+                <li><b>approval_policy</b>哪些动作必须 human approval，哪些只能 proposal。</li>
+                <li><b>evidence_contract</b>每次工具调用必须留下什么 readback 和 evidence。</li>
+                <li><b>memory_scope</b>哪些学习能写回哪里。</li>
+                <li><b>non_goals</b>明确拒绝做什么，避免越权。</li>
+                <li><b>success_criteria</b>怎样算完成，怎样算失败。</li>
+                <li><b>learning_rules</b>session delta 如何分类沉淀。</li>
+              </ul>
+            </article>
+            <article class="panel">
+              <h3>示例：jetpartners-ads-adaptive-operator</h3>
+              <p>这个 role 不应该是一个巨大的 prompt。它应该是 base Ads operator 加 Jetpartner overlay：通用广告技能在 base，客户真值在 overlay。</p>
+              <ul>
+                <li><strong>Identity</strong> - Jetpartner 的 Ads 运营审查员，不是全行业营销顾问。</li>
+                <li><strong>Inputs</strong> - Jetpartner memory、30x Ads artifacts、qualified lead truth、permissions。</li>
+                <li><strong>MCP Boundary</strong> - 30x Ads 只读 observe；Google Ads mutation 只能 dry-run/proposal；CRM/tenant memory 默认 read-only。</li>
+                <li><strong>Output</strong> - evidence-backed proposal，而不是直接改广告账户。</li>
+                <li><strong>Approval</strong> - mutation 必须 human approval，v0 默认 read-only。</li>
+                <li><strong>Learning</strong> - tenant-only 写 Jetpartner memory，通用 private aviation 才进 industry playbook。</li>
+                <li><strong>Boundary</strong> - 不把 SEO、CRM、Content 全塞进这个 role。</li>
+              </ul>
+            </article>
+          </div>
+          <div class="role-grid">
+            <article class="role-card">
+              <h3>Capability / MCP Boundary</h3>
+              <ul>
+                <li><strong>Read</strong> - 可以读 repo、report、docs、tenant memory、approved examples。</li>
+                <li><strong>Dry-run</strong> - 可以生成 Google Ads proposal、diff、rollback plan。</li>
+                <li><strong>Apply</strong> - 默认禁止；必须 human approval + OMO review gate。</li>
+              </ul>
+            </article>
+            <article class="role-card">
+              <h3>通用协议字段</h3>
+              <ul>
+                <li><strong>server</strong> - MCP/tool 名称，例如 30x-ads、google-ads、browser、docs。</li>
+                <li><strong>scope</strong> - tenant、industry、global 三种作用域，不能越界。</li>
+                <li><strong>mode</strong> - read / observe / dry_run / propose / apply。</li>
+              </ul>
+            </article>
+            <article class="role-card">
+              <h3>Why It Matters</h3>
+              <ul>
+                <li><strong>安全</strong> - 没有 MCP 边界，agent 会把“能看”误认为“能改”。</li>
+                <li><strong>复用</strong> - 同一个 Ads role 可以挂不同 tenant overlay 和 tool surface。</li>
+                <li><strong>审计</strong> - 每次 tool use 都能回到 evidence、approval、semantic delta。</li>
+              </ul>
+            </article>
+          </div>
+        </div>
+      </section>
+      <section class="band" id="refs" aria-labelledby="refs-title">
+        <div class="wrap">
+          <div class="section-head">
+            <h2 id="refs-title">参考项目怎么串起来</h2>
+            <p>每个参考物只吸收一个实用内核，不照搬整套复杂度。这样系统会长出协议，不会变成 repo 拼盘。</p>
+          </div>
+          <div class="refs" aria-label="参考项目映射">
+            <div class="ref"><b>agent-roles-spec</b><span>role package boundary：identity、memory、skills、tools、MCP/capability、permissions。</span><small>不照搬复杂 package manager。</small></div>
+            <div class="ref"><b>OMO / LazyCodex</b><span>plan、delegate、evidence、QA、review gate、verified completion。</span><small>不把 OMO 变成 Ads engine。</small></div>
+            <div class="ref"><b>GEB</b><span>L1/L2/L3 文档同构、semantic delta、memory update。</span><small>不把所有 tenant facts 塞进 L1-L3。</small></div>
+            <div class="ref"><b>Flyte</b><span>typed task、workflow DAG、launch plan、execution record。</span><small>v0 不部署 Flyte runtime。</small></div>
+            <div class="ref"><b>Trellis</b><span>task/spec/workspace/journal/finish writeback。</span><small>只学运营闭环，不照搬 runtime。</small></div>
+            <div class="ref"><b>agency-agents</b><span>agent catalog：专职角色、交付物、成功标准。</span><small>不导入 232 个 agents。</small></div>
+            <div class="ref"><b>Session Distillation</b><span>session 内部交互先沉淀 delta，稳定后再候选 skill。</span><small>Record &amp; Replay 只用于可复现流程。</small></div>
+            <div class="ref"><b>30x Ads</b><span>Google Ads / report / dry-run / readback 的 deterministic engine。</span><small>不把业务规则散落到 prompt。</small></div>
+            <div class="ref"><b>Jetpartner</b><span>第一个 tenant overlay，证明 qualified lead truth 可以驱动 agent。</span><small>不写死进 base OS。</small></div>
+            <div class="ref"><b>30x SEO</b><span>未来 cross-channel engine，服务 Marketing OS 扩展。</span><small>v0 不混进 Ads 闭环。</small></div>
+          </div>
+        </div>
+      </section>
+      <section class="band decision" id="signoff" aria-labelledby="signoff-title">
+        <div class="wrap">
+          <div class="section-head">
+            <h2 id="signoff-title">Sign-off 决策</h2>
+            <p>如果这些项能签，下一步就不是继续写长文，而是按这个蓝图把 v0 产物落成可执行 package：role schema、tenant overlay、typed workflow、session delta ledger。</p>
+          </div>
+          <div class="decision-grid">
+            <article class="panel">
+              <h3>Approve Now</h3>
+              <ul class="decision-list">
+                <li><input type="checkbox" id="s1"><label for="s1"><b>Adaptive Agent OS 是主线</b><small>Ads 是 first vertical，不是最终产品边界。</small></label></li>
+                <li><input type="checkbox" id="s2"><label for="s2"><b>v0 锁定 Jetpartner Ads Read-only Loop</b><small>先跑 observation、diagnosis、proposal、evidence、learning。</small></label></li>
+                <li><input type="checkbox" id="s3"><label for="s3"><b>Truth / Work / Learning 三层足够</b><small>暂不做 L1-L6 大层级，避免战略过重。</small></label></li>
+                <li><input type="checkbox" id="s4"><label for="s4"><b>Role package 与 tenant overlay 分离</b><small>base agent 不持有所有客户事实。</small></label></li>
+                <li><input type="checkbox" id="s5"><label for="s5"><b>Session Distillation 优先</b><small>Record &amp; Replay 是稳定流程的升级路径，不是每次 session 自动生成 skill。</small></label></li>
+                <li><input type="checkbox" id="s6"><label for="s6"><b>Role 必须声明 MCP/capability 边界</b><small>每个 tool surface 都有 read、dry-run、apply 和 approval 规则。</small></label></li>
+              </ul>
+            </article>
+            <article class="panel">
+              <h3>Defer Explicitly</h3>
+              <ul class="decision-list">
+                <li><input type="checkbox" id="d1"><label for="d1"><b>不做 full Marketing OS</b><small>等 Ads 闭环跑通后再挂 SEO / Content / Lifecycle。</small></label></li>
+                <li><input type="checkbox" id="d2"><label for="d2"><b>不做 auto-apply</b><small>所有 Google Ads mutation 都要 human approval。</small></label></li>
+                <li><input type="checkbox" id="d3"><label for="d3"><b>不做复杂 runtime</b><small>Flyte 先只学 schema，不上 Kubernetes、queue、DB。</small></label></li>
+                <li><input type="checkbox" id="d4"><label for="d4"><b>不自动安装新 skill</b><small>skill candidate 需要 evidence、replay 或 reviewer 批准。</small></label></li>
+                <li><input type="checkbox" id="d5"><label for="d5"><b>不把 Jetpartner 写死进 OS</b><small>它只是第一个 mounted tenant。</small></label></li>
+              </ul>
+            </article>
+          </div>
+        </div>
+      </section>
+    </main>
+    <footer class="footer">
+      <div class="wrap">
+        <span class="mono">Next executable artifact:</span>
+        role schema + tenant overlay + Jetpartner read-only workflow + session delta ledger.
+      </div>
+    </footer>
+  </div>
+</body>
+</html>

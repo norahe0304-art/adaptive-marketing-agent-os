@@ -1,0 +1,17 @@
+SURFACE: HTML plan artifact
+INVOCATION: python3 extracts the code block following "Ads host adapters" from .omo/plans/adaptive-agent-review-board.zh-CN.html and validates required/optional
+EXPECTED: required: [] and optional includes codex
+--- extracted block ---
+host_adapters:
+  required: []
+  optional:
+    - codex
+    - portal
+    - slack
+  preferred: {}
+  unsupported: []
+  notes: "Ads role can run through optional hosts without requiring one in the base role."
+--- checks ---
+required_empty=True
+optional_codex=True
+VERDICT: PASS

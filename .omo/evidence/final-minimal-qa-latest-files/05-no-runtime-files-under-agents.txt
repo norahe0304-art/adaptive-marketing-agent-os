@@ -1,0 +1,6 @@
+SURFACE: filesystem inventory under agents
+INVOCATION: python3 scans agents for non-document/runtime-like files
+EXPECTED: no runtime implementation files under agents
+files_scanned: 22
+runtime_hits: []
+VERDICT: PASS

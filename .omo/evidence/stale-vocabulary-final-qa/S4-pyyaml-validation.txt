@@ -1,0 +1,11 @@
+command: python3 structured PyYAML validation for roles/fixtures/overlays/workflows
+validated_count: 8
+validated: agents/roles/ads-adaptive-operator.role.md
+validated: agents/roles/event-adaptive-operator.role.md
+validated: agents/examples/caylent-event-role.fixture.md
+validated: agents/examples/jp-ads-role.fixture.md
+validated: agents/overlays/jetpartners-ads-operator.overlay.md
+validated: agents/overlays/caylent-event-operator.overlay.md
+validated: agents/workflows/caylent-event-launch.workflow.md
+validated: agents/workflows/jetpartners-ads-readonly-review.workflow.md
+result: PASS

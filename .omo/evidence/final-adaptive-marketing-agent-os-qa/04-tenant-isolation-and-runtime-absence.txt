@@ -1,0 +1,6 @@
+SUPERSEDED: this file recorded a pre-fix tenant-isolation failure.
+Current check after the cleanup:
+- shared/base artifacts contain no concrete tenant adapter name
+- tenant adapter binding remains only in agents/overlays/caylent-event-operator.overlay.md
+- agents/ contains no runtime implementation files
+VERDICT: PASS

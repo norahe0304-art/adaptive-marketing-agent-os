@@ -1,0 +1,15 @@
+command: python3 extract/assert Ads host adapters block
+path: .omo/plans/adaptive-agent-review-board.zh-CN.html
+--- block ---
+host_adapters:
+  required: []
+  optional:
+    - codex
+    - portal
+    - slack
+  preferred: {}
+  unsupported: []
+  notes: "Ads role can run through optional hosts without requiring one in the base role."
+--- assertions ---
+required_empty: True
+optional_codex: True

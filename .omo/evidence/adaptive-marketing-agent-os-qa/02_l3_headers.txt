@@ -1,0 +1,20 @@
+Surface: local filesystem markdown docs
+Invocation: for each non-AGENTS markdown under agents/, check [INPUT], [OUTPUT], [POS], [PROTOCOL]
+
+PASS agents/examples/caylent-event-role.fixture.md
+PASS agents/examples/jp-ads-role.fixture.md
+PASS agents/overlays/caylent-event-operator.overlay.md
+PASS agents/overlays/jetpartners-ads-operator.overlay.md
+PASS agents/protocols/agent-onboarding.contract.md
+PASS agents/protocols/capability-boundary.schema.md
+PASS agents/protocols/cross-role-validation.md
+PASS agents/protocols/geb-semantic-delta.md
+PASS agents/protocols/host-adapter.interface.md
+PASS agents/protocols/omo-execution-governance.md
+PASS agents/protocols/role-package.schema.md
+PASS agents/roles/ads-adaptive-operator.role.md
+PASS agents/roles/event-adaptive-operator.role.md
+PASS agents/workflows/caylent-event-launch.workflow.md
+PASS agents/workflows/jetpartners-ads-readonly-review.workflow.md
+
+PASS: every non-AGENTS markdown under agents/ has all four L3 tokens.

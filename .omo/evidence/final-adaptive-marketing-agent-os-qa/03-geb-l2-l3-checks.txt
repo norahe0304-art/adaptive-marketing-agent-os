@@ -1,0 +1,26 @@
+SURFACE: filesystem GEB documentation
+INVOCATION: python3 checks agents/** AGENTS.md L2 maps and Markdown L3 headers
+CHECK L1: AGENTS.md contains agents/, .omo/, DESIGN.md
+CHECK L2: agents/AGENTS.md covers 5 members
+CHECK L2: agents/protocols/AGENTS.md covers 8 members
+CHECK L2: agents/examples/AGENTS.md covers 2 members
+CHECK L2: agents/roles/AGENTS.md covers 2 members
+CHECK L2: agents/overlays/AGENTS.md covers 2 members
+CHECK L2: agents/workflows/AGENTS.md covers 2 members
+CHECK L3: agents/examples/caylent-event-role.fixture.md
+CHECK L3: agents/examples/jp-ads-role.fixture.md
+CHECK L3: agents/overlays/caylent-event-operator.overlay.md
+CHECK L3: agents/overlays/jetpartners-ads-operator.overlay.md
+CHECK L3: agents/protocols/agent-onboarding.contract.md
+CHECK L3: agents/protocols/approval-evidence.schema.md
+CHECK L3: agents/protocols/capability-boundary.schema.md
+CHECK L3: agents/protocols/cross-role-validation.md
+CHECK L3: agents/protocols/geb-semantic-delta.md
+CHECK L3: agents/protocols/host-adapter.interface.md
+CHECK L3: agents/protocols/omo-execution-governance.md
+CHECK L3: agents/protocols/role-package.schema.md
+CHECK L3: agents/roles/ads-adaptive-operator.role.md
+CHECK L3: agents/roles/event-adaptive-operator.role.md
+CHECK L3: agents/workflows/caylent-event-launch.workflow.md
+CHECK L3: agents/workflows/jetpartners-ads-readonly-review.workflow.md
+VERDICT: PASS

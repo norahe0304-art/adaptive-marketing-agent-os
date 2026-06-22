@@ -1,0 +1,1 @@
+SUPERSEDED: harness syntax error artifact; use 06-structured-yaml-and-policy-checks-final.txt for the valid structured YAML PASS.

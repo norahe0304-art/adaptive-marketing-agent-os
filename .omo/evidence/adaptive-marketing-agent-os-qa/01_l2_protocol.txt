@@ -1,0 +1,10 @@
+Surface: local filesystem markdown docs
+Invocation: find agents -name AGENTS.md -type f -print0 | xargs -0 rg -L -F "[PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md"
+
+FAIL: missing exact protocol line in:
+agents/examples/AGENTS.md:[PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
+agents/protocols/AGENTS.md:[PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
+agents/workflows/AGENTS.md:[PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
+agents/overlays/AGENTS.md:[PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
+agents/roles/AGENTS.md:[PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
+agents/AGENTS.md:[PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md

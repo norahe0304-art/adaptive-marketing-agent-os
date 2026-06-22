@@ -1,0 +1,4 @@
+Surface: local filesystem markdown docs
+Invocation: find agents -name AGENTS.md -type f -print0 | xargs -0 rg --files-without-match -F "[PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md"
+
+PASS: all L2 AGENTS files contain exact protocol line.

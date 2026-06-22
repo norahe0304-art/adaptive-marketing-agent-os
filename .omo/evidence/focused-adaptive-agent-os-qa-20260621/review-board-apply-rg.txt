@@ -1,0 +1,5 @@
+SURFACE: local filesystem
+INVOCATION: rg -n "当前只能以 read|apply 只是未来|不等于 v1 可以 live mutate|live apply 留给后续" .omo/plans/adaptive-agent-review-board.zh-CN.html
+146:                <li><b>Capability / MCP boundary</b>：规定工具当前只能以 read、observe、dry_run、propose 暴露；apply 只是未来 runtime/security review 之后的保留能力状态。通过标准：工具权限可以审计，domain agent 不能偷偷拿到全局工具。</li>
+236:                <li><b>apply</b>：只是 capability state，不等于 v1 可以 live mutate。</li>
+525:                <li><input type="checkbox" aria-label="Apply gate 通过"><span><b>Apply gate 通过</b>v1 默认 read/propose-only，live apply 留给后续 runtime/security review。</span></li>

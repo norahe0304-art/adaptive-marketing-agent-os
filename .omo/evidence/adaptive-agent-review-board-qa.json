@@ -1,0 +1,47 @@
+[
+  {
+    "viewport": {
+      "name": "desktop",
+      "width": 1280,
+      "height": 1100
+    },
+    "screenshot": "/Users/nora/Documents/agency agents/.omo/evidence/adaptive-agent-review-board-desktop.png",
+    "metrics": {
+      "scrollWidth": 1280,
+      "clientWidth": 1280,
+      "checkboxCount": 8,
+      "missing": []
+    },
+    "overflow": false
+  },
+  {
+    "viewport": {
+      "name": "tablet",
+      "width": 768,
+      "height": 1100
+    },
+    "screenshot": "/Users/nora/Documents/agency agents/.omo/evidence/adaptive-agent-review-board-tablet.png",
+    "metrics": {
+      "scrollWidth": 768,
+      "clientWidth": 768,
+      "checkboxCount": 8,
+      "missing": []
+    },
+    "overflow": false
+  },
+  {
+    "viewport": {
+      "name": "mobile",
+      "width": 375,
+      "height": 1200
+    },
+    "screenshot": "/Users/nora/Documents/agency agents/.omo/evidence/adaptive-agent-review-board-mobile.png",
+    "metrics": {
+      "scrollWidth": 375,
+      "clientWidth": 375,
+      "checkboxCount": 8,
+      "missing": []
+    },
+    "overflow": false
+  }
+]

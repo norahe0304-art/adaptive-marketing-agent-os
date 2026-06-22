@@ -1,0 +1,19 @@
+scenario=S1-L2-GEB
+criterion=L2 exact GEB protocol line in AGENTS.md files
+surface=filesystem markdown
+invocation=find . -name AGENTS.md -type f | sort; rg exact protocol line per file
+
+PASS ./AGENTS.md
+  30:[PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
+PASS ./agents/AGENTS.md
+  20:[PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
+PASS ./agents/examples/AGENTS.md
+  11:[PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
+PASS ./agents/overlays/AGENTS.md
+  11:[PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
+PASS ./agents/protocols/AGENTS.md
+  17:[PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
+PASS ./agents/roles/AGENTS.md
+  11:[PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
+PASS ./agents/workflows/AGENTS.md
+  11:[PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md

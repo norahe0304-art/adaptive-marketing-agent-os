@@ -1,0 +1,13 @@
+artifact: S2-hermes-locality
+--- meta ---
+command: rg -in "hermes" agents .omo/plans
+exit_code: 0
+expected: all matching paths are agents/overlays/caylent-event-operator.overlay.md
+--- raw output ---
+agents/overlays/caylent-event-operator.overlay.md:10:This overlay mounts Caylent-specific operating truth on top of `event-adaptive-operator`. It is where Slack/Hermes belongs for this tenant; Hermes is not the Agent OS core.
+agents/overlays/caylent-event-operator.overlay.md:25:      - Slack/Hermes host preference
+agents/overlays/caylent-event-operator.overlay.md:42:      slack: hermes
+agents/overlays/caylent-event-operator.overlay.md:44:    notes: "Caylent event operations use Slack as the required host and Hermes as the preferred Slack adapter."
+agents/overlays/caylent-event-operator.overlay.md:100:    - id: caylent-slack-hermes-host
+agents/overlays/caylent-event-operator.overlay.md:101:      fact: "Caylent Event operations require Slack and prefer Hermes as the Slack adapter."
+agents/overlays/caylent-event-operator.overlay.md:155:This file is the tenant adapter. It may require Slack and prefer Hermes because Caylent Event needs that host, but this preference must not leak into the Event base role or the shared protocol.

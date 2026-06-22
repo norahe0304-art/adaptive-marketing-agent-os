@@ -1,0 +1,37 @@
+SURFACE: local filesystem
+INVOCATION: python3 structural QA v2 with precise executable-mode and review-board apply checks
+PYTHON: 3.14.3
+PYYAML: 6.0.3
+PASS yaml-block-present: agents/roles/ads-adaptive-operator.role.md
+PASS yaml-parse: agents/roles/ads-adaptive-operator.role.md block 1
+PASS role-required-fields: agents/roles/ads-adaptive-operator.role.md: missing=[]
+PASS role-no-workflow-contract: agents/roles/ads-adaptive-operator.role.md
+PASS role-capability-surfaces: agents/roles/ads-adaptive-operator.role.md: all surfaces valid
+PASS yaml-block-present: agents/roles/event-adaptive-operator.role.md
+PASS yaml-parse: agents/roles/event-adaptive-operator.role.md block 1
+PASS role-required-fields: agents/roles/event-adaptive-operator.role.md: missing=[]
+PASS role-no-workflow-contract: agents/roles/event-adaptive-operator.role.md
+PASS role-capability-surfaces: agents/roles/event-adaptive-operator.role.md: all surfaces valid
+PASS yaml-block-present: agents/examples/caylent-event-role.fixture.md
+PASS yaml-parse: agents/examples/caylent-event-role.fixture.md block 1
+PASS role-required-fields: agents/examples/caylent-event-role.fixture.md: missing=[]
+PASS role-no-workflow-contract: agents/examples/caylent-event-role.fixture.md
+PASS role-capability-surfaces: agents/examples/caylent-event-role.fixture.md: all surfaces valid
+PASS yaml-block-present: agents/examples/jp-ads-role.fixture.md
+PASS yaml-parse: agents/examples/jp-ads-role.fixture.md block 1
+PASS role-required-fields: agents/examples/jp-ads-role.fixture.md: missing=[]
+PASS role-no-workflow-contract: agents/examples/jp-ads-role.fixture.md
+PASS role-capability-surfaces: agents/examples/jp-ads-role.fixture.md: all surfaces valid
+PASS role-package-files-covered: parsed=4 expected=4
+PASS workflow-contract-in-workflow-files: found=['agents/workflows/caylent-event-launch.workflow.md', 'agents/workflows/jetpartners-ads-readonly-review.workflow.md'] expected=['agents/workflows/caylent-event-launch.workflow.md', 'agents/workflows/jetpartners-ads-readonly-review.workflow.md']
+PASS workflow-task-modes: all workflow task modes are read/observe/dry_run/propose
+PASS workflow-contract-not-in-role-files: no role file text hit
+PASS no-current-executable-apply-mode: no mode: apply or modes: [...apply...] in agents or .omo/plans
+PASS tenant-adapter-name-isolated: ['agents/overlays/caylent-event-operator.overlay.md']
+PASS agents-md-l3-headers: every non-AGENTS agents/**/*.md has L3 header tokens
+PASS agents-agents-l2-protocol: every agents/**/AGENTS.md has required L2 protocol text
+PASS review-board-no-current-apply-list: no current mode list includes apply
+PASS review-board-current-modes-exclude-apply: found current-only read/observe/dry_run/propose statement
+PASS review-board-apply-future-reserved: future/reserved and not-v1-live-mutate wording detected
+
+SUMMARY: PASS

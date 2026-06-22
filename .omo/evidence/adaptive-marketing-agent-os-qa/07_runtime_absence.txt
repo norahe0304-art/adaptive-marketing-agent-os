@@ -1,0 +1,4 @@
+Surface: local filesystem agents runtime file absence
+Invocation: find agents -type f \( -name mcp.json -o -name package.json -o -name "*.js" -o -name "*.ts" \) -print
+
+PASS: no runtime implementation files found under agents/.

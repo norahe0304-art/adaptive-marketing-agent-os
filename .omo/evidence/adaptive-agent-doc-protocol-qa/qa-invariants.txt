@@ -1,0 +1,34 @@
+PASS: parse_yaml:agents/roles/ads-adaptive-operator.role.md#1: parsed top-level=['role_package']
+PASS: parse_yaml:agents/roles/event-adaptive-operator.role.md#1: parsed top-level=['role_package']
+PASS: parse_yaml:agents/examples/caylent-event-role.fixture.md#1: parsed top-level=['role_package']
+PASS: parse_yaml:agents/examples/jp-ads-role.fixture.md#1: parsed top-level=['role_package']
+PASS: parse_yaml:agents/workflows/caylent-event-launch.workflow.md#1: parsed top-level=['workflow_contract']
+PASS: parse_yaml:agents/workflows/jetpartners-ads-readonly-review.workflow.md#1: parsed top-level=['workflow_contract']
+PASS: role_package_required_fields:agents/roles/ads-adaptive-operator.role.md#1: missing=[]
+PASS: role_package_no_workflow_contract:agents/roles/ads-adaptive-operator.role.md#1: no top-level/package workflow_contract
+PASS: role_package_max_mode:agents/roles/ads-adaptive-operator.role.md#1: permissions=propose capability=propose
+PASS: role_surface_modes:agents/roles/ads-adaptive-operator.role.md#1: bad=[]
+PASS: role_package_required_fields:agents/roles/event-adaptive-operator.role.md#1: missing=[]
+PASS: role_package_no_workflow_contract:agents/roles/event-adaptive-operator.role.md#1: no top-level/package workflow_contract
+PASS: role_package_max_mode:agents/roles/event-adaptive-operator.role.md#1: permissions=propose capability=propose
+PASS: role_surface_modes:agents/roles/event-adaptive-operator.role.md#1: bad=[]
+PASS: role_package_required_fields:agents/examples/caylent-event-role.fixture.md#1: missing=[]
+PASS: role_package_no_workflow_contract:agents/examples/caylent-event-role.fixture.md#1: no top-level/package workflow_contract
+PASS: role_package_max_mode:agents/examples/caylent-event-role.fixture.md#1: permissions=propose capability=propose
+PASS: role_surface_modes:agents/examples/caylent-event-role.fixture.md#1: bad=[]
+PASS: role_package_required_fields:agents/examples/jp-ads-role.fixture.md#1: missing=[]
+PASS: role_package_no_workflow_contract:agents/examples/jp-ads-role.fixture.md#1: no top-level/package workflow_contract
+PASS: role_package_max_mode:agents/examples/jp-ads-role.fixture.md#1: permissions=propose capability=propose
+PASS: role_surface_modes:agents/examples/jp-ads-role.fixture.md#1: bad=[]
+PASS: workflow_contract_present:agents/workflows/caylent-event-launch.workflow.md#1: top-level workflow_contract
+PASS: workflow_modes:agents/workflows/caylent-event-launch.workflow.md#1: bad=[]
+PASS: workflow_contract_present:agents/workflows/jetpartners-ads-readonly-review.workflow.md#1: top-level workflow_contract
+PASS: workflow_modes:agents/workflows/jetpartners-ads-readonly-review.workflow.md#1: bad=[]
+PASS: top_level_workflow_contract_only_in_workflows: bad=[]
+PASS: no_apply_in_role_workflow_current_modes: hits=[]
+PASS: tenant_names_absent_from_protocols_and_base_roles: hits=[]
+FAIL: every_agents_md_has_l3_header: missing=["agents/AGENTS.md:missing=['[INPUT]', '[OUTPUT]', '[POS]', '[PROTOCOL]']", "agents/examples/AGENTS.md:missing=['[INPUT]', '[OUTPUT]', '[POS]']", "agents/overlays/AGENTS.md:missing=['[INPUT]', '[OUTPUT]', '[POS]']", "agents/protocols/AGENTS.md:missing=['[INPUT]', '[OUTPUT]', '[POS]', '[PROTOCOL]']", "agents/roles/AGENTS.md:missing=['[INPUT]', '[OUTPUT]', '[POS]']", "agents/workflows/AGENTS.md:missing=['[INPUT]', '[OUTPUT]', '[POS]']"]
+PASS: every_agents_md_AGENTS_has_protocol_text: missing=[]
+FAIL: html_no_apply_as_current_executable_mode_language: apply_hits=['.omo/plans/adaptive-agent-review-board.zh-CN.html:146:<li><b>Capability / MCP boundary</b>：规定工具只能以 read、observe、dry_run、propose、apply 这些模式暴露。通过标准：工具权限可以审计，domain agent 不能偷偷拿到全局工具。</li>', '.omo/plans/adaptive-agent-review-board.zh-CN.html:229:<span class="tag red mono">Apply Gate</span>', '.omo/plans/adaptive-agent-review-board.zh-CN.html:236:<li><b>apply</b>：只是 capability state，不等于 v1 可以 live mutate。</li>', '.omo/plans/adaptive-agent-review-board.zh-CN.html:239:Live mutation 必须同时具备 risk class、tenant/account binding、named human approver、approval receipt、pre-apply evidence、post-apply readback、rollback 或 irreversible acknowledgement。缺一项就停在 propose。', '.omo/plans/adaptive-agent-review-board.zh-CN.html:490:<li>Apply 不是 mutation permission。</li>', '.omo/plans/adaptive-agent-review-board.zh-CN.html:525:<li><input type="checkbox" aria-label="Apply gate 通过"><span><b>Apply gate 通过</b>v1 默认 read/propose-only，live apply 留给后续 runtime/security review。</span></li>']
+SUMMARY_JSON=.omo/evidence/adaptive-agent-doc-protocol-qa/qa-summary.json
+SUMMARY: pass=30 fail=2

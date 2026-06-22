@@ -1,0 +1,4 @@
+Surface: local filesystem tenant-neutral ads role markdown
+Invocation: rg -n -i "Jetpartner|Eric|Benton|reports\.30x\.company|jetpartners|Contacted|Pre-Qualified|private aviation" agents/roles/ads-adaptive-operator.role.md
+
+PASS: no forbidden tenant truth matched.

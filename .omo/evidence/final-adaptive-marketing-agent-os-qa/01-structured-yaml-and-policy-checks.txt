@@ -1,0 +1,7 @@
+SURFACE: filesystem markdown artifacts
+INVOCATION: python3 with PyYAML parses fenced YAML in agents/roles, agents/examples, agents/workflows
+PyYAML: 6.0.3
+role_files: ['agents/roles/ads-adaptive-operator.role.md', 'agents/roles/event-adaptive-operator.role.md']
+fixture_files: ['agents/examples/caylent-event-role.fixture.md', 'agents/examples/jp-ads-role.fixture.md']
+workflow_files: ['agents/workflows/caylent-event-launch.workflow.md', 'agents/workflows/jetpartners-ads-readonly-review.workflow.md']
+canonical_role_package_fields: ['identity', 'purpose', 'when_to_use', 'inputs', 'outputs', 'role_instructions', 'skills', 'memory_scope', 'tools', 'plugins', 'host_adapters', 'capability_surface', 'mcp_boundary', 'permissions', 'lifecycle', 'evidence_contract', 'approval_policy', 'success_criteria', 'non_goals', 'learning_rules', 'versioning']

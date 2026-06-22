@@ -1,0 +1,3 @@
+command: find agents -type f ! -name "*.md" | sort
+exit_code: 0
+expected: no output

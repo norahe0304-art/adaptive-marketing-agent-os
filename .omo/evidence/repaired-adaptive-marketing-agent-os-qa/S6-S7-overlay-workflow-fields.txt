@@ -1,0 +1,31 @@
+scenario=S6-S7-OverlayWorkflowFields
+criterion=overlays and workflows contain required fields
+surface=filesystem markdown
+invocation=find overlays/workflows; rg required fields per file
+
+[S6] overlays
+PASS agents/overlays/caylent-event-operator.overlay.md
+  99:  tenant_memory_records:
+  128:  overlay_memory_rule:
+PASS agents/overlays/jetpartners-ads-operator.overlay.md
+  91:  tenant_memory_records:
+  129:  overlay_memory_rule:
+
+[S7] workflows
+PASS agents/workflows/caylent-event-launch.workflow.md
+  3:[OUTPUT]: Provides Caylent Event launch workflow with draft, approval, launch, readback, and learning routes.
+  13:workflow_contract:
+  75:    - step: readback
+  81:        - post_run_delta
+  83:  future_live_action_policy:
+  98:  evidence_packet:
+  106:      - proposal readback
+  115:  readback:
+PASS agents/workflows/jetpartners-ads-readonly-review.workflow.md
+  13:workflow_contract:
+  68:    - step: readback
+  74:        - post_run_delta
+  76:  future_live_action_policy:
+  84:      - final readback target
+  86:  evidence_packet:
+  102:  readback:

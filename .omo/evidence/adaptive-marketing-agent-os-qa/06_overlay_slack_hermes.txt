@@ -1,0 +1,5 @@
+Surface: local filesystem Caylent overlay markdown
+Invocation: rg -n -F "slack: hermes" agents/overlays/caylent-event-operator.overlay.md
+
+PASS: overlay contains required slack: hermes binding.
+42:      slack: hermes

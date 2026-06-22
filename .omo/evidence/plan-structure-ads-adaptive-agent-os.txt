@@ -1,0 +1,11 @@
+     452 .omo/plans/ads-adaptive-agent-os.md
+      87 .omo/drafts/ads-adaptive-agent-os.md
+     539 total
+3:## TL;DR (For humans)
+20:## Scope
+50:## Verification strategy
+58:## Execution strategy
+96:## Todos
+422:## Final verification wave
+430:## Commit strategy
+444:## Success criteria

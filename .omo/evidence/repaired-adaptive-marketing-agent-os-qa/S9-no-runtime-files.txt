@@ -1,0 +1,6 @@
+scenario=S9-NoRuntimeImplementationFiles
+criterion=no runtime implementation files under agents
+surface=filesystem file tree
+invocation=find agents -type f ! -name "*.md" ! -name AGENTS.md
+
+PASS no non-Markdown runtime implementation files found under agents

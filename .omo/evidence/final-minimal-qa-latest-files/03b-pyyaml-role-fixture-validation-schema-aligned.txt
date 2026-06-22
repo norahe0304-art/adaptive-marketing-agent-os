@@ -1,0 +1,10 @@
+SURFACE: filesystem markdown YAML
+INVOCATION: python3 + PyYAML parses fenced YAML in agents/roles/*.role.md and agents/examples/*-role.fixture.md using agents/protocols/role-package.schema.md Minimum Validation rules
+EXPECTED: canonical required fields, no workflow_contract in role_package, max_mode_v1 propose, learning_rules shape, capability modes in read/observe/dry_run/propose
+PyYAML: 6.0.3
+files: ['agents/roles/ads-adaptive-operator.role.md', 'agents/roles/event-adaptive-operator.role.md', 'agents/examples/caylent-event-role.fixture.md', 'agents/examples/jp-ads-role.fixture.md']
+PASS role_package: agents/roles/ads-adaptive-operator.role.md id=ads-adaptive-operator
+PASS role_package: agents/roles/event-adaptive-operator.role.md id=event-adaptive-operator
+PASS role_package: agents/examples/caylent-event-role.fixture.md id=event-adaptive-operator
+PASS role_package: agents/examples/jp-ads-role.fixture.md id=ads-adaptive-operator
+VERDICT: PASS

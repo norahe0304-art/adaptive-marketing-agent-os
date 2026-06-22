@@ -1,0 +1,15 @@
+Surface: local filesystem evidence directory
+Invocation: find .omo/evidence/adaptive-marketing-agent-os-qa -type f -maxdepth 1 -print0 | xargs -0 wc -c
+
+     413 .omo/evidence/adaptive-marketing-agent-os-qa/05_event_forbidden_terms_precise.txt
+     228 .omo/evidence/adaptive-marketing-agent-os-qa/07_runtime_absence.txt
+     255 .omo/evidence/adaptive-marketing-agent-os-qa/01_l2_protocol_corrected.txt
+     153 .omo/evidence/adaptive-marketing-agent-os-qa/09_artifact_sizes.txt
+     508 .omo/evidence/adaptive-marketing-agent-os-qa/03_role_fixture_sections.txt
+     737 .omo/evidence/adaptive-marketing-agent-os-qa/01_l2_protocol.txt
+     217 .omo/evidence/adaptive-marketing-agent-os-qa/06_overlay_slack_hermes.txt
+    5508 .omo/evidence/adaptive-marketing-agent-os-qa/08_html_checkboxes.txt
+     462 .omo/evidence/adaptive-marketing-agent-os-qa/05_event_forbidden_terms.txt
+     974 .omo/evidence/adaptive-marketing-agent-os-qa/02_l3_headers.txt
+     265 .omo/evidence/adaptive-marketing-agent-os-qa/04_ads_forbidden_terms.txt
+    9720 total

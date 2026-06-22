@@ -1,0 +1,2 @@
+command: rg -n "tenant-selected|slack: tenant-selected|Slack is required|implements tenant adapter runtime|publish without approval|send without approval|activate without approval" agents .omo/plans
+exit_code: 1

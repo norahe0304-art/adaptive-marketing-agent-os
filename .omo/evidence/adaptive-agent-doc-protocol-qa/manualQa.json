@@ -1,0 +1,171 @@
+{
+  "manualQa": {
+    "surfaceEvidence": [
+      {
+        "scenarioId": "S1",
+        "criterionRef": "Parse YAML code blocks in agents/roles/*.role.md and agents/examples/*-role.fixture.md with PyYAML",
+        "surface": "terminal / filesystem markdown artifacts",
+        "exactInvocation": "python3 - <<'PY' ... parse fenced yaml blocks with yaml.safe_load for agents/roles/*.role.md and agents/examples/*-role.fixture.md ... PY | tee .omo/evidence/adaptive-agent-doc-protocol-qa/qa-invariants.txt",
+        "verdict": "PASS",
+        "artifactRefs": [
+          "A1",
+          "A2"
+        ]
+      },
+      {
+        "scenarioId": "S2",
+        "criterionRef": "Confirm role_package contains required protocol fields",
+        "surface": "terminal / parsed role_package YAML",
+        "exactInvocation": "python3 - <<'PY' ... compare role_package keys against required protocol field list ... PY | tee .omo/evidence/adaptive-agent-doc-protocol-qa/qa-invariants.txt",
+        "verdict": "PASS",
+        "artifactRefs": [
+          "A1",
+          "A2"
+        ]
+      },
+      {
+        "scenarioId": "S3",
+        "criterionRef": "Confirm workflow_contract exists only in workflow files, not role files",
+        "surface": "terminal / parsed YAML top-level keys under agents/**/*.md",
+        "exactInvocation": "python3 - <<'PY' ... assert top-level workflow_contract only appears in agents/workflows/*.workflow.md and not role_package files ... PY | tee .omo/evidence/adaptive-agent-doc-protocol-qa/qa-invariants.txt",
+        "verdict": "PASS",
+        "artifactRefs": [
+          "A1",
+          "A2"
+        ]
+      },
+      {
+        "scenarioId": "S4",
+        "criterionRef": "Confirm current executable modes are only read/observe/dry_run/propose; no mode: apply or modes containing apply in current role/workflow surfaces",
+        "surface": "terminal / role and workflow Markdown YAML surfaces",
+        "exactInvocation": "python3 - <<'PY' ... parse capability_surface.surfaces[].modes and workflow task_graph[].mode, then regex scan mode: apply and modes: [...apply...] in role/workflow files ... PY | tee .omo/evidence/adaptive-agent-doc-protocol-qa/qa-invariants.txt",
+        "verdict": "PASS",
+        "artifactRefs": [
+          "A1",
+          "A2"
+        ]
+      },
+      {
+        "scenarioId": "S5",
+        "criterionRef": "Confirm concrete tenant adapter name appears only where allowed, not in shared protocol/base role files",
+        "surface": "terminal / agents/protocols/*.md and agents/roles/*.role.md text scan",
+        "exactInvocation": "python3 - <<'PY' ... scan disallowed shared protocol/base role files for jetpartner/jetpartners/jp ads/caylent/hermes/reports.30x.company/jetpartners/supabase qualified lead ... PY | tee .omo/evidence/adaptive-agent-doc-protocol-qa/qa-invariants.txt",
+        "verdict": "PASS",
+        "artifactRefs": [
+          "A1",
+          "A2"
+        ]
+      },
+      {
+        "scenarioId": "S6",
+        "criterionRef": "Confirm every agents/**/*.md file has the L3 [INPUT]/[OUTPUT]/[POS]/[PROTOCOL] header and every AGENTS.md has required [PROTOCOL] text",
+        "surface": "terminal / agents/**/*.md header scan",
+        "exactInvocation": "python3 - <<'PY' ... scan first 12 lines of every agents/**/*.md for [INPUT], [OUTPUT], [POS], [PROTOCOL]; separately scan all AGENTS.md for exact protocol text ... PY | tee .omo/evidence/adaptive-agent-doc-protocol-qa/qa-invariants.txt",
+        "verdict": "FAIL",
+        "artifactRefs": [
+          "A1",
+          "A2"
+        ]
+      },
+      {
+        "scenarioId": "S7",
+        "criterionRef": "Safety invariant for scoped .omo/plans/adaptive-agent-review-board.zh-CN.html: current executable mode language must not expose apply as current mode",
+        "surface": "terminal / scoped HTML plan artifact text scan",
+        "exactInvocation": "python3 - <<'PY' ... scan .omo/plans/adaptive-agent-review-board.zh-CN.html lines containing apply and flag current-mode phrasing ... PY | tee .omo/evidence/adaptive-agent-doc-protocol-qa/qa-invariants.txt",
+        "verdict": "FAIL",
+        "artifactRefs": [
+          "A1",
+          "A2"
+        ]
+      }
+    ],
+    "adversarialCases": [
+      {
+        "scenarioId": "A-ROLE-YAML",
+        "criterionRef": "YAML parse/schema invariants",
+        "adversarialClass": "malformed or missing fenced role YAML / missing required role_package fields",
+        "expectedBehavior": "PyYAML parses every role and fixture block; role_package object exists with all required fields.",
+        "verdict": "PASS",
+        "artifactRefs": [
+          "A1",
+          "A2"
+        ]
+      },
+      {
+        "scenarioId": "A-WORKFLOW-LEAK",
+        "criterionRef": "workflow_contract isolation",
+        "adversarialClass": "role file smuggles workflow_contract into role_package or top-level YAML",
+        "expectedBehavior": "No role or fixture YAML contains workflow_contract; workflow files contain top-level workflow_contract.",
+        "verdict": "PASS",
+        "artifactRefs": [
+          "A1",
+          "A2"
+        ]
+      },
+      {
+        "scenarioId": "A-APPLY-MODE",
+        "criterionRef": "current executable modes",
+        "adversarialClass": "live mutation enabled by mode: apply or modes containing apply in role/workflow surfaces",
+        "expectedBehavior": "Executable role/workflow modes are limited to read, observe, dry_run, propose.",
+        "verdict": "PASS",
+        "artifactRefs": [
+          "A1",
+          "A2"
+        ]
+      },
+      {
+        "scenarioId": "A-TENANT-LEAK",
+        "criterionRef": "tenant adapter isolation",
+        "adversarialClass": "tenant adapter/name or tenant truth leaks into shared protocol/base role files",
+        "expectedBehavior": "Shared protocol and base role files contain no concrete Jetpartner/Caylent/Hermes tenant terms.",
+        "verdict": "PASS",
+        "artifactRefs": [
+          "A1",
+          "A2"
+        ]
+      },
+      {
+        "scenarioId": "A-GEB-HEADER",
+        "criterionRef": "L3/GEB documentation invariant",
+        "adversarialClass": "Markdown file without required [INPUT]/[OUTPUT]/[POS]/[PROTOCOL] header",
+        "expectedBehavior": "Every agents/**/*.md has all four L3 tags in header; every AGENTS.md has exact [PROTOCOL] text.",
+        "verdict": "FAIL",
+        "artifactRefs": [
+          "A1",
+          "A2"
+        ]
+      },
+      {
+        "scenarioId": "A-HTML-APPLY",
+        "criterionRef": "HTML plan safety wording",
+        "adversarialClass": "review-board artifact presents apply as a currently exposed mode",
+        "expectedBehavior": "Scoped HTML must not describe apply as a current executable/exposed mode; apply may only be future/reserved.",
+        "verdict": "FAIL",
+        "artifactRefs": [
+          "A1",
+          "A2"
+        ]
+      }
+    ],
+    "artifactRefs": [
+      {
+        "id": "A1",
+        "kind": "terminal-transcript",
+        "description": "Full QA invariant run: PyYAML parsing, schema fields, workflow isolation, mode checks, tenant scans, GEB header scan, HTML apply scan.",
+        "path": ".omo/evidence/adaptive-agent-doc-protocol-qa/qa-invariants.txt"
+      },
+      {
+        "id": "A2",
+        "kind": "json-summary",
+        "description": "Machine-readable QA summary with individual check verdicts and failure details.",
+        "path": ".omo/evidence/adaptive-agent-doc-protocol-qa/qa-summary.json"
+      },
+      {
+        "id": "A3",
+        "kind": "manualQa-matrix",
+        "description": "Manual QA evidence matrix for final reporting.",
+        "path": ".omo/evidence/adaptive-agent-doc-protocol-qa/manualQa.json"
+      }
+    ]
+  }
+}

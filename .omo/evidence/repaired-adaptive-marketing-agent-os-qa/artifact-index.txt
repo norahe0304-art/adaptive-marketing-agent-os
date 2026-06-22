@@ -1,0 +1,14 @@
+scenario=ArtifactIndex
+criterion=every PASS artifact is non-empty
+surface=filesystem evidence directory
+invocation=find .omo/evidence/repaired-adaptive-marketing-agent-os-qa -type f -maxdepth 1 -print0 | xargs -0 wc -c
+
+     860 .omo/evidence/repaired-adaptive-marketing-agent-os-qa/S1-L2-GEB-protocol-line.txt
+    7218 .omo/evidence/repaired-adaptive-marketing-agent-os-qa/S2-L3-headers.txt
+     326 .omo/evidence/repaired-adaptive-marketing-agent-os-qa/S3-S4-forbidden-terms.txt
+    1341 .omo/evidence/repaired-adaptive-marketing-agent-os-qa/S5-role-fixture-required-fields.txt
+    1061 .omo/evidence/repaired-adaptive-marketing-agent-os-qa/S6-S7-overlay-workflow-fields.txt
+     419 .omo/evidence/repaired-adaptive-marketing-agent-os-qa/S8-tenant-isolation-and-hermes.txt
+     259 .omo/evidence/repaired-adaptive-marketing-agent-os-qa/S9-no-runtime-files.txt
+     220 .omo/evidence/repaired-adaptive-marketing-agent-os-qa/artifact-index.txt
+   11704 total

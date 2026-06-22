@@ -1,0 +1,6 @@
+SURFACE: filesystem text across agents and .omo/plans
+INVOCATION: python3 scans agents/**/*.md and .omo/plans/**/*.md/.html for forbidden stale vocabulary
+EXPECTED: zero matches
+files_scanned: agents/**/*.md + .omo/plans/*.md + .omo/plans/adaptive-agent-review-board.zh-CN.html
+matches: none
+VERDICT: PASS

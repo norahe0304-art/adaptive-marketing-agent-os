@@ -1,0 +1,4 @@
+Surface: local filesystem tenant-neutral event role markdown
+Invocation: rg -n -i "Caylent|slack:[[:space:]]*hermes|hubspot[_ -]?(portal[_ -]?)?id[[:space:]]*[:=][[:space:]]*[0-9]{4,}|salesforce[_ -]?(account[_ -]?)?id[[:space:]]*[:=][[:space:]]*[A-Za-z0-9]{8,}" agents/roles/event-adaptive-operator.role.md
+
+PASS: no Caylent name, slack: hermes binding, or real-looking HubSpot/Salesforce ID assignment matched.

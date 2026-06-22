@@ -1,0 +1,7 @@
+artifact: S5-runtime-files
+--- meta ---
+command: find agents -type f ! -name "*.md" | sort
+exit_code: 0
+expected: no output
+--- raw output ---
+[empty output]

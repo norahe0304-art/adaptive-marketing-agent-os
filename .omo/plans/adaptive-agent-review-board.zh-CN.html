@@ -1,0 +1,555 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Adaptive Marketing Agent OS protocol and two seed agent sign-off packet.">
+  <link rel="icon" href="data:,">
+  <title>Adaptive Marketing Agent OS - Protocol Sign-off</title>
+  <style>
+:root{--surface-primary:#F7F4EC;--surface-secondary:#FFFFFF;--surface-elevated:#EFE8DA;--text-primary:#17211F;--text-secondary:#58645E;--text-tertiary:#7C867F;--border-default:#D8D0C1;--border-subtle:#E8E1D5;--accent-primary:#2F6F4E;--accent-secondary:#B0762E;--accent-critical:#9A463D;--accent-info:#496B7A;--space-1:4px;--space-2:8px;--space-3:12px;--space-4:16px;--space-5:20px;--space-6:24px;--space-8:32px;--space-10:40px;--space-12:48px;--space-16:64px;--radius:8px;--max:1320px;}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{margin:0;background:var(--surface-primary);color:var(--text-primary);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;font-size:16px;line-height:1.65;letter-spacing:0;}
+a{color:inherit;text-decoration:none;}
+h1,h2,h3,h4,p{margin:0;}
+code,.mono{font-family:SFMono-Regular,ui-monospace,Menlo,Consolas,monospace;word-break:break-word;}
+.wrap{width:min(100% - 32px,var(--max));margin:0 auto;}
+.topbar{position:sticky;top:0;z-index:5;border-bottom:1px solid var(--border-default);background:color-mix(in srgb,var(--surface-primary) 92%,white 8%);}
+.topbar .wrap{display:flex;align-items:center;justify-content:space-between;gap:var(--space-4);padding:var(--space-3) 0;}
+.brand{display:flex;align-items:center;gap:var(--space-3);min-width:0;}
+.mark{display:grid;width:32px;height:32px;place-items:center;border:1px solid var(--border-default);border-radius:var(--radius);color:var(--accent-primary);font-size:12px;font-weight:760;}
+.brand strong{display:block;font-size:14px;line-height:1.2;}
+.brand span span{display:block;color:var(--text-secondary);font-size:12px;line-height:1.25;}
+.nav{display:flex;flex-wrap:wrap;gap:var(--space-2);justify-content:flex-end;}
+.nav a{border:1px solid transparent;border-radius:var(--radius);color:var(--text-secondary);font-size:13px;padding:6px 10px;}
+.nav a:hover,.nav a:focus-visible{border-color:var(--border-default);color:var(--text-primary);background:var(--surface-secondary);outline:none;}
+.hero{border-bottom:1px solid var(--border-default);padding:var(--space-16) 0 var(--space-12);}
+.hero-grid{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(320px,0.95fr);gap:var(--space-10);align-items:end;}
+.eyebrow{color:var(--accent-primary);font-size:12px;font-weight:760;letter-spacing:.04em;text-transform:uppercase;}
+h1{max-width:920px;margin-top:var(--space-4);font-size:clamp(30px,5vw,42px);font-weight:760;line-height:1.1;}
+.lead{max-width:790px;margin-top:var(--space-5);color:var(--text-secondary);font-size:18px;}
+.summary{border:1px solid var(--border-default);border-radius:var(--radius);background:var(--surface-secondary);padding:var(--space-5);}
+.summary h2{font-size:18px;}
+.summary dl{margin:var(--space-4) 0 0;}
+.summary div{display:grid;grid-template-columns:120px minmax(0,1fr);gap:var(--space-4);border-top:1px solid var(--border-subtle);padding:var(--space-3) 0;}
+.summary div:first-child{border-top:none;padding-top:0;}
+.summary dt{color:var(--text-primary);font-weight:720;}
+.summary dd{margin:0;color:var(--text-secondary);font-size:14px;}
+.band{border-bottom:1px solid var(--border-default);padding:var(--space-12) 0;}
+.band.alt{background:var(--surface-secondary);}
+.band.decision{background:var(--surface-elevated);}
+.section-head{display:grid;grid-template-columns:minmax(0,.68fr) minmax(0,1fr);gap:var(--space-8);align-items:start;margin-bottom:var(--space-8);}
+h2{font-size:clamp(24px,3vw,32px);font-weight:720;line-height:1.18;}
+.section-head p{color:var(--text-secondary);}
+.grid-2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--space-4);min-width:0;}
+.grid-3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--space-4);min-width:0;}
+.card{min-width:0;border:1px solid var(--border-default);border-radius:var(--radius);background:var(--surface-secondary);padding:var(--space-5);}
+.card.muted{background:var(--surface-primary);}
+.tag{display:inline-flex;margin-bottom:var(--space-3);border:1px solid currentColor;border-radius:999px;padding:2px 9px;color:var(--accent-info);font-size:12px;font-weight:760;letter-spacing:.04em;text-transform:uppercase;}
+.tag.green{color:var(--accent-primary);}
+.tag.amber{color:var(--accent-secondary);}
+.tag.red{color:var(--accent-critical);}
+.card h3{font-size:20px;line-height:1.28;}
+.card h4{margin-top:var(--space-5);color:var(--text-tertiary);font-size:12px;font-weight:760;letter-spacing:.04em;text-transform:uppercase;}
+.card p{margin-top:var(--space-3);color:var(--text-secondary);font-size:15px;}
+.list{margin:var(--space-4) 0 0;padding:0;list-style:none;}
+.list li{border-top:1px solid var(--border-subtle);padding:var(--space-3) 0;color:var(--text-secondary);font-size:14px;}
+.list li:first-child{border-top:none;padding-top:0;}
+.list b{color:var(--text-primary);}
+.kv{margin-top:var(--space-4);border:1px solid var(--border-subtle);border-radius:var(--radius);overflow:hidden;background:var(--surface-primary);}
+.kv div{display:grid;grid-template-columns:150px minmax(0,1fr);border-top:1px solid var(--border-subtle);}
+.kv div:first-child{border-top:none;}
+.kv b,.kv span{padding:var(--space-3) var(--space-4);font-size:14px;}
+.kv b{border-right:1px solid var(--border-subtle);color:var(--text-primary);}
+.kv span{color:var(--text-secondary);}
+.codebox{max-width:100%;min-width:0;margin-top:var(--space-4);border:1px solid var(--border-default);border-radius:var(--radius);background:#17211F;color:#F5F2EA;padding:var(--space-4);overflow:auto;font-size:13px;line-height:1.55;white-space:pre-wrap;word-break:break-word;}
+.codebox code{white-space:pre-wrap;word-break:break-word;}
+.flow{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:var(--space-3);min-width:0;}
+.step{min-height:140px;border:1px solid var(--border-default);border-radius:var(--radius);background:var(--surface-secondary);padding:var(--space-4);}
+.step .num{color:var(--accent-info);font-size:12px;font-weight:760;}
+.step b{display:block;margin:var(--space-2) 0;font-size:15px;}
+.step span{color:var(--text-secondary);font-size:13px;}
+.callout{border-left:3px solid var(--accent-secondary);background:color-mix(in srgb,var(--surface-elevated) 70%,white 30%);padding:var(--space-4) var(--space-5);color:var(--text-secondary);font-size:15px;}
+.check-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:var(--space-4);}
+.check-panel{border:1px solid var(--border-default);border-radius:var(--radius);background:var(--surface-secondary);padding:var(--space-5);}
+.check-list{margin:var(--space-4) 0 0;padding:0;list-style:none;}
+.check-list li{display:grid;grid-template-columns:24px minmax(0,1fr);gap:var(--space-3);align-items:start;border-top:1px solid var(--border-subtle);padding:var(--space-3) 0;color:var(--text-secondary);font-size:14px;}
+.check-list li:first-child{border-top:none;padding-top:0;}
+input[type=checkbox]{width:18px;height:18px;margin:3px 0 0;accent-color:var(--accent-primary);}
+.footer{padding:var(--space-8) 0;color:var(--text-tertiary);font-size:13px;}
+@media (max-width:1120px){.grid-3,.flow{grid-template-columns:repeat(2,minmax(0,1fr));}}
+@media (max-width:900px){.hero-grid,.section-head,.grid-2,.grid-3,.check-grid{grid-template-columns:1fr;}.flow{grid-template-columns:1fr;}.summary{max-width:720px;}}
+@media (max-width:680px){.wrap{width:min(100% - 24px,var(--max));}.topbar{position:static;}.topbar .wrap{align-items:flex-start;flex-direction:column;}.nav{justify-content:flex-start;}.hero,.band{padding:var(--space-10) 0;}.summary div,.kv div{grid-template-columns:1fr;gap:0;}.kv b{border-right:none;border-bottom:1px solid var(--border-subtle);}h1{font-size:30px;}.codebox{font-size:12px;}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto !important;transition:none !important;}}
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="topbar">
+      <div class="wrap">
+        <a class="brand" href="#top" aria-label="回到顶部">
+          <span class="mark mono">OS</span>
+          <span>
+            <strong>Adaptive Marketing Agent OS</strong>
+            <span>Protocol sign-off packet</span>
+          </span>
+        </a>
+        <nav class="nav" aria-label="页面导航">
+          <a href="#protocol">协议正文</a>
+          <a href="#gates">执行门禁</a>
+          <a href="#jp">JP Ads</a>
+          <a href="#caylent">Caylent Event</a>
+          <a href="#omo">OMO 审查</a>
+          <a href="#signoff">Sign-off</a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="top">
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="wrap hero-grid">
+          <div>
+            <div class="eyebrow mono">Review Packet v0.1</div>
+            <h1 id="hero-title">这是要你 review 的协议正文，不是 review 导航。</h1>
+            <p class="lead">
+              你要签的是：一个底层 Adaptive Marketing Agent OS Protocol，以及两个 seed agent 的具体设计。
+              JP Ads 和 Caylent Event 只是第一批消费者，后续 SEO、Content、Lifecycle、Partner Ops 都必须能按同一套协议接入。
+            </p>
+          </div>
+          <aside class="summary">
+            <h2>本页签字对象</h2>
+            <dl>
+              <div><dt>协议</dt><dd>Shared Adaptive Marketing Agent OS Protocol</dd></div>
+              <div><dt>Seed Agent 1</dt><dd>JP Ads Adaptive Agent</dd></div>
+              <div><dt>Seed Agent 2</dt><dd>Caylent Event Adaptive Agent</dd></div>
+              <div><dt>当前状态</dt><dd>已 sign off 并生成第一批 `agents/` 实体文件；当前页面保留为协议 review 记录。</dd></div>
+            </dl>
+          </aside>
+        </div>
+      </section>
+
+      <section class="band alt" id="protocol" aria-labelledby="protocol-title">
+        <div class="wrap">
+          <div class="section-head">
+            <h2 id="protocol-title">一、Shared Adaptive Marketing Agent OS Protocol</h2>
+            <p>这是底层协议正文。它只定义所有 marketing agent 必须遵守的结构，不负责 Ads/Event 具体业务。</p>
+          </div>
+
+          <div class="grid-3">
+            <article class="card">
+              <span class="tag green mono">Boundary</span>
+              <h3>协议层负责什么</h3>
+              <p>协议层只定义所有 marketing agent 共同遵守的“操作系统接口”。它回答：一个 agent 长什么样、能用什么工具、什么时候必须停下来、做完后怎么留下证据和学习回写。</p>
+              <ul class="list">
+                <li><b>Role schema</b>：规定每个 role package 必须有 identity、instructions、skills、memory_scope、tools、host_adapters、lifecycle、approval_policy、evidence_contract。通过标准：Ads/Event/SEO 都能用同一份 schema 描述自己。</li>
+                <li><b>Capability / MCP boundary</b>：规定 base role 默认只到 read、observe、dry_run、propose；apply 只能出现在 workflow-scoped apply lab，并且必须有 runtime binding、typed approval、evidence、exact scope 和 readback。通过标准：工具权限可以审计，domain agent 不能偷偷拿到全局工具。</li>
+                <li><b>Approval / evidence model</b>：规定哪些动作需要 human approval，approval receipt 和 evidence packet 必须包含什么。通过标准：任何高风险动作都能追到人、时间、对象、证据和 readback。</li>
+                <li><b>OMO governance</b>：规定 agent 做事必须经过 trigger、self-check、plan、delegate、evidence、QA、review gate、readback。通过标准：agent 不是聊天发挥，而是按执行协议完成工作。</li>
+                <li><b>GEB delta</b>：规定结果如何进入 tenant memory、playbook、workflow patch、skill candidate 或 protocol update，同时维护 L1/L2/L3 文档同构。通过标准：系统不会失忆，也不会把客户事实污染到 base role。</li>
+              </ul>
+            </article>
+
+            <article class="card">
+              <span class="tag red mono">Boundary</span>
+              <h3>协议层不负责什么</h3>
+              <p>协议层不是超级 agent，也不是业务 runtime。它不能替 Ads、Event、SEO 做领域判断；它只给这些 agent 一个共同的设计、执行和审计框架。</p>
+              <ul class="list">
+                <li><b>不实现 Ads role</b>：Ads search term、lead quality、campaign optimization 属于 JP Ads agent。</li>
+                <li><b>不实现 Event role</b>：HubSpot pages、emails、workflows、event launch kit 属于 Caylent Event agent。</li>
+                <li><b>不写 platform runtime</b>：Google Ads、HubSpot、Salesforce、Slack adapter 的真实 API/runtime 不在协议层实现。</li>
+                <li><b>不把 tenant adapter 当 OS core</b>：具体 Slack adapter 只能由 tenant overlay 选择，不能进入 shared/base 协议。</li>
+                <li><b>不存 tenant truth</b>：JP qualified lead、Caylent approval owner、客户 portal id 等事实只能放 tenant overlay 或 source pointer。</li>
+              </ul>
+            </article>
+
+            <article class="card">
+              <span class="tag amber mono">Scale Rule</span>
+              <h3>新 agent 如何接入</h3>
+              <p>新增 agent 不是重新设计一套协议，而是填写同一张接入表。只要这张表填得完整，新 agent 就能被执行、审计和进化。</p>
+              <ul class="list">
+                <li><b>1. 声明 domain</b>：Ads、Event、SEO、Content、Lifecycle、Partner Ops。例子：JP 是 Ads；Caylent 是 Event；未来 SEO agent 也是同一入口。</li>
+                <li><b>2. 声明 base role</b>：描述通用领域能力，不含客户事实。例子：ads-adaptive-operator 不知道 Jetpartner；event-adaptive-operator 不知道 Caylent。</li>
+                <li><b>3. 声明 tenant overlay</b>：只放稳定 operating contract 和 source pointers。例子：Jetpartner qualified lead rule；Caylent approval owners。</li>
+                <li><b>4. 声明 workflow contract</b>：写清 inputs、outputs、task graph、evidence、approval gate、failure behavior、readback。例子：JP readonly review；Caylent launch workflow。</li>
+                <li><b>5. 声明 learning route</b>：结果进入 tenant memory、industry playbook、workflow patch、skill candidate 或 protocol update。例子：重复稳定的 session 才能升级成 skill candidate。</li>
+              </ul>
+            </article>
+          </div>
+
+          <div class="grid-2" style="margin-top: var(--space-4);">
+            <article class="card muted">
+              <h3>Role Package Schema</h3>
+              <p>每个 role package 必须是完整封装，不是 prompt，也不是 skill。</p>
+              <div class="kv">
+                <div><b>Identity</b><span>identity, purpose, when_to_use, non_goals, versioning</span></div>
+                <div><b>Execution</b><span>inputs, outputs, lifecycle, success_criteria, readback</span></div>
+                <div><b>Capabilities</b><span>tools, plugins, capability_surface, mcp_boundary, permissions</span></div>
+                <div><b>Knowledge</b><span>role_instructions, skills, memory_scope, learning_rules</span></div>
+                <div><b>Host</b><span>host_adapters.required / optional / preferred / unsupported / notes</span></div>
+                <div><b>Audit</b><span>evidence_contract, approval_policy, evidence_gates</span></div>
+              </div>
+            </article>
+
+            <article class="card muted">
+              <h3>Host Adapter Interface</h3>
+              <p>Host adapter 是外部环境调用 role 的接口，不是某个业务 agent 的底座。</p>
+              <div class="kv">
+                <div><b>Host kinds</b><span>slack, cli, portal, cron, api, codex</span></div>
+                <div><b>Required</b><span>entrypoints, identity mapping, session/thread model</span></div>
+                <div><b>Approval</b><span>approval surface, message/action payload, evidence handoff</span></div>
+                <div><b>Limits</b><span>capability restrictions, failure behavior, unsupported hosts</span></div>
+                <div><b>Adapters</b><span>overlay-defined implementations, not Agent OS core</span></div>
+              </div>
+            </article>
+          </div>
+
+          <pre class="codebox"><code>host_adapters:
+  required: []
+  optional: []
+  preferred: {}
+  unsupported: []
+  notes: ""</code></pre>
+
+          <p class="callout" style="margin-top: var(--space-5);">
+            Sign-off 条款：Domain roles 只能实例化 shared evidence_contract、approval_policy、learning_rules、capability_surface。它们不能自创 protocol fields、permission modes、approval states、host kinds 或 evidence semantics。需要新语义时，先升级 shared protocol。
+          </p>
+        </div>
+      </section>
+
+      <section class="band" id="gates" aria-labelledby="gates-title">
+        <div class="wrap">
+          <div class="section-head">
+            <h2 id="gates-title">二、执行门禁：Capability、Evidence、OMO、GEB</h2>
+            <p>这部分决定 agent 能不能安全做事。核心是：可观察、可提案、可审计，但 v1 不默认 live mutation。</p>
+          </div>
+
+          <div class="grid-2">
+            <article class="card">
+              <span class="tag red mono">Apply Gate</span>
+              <h3>Capability modes</h3>
+              <ul class="list">
+                <li><b>read</b>：读取已有事实和文档。</li>
+                <li><b>observe</b>：观察外部状态，不改变系统。</li>
+                <li><b>dry_run</b>：模拟执行，生成风险和预期结果。</li>
+                <li><b>propose</b>：输出建议和 evidence packet。</li>
+                <li><b>apply</b>：V1 可试，但只能在 workflow-scoped apply lab 里执行。</li>
+              </ul>
+              <p class="callout" style="margin-top: var(--space-4);">
+                Apply lab 必须同时具备 runtime binding、risk class、tenant/account binding、named human approver、approval receipt、pre-apply evidence、post-apply readback、rollback 或 irreversible acknowledgement。缺一项就停在 propose。
+              </p>
+            </article>
+
+            <article class="card">
+              <span class="tag green mono">Evidence</span>
+              <h3>Evidence Gates</h3>
+              <ul class="list">
+                <li>request / brief evidence</li>
+                <li>source evidence</li>
+                <li>plan / proposal evidence</li>
+                <li>approval evidence when risk requires it</li>
+                <li>final readback evidence</li>
+                <li>failure evidence for blocked or aborted actions</li>
+              </ul>
+              <h4>Evidence record fields</h4>
+              <p><code>evidence_id</code>, <code>source_url</code>, <code>created_at</code>, <code>actor</code>, <code>tenant</code>, <code>account_or_campaign</code>, <code>before_state</code>, <code>after_state</code>, <code>approval_receipt</code>, <code>readback_summary</code>.</p>
+            </article>
+          </div>
+
+          <div class="grid-2" style="margin-top: var(--space-4);">
+            <article class="card muted">
+              <span class="tag mono">OMO</span>
+              <h3>Execution Governance</h3>
+              <pre class="codebox"><code>trigger
+  -> self-check
+  -> plan
+  -> delegate
+  -> gather evidence
+  -> execute by permission
+  -> QA
+  -> Metis/Momus review gate
+  -> readback</code></pre>
+            </article>
+
+            <article class="card muted">
+              <span class="tag amber mono">GEB</span>
+              <h3>GEB Semantic and Structural Delta</h3>
+              <p>GEB 不是单纯 learning。每次结果都要决定 semantic placement 和 structural documentation impact。</p>
+              <ul class="list">
+                <li>Learning delta：tenant memory、industry playbook、role patch、workflow patch、skill candidate、protocol update。</li>
+                <li>Structural delta：任何 create / move / rename / responsibility shift 都要维护 L1/L2/L3 同构。</li>
+                <li>固定原则：map and terrain must stay aligned。</li>
+              </ul>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="band alt" id="jp" aria-labelledby="jp-title">
+        <div class="wrap">
+          <div class="section-head">
+            <h2 id="jp-title">三、Seed Agent 1：JP Ads Adaptive Agent</h2>
+            <p>这是第一个落地 agent。它消费 shared protocol，负责 Ads domain 和 Jetpartner tenant overlay，不定义 OS protocol。</p>
+          </div>
+
+          <div class="grid-3">
+            <article class="card">
+              <span class="tag mono">Base Role</span>
+              <h3>ads-adaptive-operator</h3>
+              <ul class="list">
+                <li>操作广告账户的 read-first evidence loop。</li>
+                <li>支持 Google Ads、Meta、LinkedIn、TikTok、Microsoft、Apple、YouTube 等能力面。</li>
+                <li>分析 campaign structure、search terms、lead quality、budgets、creatives、landing pages、conversion quality。</li>
+                <li>必须先产生 proposal；apply 只能通过 workflow apply lab 试验。</li>
+                <li>不得包含 Jetpartner、Eric、Benton、reports URL、Contacted、Pre-Qualified、private aviation bad intent。</li>
+              </ul>
+            </article>
+
+            <article class="card">
+              <span class="tag green mono">Host</span>
+              <h3>Ads host adapters</h3>
+              <pre class="codebox"><code>host_adapters:
+  required: []
+  optional:
+    - codex
+    - portal
+    - slack
+  preferred: {}
+  unsupported: []
+  notes: "Ads role can run through optional hosts without requiring one in the base role."</code></pre>
+            </article>
+
+            <article class="card">
+              <span class="tag amber mono">Overlay</span>
+              <h3>jetpartners-ads-operator</h3>
+              <ul class="list">
+                <li><b>mounts_on</b>：ads-adaptive-operator</li>
+                <li>tenant memory boundary</li>
+                <li>qualified lead truth</li>
+                <li>Supabase qualified lead source</li>
+                <li>report surface</li>
+                <li>known bad intent such as private aviation mismatch</li>
+                <li>read-only default</li>
+                <li>human approval for mutations</li>
+              </ul>
+            </article>
+          </div>
+
+          <div class="grid-2" style="margin-top: var(--space-4);">
+            <article class="card muted">
+              <h3>Jetpartner workflow</h3>
+              <div class="flow">
+                <div class="step"><span class="num mono">01</span><b>Request</b><span>确认 tenant 和 account。</span></div>
+                <div class="step"><span class="num mono">02</span><b>Gather</b><span>采集 ads/search-term/lead evidence。</span></div>
+                <div class="step"><span class="num mono">03</span><b>Classify</b><span>判断 lead quality。</span></div>
+                <div class="step"><span class="num mono">04</span><b>Propose</b><span>提出 negatives、budget、copy、landing changes。</span></div>
+                <div class="step"><span class="num mono">05</span><b>Approve</b><span>等待 human approval receipt。</span></div>
+	                <div class="step"><span class="num mono">06</span><b>Apply Lab</b><span>approved low-risk reversible operation。</span></div>
+              </div>
+            </article>
+
+            <article class="card muted">
+              <h3>JP Ads sign-off rules</h3>
+              <ul class="list">
+                <li>Base Ads role 必须 tenant-neutral。</li>
+                <li>Jetpartner truth 只能在 overlay。</li>
+	                <li>Workflow 默认 proposal；apply lab 只跑 approved low-risk reversible operations。</li>
+                <li>Approval receipt 必须包含 human approver、approved action、tenant/account、timestamp、evidence packet、exact mutation scope。</li>
+                <li>Overlay tenant fact 必须包含 source_of_truth、evidence_url、owner、last_verified_at、review_after、promotion_target 或 expiry_reason。</li>
+              </ul>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="band" id="caylent" aria-labelledby="caylent-title">
+        <div class="wrap">
+          <div class="section-head">
+            <h2 id="caylent-title">四、Seed Agent 2：Caylent Event Adaptive Agent</h2>
+            <p>这是第二个落地 agent。它证明协议不是 Ads-only。Base Event 保持 host-neutral，tenant overlay 才绑定具体协作入口。</p>
+          </div>
+
+          <div class="grid-3">
+            <article class="card">
+              <span class="tag mono">Base Role</span>
+              <h3>event-adaptive-operator</h3>
+              <ul class="list">
+                <li>运行 B2B event launch workflows。</li>
+                <li>协调 event pages、emails、workflows、lists、campaign associations、approval packets。</li>
+                <li>创建 launch assets 前必须读取 CRM/account context。</li>
+                <li>publish/send/activate 前必须先 draft/propose。</li>
+                <li>不得包含 Caylent tenant-only facts、real HubSpot portal IDs、real Salesforce account IDs。</li>
+              </ul>
+            </article>
+
+            <article class="card">
+              <span class="tag green mono">Base Host</span>
+              <h3>Event host-neutral</h3>
+              <pre class="codebox"><code>host_adapters:
+  required: []
+  optional:
+    - portal
+    - codex
+    - slack
+  preferred: {}
+  unsupported: []
+  notes: "Base Event role is host-neutral; tenant overlays may require a collaboration host."</code></pre>
+            </article>
+
+            <article class="card">
+              <span class="tag amber mono">Caylent Overlay</span>
+              <h3>caylent-event-operator</h3>
+              <ul class="list">
+                <li><b>mounts_on</b>：event-adaptive-operator</li>
+                <li>Caylent tenant memory boundary</li>
+                <li>Caylent event naming conventions</li>
+                <li>Caylent HubSpot portal binding notes</li>
+                <li>Caylent Salesforce read-only context notes</li>
+                <li>Caylent approval owners and receipts</li>
+                <li>required Slack host with overlay-defined adapter</li>
+              </ul>
+            </article>
+          </div>
+
+          <div class="grid-2" style="margin-top: var(--space-4);">
+            <article class="card muted">
+              <h3>Caylent host adapter instance</h3>
+              <pre class="codebox"><code>host_adapters:
+  required:
+    - slack
+  optional:
+    - portal
+    - codex
+  preferred:
+    slack: overlay-defined
+  unsupported: []
+  notes: "Caylent Event uses Slack as the primary collaboration host; the preferred adapter is defined in the overlay."</code></pre>
+            </article>
+
+            <article class="card muted">
+              <h3>Capability surface</h3>
+              <ul class="list">
+                <li><b>hubspot.pages</b>：draft/propose，publish requires approval。</li>
+                <li><b>hubspot.emails</b>：draft/propose，send requires approval。</li>
+                <li><b>hubspot.workflows</b>：draft/propose，activate requires approval。</li>
+                <li><b>hubspot.lists</b>：read/propose，list updates require approval。</li>
+                <li><b>salesforce</b>：read only。</li>
+                <li><b>docs</b>：draft briefs、launch plans、approval packets。</li>
+              </ul>
+            </article>
+          </div>
+
+          <div class="grid-2" style="margin-top: var(--space-4);">
+            <article class="card muted">
+              <h3>Caylent workflow</h3>
+              <div class="flow">
+                <div class="step"><span class="num mono">01</span><b>Brief</b><span>normalize Caylent event brief。</span></div>
+                <div class="step"><span class="num mono">02</span><b>Context</b><span>read Salesforce/account context。</span></div>
+                <div class="step"><span class="num mono">03</span><b>Draft</b><span>draft HubSpot page/email/workflow/list assets。</span></div>
+                <div class="step"><span class="num mono">04</span><b>Campaign</b><span>associate campaign id。</span></div>
+                <div class="step"><span class="num mono">05</span><b>Approval</b><span>prepare Slack approval packet and wait receipt。</span></div>
+                <div class="step"><span class="num mono">06</span><b>Readback</b><span>evidence readback and semantic delta handoff。</span></div>
+              </div>
+            </article>
+
+            <article class="card muted">
+              <h3>Caylent sign-off rules</h3>
+              <ul class="list">
+                <li>Base Event role 必须 tenant-neutral 和 host-neutral。</li>
+                <li>具体 Slack adapter 只能在 tenant overlay required/preferred。</li>
+                <li>Default stop point 是 approval packet 和 draft assets。</li>
+                <li>Publish/send/activate/list updates 必须 explicit approval。</li>
+                <li>Evidence contract 必须有 event brief、campaign id、asset urls、CRM/account context source、approval receipts、owner identity、launch timestamp、failure/readback notes。</li>
+              </ul>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="band alt" id="omo" aria-labelledby="omo-title">
+        <div class="wrap">
+          <div class="section-head">
+            <h2 id="omo-title">五、OMO 家族审查结论</h2>
+            <p>Explorer、Librarian、Metis、Momus 已审。结论是 ITERATE，不是 REJECT。以下修正已进入本 packet。</p>
+          </div>
+
+          <div class="grid-3">
+            <article class="card">
+              <span class="tag green mono">Explorer</span>
+              <h3>已补通用 onboarding</h3>
+              <ul class="list">
+                <li>Shared protocol 不再是两-agent专用。</li>
+                <li>JP Ads 和 Caylent Event 改成 seed examples。</li>
+                <li>新增 new marketing agent onboarding contract。</li>
+              </ul>
+            </article>
+            <article class="card">
+              <span class="tag amber mono">Metis</span>
+              <h3>已补硬边界</h3>
+              <ul class="list">
+                <li>Apply 不是 mutation permission。</li>
+                <li>Approval receipt 必须命名人类审批者和 action scope。</li>
+                <li>Overlay memory 不能是 transcript / CRM dump。</li>
+              </ul>
+            </article>
+            <article class="card">
+              <span class="tag mono">Momus</span>
+              <h3>已补可验收性</h3>
+              <ul class="list">
+                <li>Shared plan 验 fixture，不提前验真实 role。</li>
+                <li>验收用逐项 <code>rg -q</code>。</li>
+                <li>补 AGENTS.md 和 <code>[PROTOCOL]</code> 检查。</li>
+              </ul>
+            </article>
+          </div>
+
+          <p class="callout" style="margin-top: var(--space-5);">
+            Librarian 结论：外部资料支持 shared protocol / role layer / evidence-gated lifecycle / typed workflow contract。Flyte 应被表述为 typed workflow contract inspiration，GEB 是我们的 proposed extension，不伪装成外部标准。
+          </p>
+        </div>
+      </section>
+
+      <section class="band decision" id="signoff" aria-labelledby="signoff-title">
+        <div class="wrap">
+          <div class="section-head">
+            <h2 id="signoff-title">六、你需要签的决定</h2>
+            <p>这些不是导航问题，而是协议是否成立的签字项。你已确认后，第一批实体 `agents/` 文件已经生成。</p>
+          </div>
+
+          <div class="check-grid">
+            <div class="check-panel">
+              <h3>Protocol sign-off</h3>
+              <ul class="check-list">
+                <li><input type="checkbox" aria-label="Shared protocol 可以 scale"><span><b>Shared protocol 可以 scale</b>未来 marketing agents 通过 onboarding contract 接入。</span></li>
+                <li><input type="checkbox" aria-label="Domain roles 不自创协议"><span><b>Domain roles 不自创协议</b>Ads/Event 只能实例化 shared schema。</span></li>
+                <li><input type="checkbox" aria-label="Apply lab 通过"><span><b>Apply lab 通过</b>v1 默认 propose，但允许 workflow-scoped、approval-gated apply lab。</span></li>
+                <li><input type="checkbox" aria-label="GEB 定义通过"><span><b>GEB 定义通过</b>它是 semantic + structural delta，不只是 learning。</span></li>
+              </ul>
+            </div>
+
+            <div class="check-panel">
+              <h3>Seed agent sign-off</h3>
+              <ul class="check-list">
+                <li><input type="checkbox" aria-label="JP Ads agent 通过"><span><b>JP Ads agent 通过</b>base Ads role、Jetpartner overlay、readonly workflow 分清楚。</span></li>
+                <li><input type="checkbox" aria-label="Caylent Event agent 通过"><span><b>Caylent Event agent 通过</b>base Event host-neutral，tenant overlay 绑定具体协作入口。</span></li>
+                <li><input type="checkbox" aria-label="Overlay memory 通过"><span><b>Overlay memory 通过</b>只放稳定 operating contracts 和 source pointers。</span></li>
+                <li><input type="checkbox" aria-label="Evidence contract 通过"><span><b>Evidence contract 通过</b>所有判断、审批、失败、readback 都可审计。</span></li>
+              </ul>
+            </div>
+          </div>
+
+          <p class="callout" style="margin-top: var(--space-6);">
+            这 8 项签完后的实体文件已经落地：`agents/protocols/*`、`agents/roles/*`、`agents/overlays/*`、`agents/workflows/*` 和 GEB `AGENTS.md` L1/L2/L3。
+          </p>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="wrap">
+        <span class="mono">Packet:</span> .omo/plans/adaptive-agent-review-board.zh-CN.html
+      </div>
+    </footer>
+  </div>
+</body>
+</html>

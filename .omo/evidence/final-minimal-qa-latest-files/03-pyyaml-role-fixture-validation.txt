@@ -1,0 +1,20 @@
+SURFACE: filesystem markdown YAML
+INVOCATION: python3 + PyYAML parses fenced YAML in agents/roles/*.role.md and agents/examples/*.fixture.md
+EXPECTED: every file exposes one role_package mapping with canonical required fields
+PyYAML: 6.0.3
+files: ['agents/roles/ads-adaptive-operator.role.md', 'agents/roles/event-adaptive-operator.role.md', 'agents/examples/caylent-event-role.fixture.md', 'agents/examples/jp-ads-role.fixture.md']
+PASS parse: agents/roles/ads-adaptive-operator.role.md block=1 id=ads-adaptive-operator role_type=None
+PASS parse: agents/roles/event-adaptive-operator.role.md block=1 id=event-adaptive-operator role_type=None
+PASS parse: agents/examples/caylent-event-role.fixture.md block=1 id=event-adaptive-operator role_type=None
+PASS parse: agents/examples/jp-ads-role.fixture.md block=1 id=ads-adaptive-operator role_type=None
+--- verdict ---
+VERDICT: FAIL
+blocking_issues:
+- agents/roles/ads-adaptive-operator.role.md: mcp_boundary missing allowed_modes
+- agents/roles/ads-adaptive-operator.role.md: mcp_boundary missing disallowed_modes
+- agents/roles/event-adaptive-operator.role.md: mcp_boundary missing allowed_modes
+- agents/roles/event-adaptive-operator.role.md: mcp_boundary missing disallowed_modes
+- agents/examples/caylent-event-role.fixture.md: mcp_boundary missing allowed_modes
+- agents/examples/caylent-event-role.fixture.md: mcp_boundary missing disallowed_modes
+- agents/examples/jp-ads-role.fixture.md: mcp_boundary missing allowed_modes
+- agents/examples/jp-ads-role.fixture.md: mcp_boundary missing disallowed_modes

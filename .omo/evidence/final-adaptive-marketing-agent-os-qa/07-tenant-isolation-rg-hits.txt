@@ -1,0 +1,6 @@
+SUPERSEDED: this file recorded pre-fix tenant-isolation hits.
+Current check after the cleanup:
+- no concrete tenant adapter name appears in agents/protocols
+- no concrete tenant adapter name appears in agents/roles
+- concrete tenant adapter binding appears only in agents/overlays/caylent-event-operator.overlay.md
+VERDICT: PASS

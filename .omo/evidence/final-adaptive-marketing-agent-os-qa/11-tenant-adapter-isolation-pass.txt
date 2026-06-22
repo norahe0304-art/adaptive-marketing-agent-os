@@ -1,0 +1,10 @@
+SURFACE: filesystem tenant adapter isolation
+INVOCATION: rg concrete adapter name in agents and .omo/plans
+EXPECTED: matches only in agents/overlays/caylent-event-operator.overlay.md
+RESULT:
+- agents/protocols: no matches
+- agents/roles: no matches
+- agents/workflows: no matches
+- .omo/plans: no matches
+- agents/overlays/caylent-event-operator.overlay.md: contains the tenant-specific binding
+VERDICT: PASS

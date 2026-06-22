@@ -1,0 +1,3 @@
+SURFACE: local filesystem
+INVOCATION: rg -n "^\s*mode:\s*apply\b|^\s*modes:\s*\[[^\]]*\bapply\b[^\]]*\]" agents .omo/plans
+PASS no executable mode: apply or modes: [...apply...] found

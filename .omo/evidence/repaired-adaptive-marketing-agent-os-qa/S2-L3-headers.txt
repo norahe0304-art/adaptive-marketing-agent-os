@@ -1,0 +1,85 @@
+scenario=S2-L3-Headers
+criterion=L3 headers on all non-AGENTS md under agents
+surface=filesystem markdown
+invocation=find agents -name "*.md" ! -name AGENTS.md -type f | sort | while read file; rg required L3 tags per file
+
+PASS agents/examples/caylent-event-role.fixture.md
+  2:[INPUT]: Depends on agents/protocols/role-package.schema.md and .omo/plans/event-agent-role-design.md.
+  3:[OUTPUT]: Provides Caylent Event fixture for shared role schema validation.
+  4:[POS]: examples seed proof that Event + Caylent can be expressed without changing shared protocol.
+  5:[PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
+PASS agents/examples/jp-ads-role.fixture.md
+  2:[INPUT]: Depends on agents/protocols/role-package.schema.md and .omo/plans/ads-agent-role-design.md.
+  3:[OUTPUT]: Provides JP Ads fixture for shared role schema validation.
+  4:[POS]: examples seed proof that Ads + Jetpartner can be expressed without changing shared protocol.
+  5:[PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
+PASS agents/overlays/caylent-event-operator.overlay.md
+  2:[INPUT]: Depends on event-adaptive-operator.role.md, Caylent event operating evidence, and Caylent Event workflow contracts.
+  3:[OUTPUT]: Provides Caylent tenant overlay for Event Adaptive Operator.
+  4:[POS]: overlays tenant truth and host adapter selection layer mounted on the Event base role.
+  5:[PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
+PASS agents/overlays/jetpartners-ads-operator.overlay.md
+  2:[INPUT]: Depends on ads-adaptive-operator.role.md, Jetpartner operating evidence, and JP Ads workflow contracts.
+  3:[OUTPUT]: Provides Jetpartner tenant overlay for Ads Adaptive Operator.
+  4:[POS]: overlays tenant truth layer mounted on the Ads base role; never changes the shared OS protocol.
+  5:[PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
+PASS agents/protocols/agent-onboarding.contract.md
+  2:[INPUT]: Depends on role-package.schema.md, capability-boundary.schema.md, approval-evidence.schema.md, host-adapter.interface.md, and geb-semantic-delta.md.
+  3:[OUTPUT]: Provides workflow_contract and onboarding checklist for any new marketing agent.
+  4:[POS]: protocols scale rule for adding future Ads, Event, SEO, Content, Lifecycle, or Partner Ops agents.
+  5:[PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
+PASS agents/protocols/approval-evidence.schema.md
+  2:[INPUT]: Depends on capability-boundary.schema.md approval gates and OMO evidence collection.
+  3:[OUTPUT]: Provides ApprovalReceipt and EvidenceArtifact contracts for approval, evidence, readback, and future live-action gates.
+  4:[POS]: protocols hard safety contract consumed by role packages, workflows, overlays, and future runtime adapters.
+  5:[PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
+PASS agents/protocols/capability-boundary.schema.md
+  2:[INPUT]: Depends on role-package.schema.md for role_package fields and host-adapter.interface.md for host-neutral invocation.
+  3:[OUTPUT]: Provides shared capability and MCP permission modes for all domain roles.
+  4:[POS]: protocols permission boundary consumed by Ads, Event, and future marketing agents.
+  5:[PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
+PASS agents/protocols/cross-role-validation.md
+  2:[INPUT]: Depends on role-package.schema.md, agent-onboarding.contract.md, JP Ads and Caylent Event fixture files.
+  3:[OUTPUT]: Provides cross-role validation proving shared schema vs domain-specific tools and host-specific adapter differences.
+  4:[POS]: protocols validation layer for proving the Agent OS is not Ads-only.
+  5:[PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
+PASS agents/protocols/geb-semantic-delta.md
+  2:[INPUT]: Depends on AGENTS.md L1/L2 docs, role-package.schema.md learning_rules, and OMO final_readback.
+  3:[OUTPUT]: Provides post_run_delta routing, knowledge_updates, skill_candidate_updates, and structural L1/L2/L3 sync rules.
+  4:[POS]: protocols GEB governance for semantic and structural evolution.
+  5:[PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
+PASS agents/protocols/host-adapter.interface.md
+  2:[INPUT]: Depends on role-package.schema.md host_adapters and capability-boundary.schema.md capability restrictions.
+  3:[OUTPUT]: Provides host adapter interface for slack, cli, portal, cron, api, and codex hosts.
+  4:[POS]: protocols invocation boundary between external environments and domain roles.
+  5:[PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
+PASS agents/protocols/omo-execution-governance.md
+  2:[INPUT]: Depends on OMO agent discipline and capability-boundary.schema.md permission modes.
+  3:[OUTPUT]: Provides execution_gates and final_readback lifecycle for all roles.
+  4:[POS]: protocols execution governance consumed by workflows and roles.
+  5:[PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
+PASS agents/protocols/role-package.schema.md
+  2:[INPUT]: Depends on agent-roles-spec concepts, approval-evidence.schema.md, OMO execution gates, and GEB semantic/structural delta.
+  3:[OUTPUT]: Provides the canonical role_package schema for all Adaptive Marketing Agent OS roles.
+  4:[POS]: protocols shared schema consumed by roles, overlays, workflows, and examples.
+  5:[PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
+PASS agents/roles/ads-adaptive-operator.role.md
+  2:[INPUT]: Depends on role-package.schema.md, capability-boundary.schema.md, host-adapter.interface.md, omo-execution-governance.md, and geb-semantic-delta.md.
+  3:[OUTPUT]: Provides the tenant-neutral Ads Adaptive Operator base role package.
+  4:[POS]: roles base Ads role consumed by tenant overlays and Ads workflows; contains no tenant truth.
+  5:[PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
+PASS agents/roles/event-adaptive-operator.role.md
+  2:[INPUT]: Depends on role-package.schema.md, capability-boundary.schema.md, host-adapter.interface.md, omo-execution-governance.md, and geb-semantic-delta.md.
+  3:[OUTPUT]: Provides the tenant-neutral Event Adaptive Operator base role package.
+  4:[POS]: roles base Event role consumed by tenant overlays and event launch workflows; contains no tenant truth.
+  5:[PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
+PASS agents/workflows/caylent-event-launch.workflow.md
+  2:[INPUT]: Depends on event-adaptive-operator.role.md, caylent-event-operator.overlay.md, OMO governance, and GEB delta protocol.
+  3:[OUTPUT]: Provides Caylent Event launch workflow with draft, approval, launch, readback, and learning routes.
+  4:[POS]: workflows first Event implementation path; consumes shared protocol and Caylent overlay.
+  5:[PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
+PASS agents/workflows/jetpartners-ads-readonly-review.workflow.md
+  2:[INPUT]: Depends on ads-adaptive-operator.role.md, jetpartners-ads-operator.overlay.md, OMO governance, and GEB delta protocol.
+  3:[OUTPUT]: Provides JP Ads read-only review workflow with proposal, evidence, approval, and learning routes.
+  4:[POS]: workflows first Ads implementation path; consumes shared protocol and JP overlay.
+  5:[PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md

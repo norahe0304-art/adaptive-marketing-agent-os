@@ -1,0 +1,6 @@
+Surface: local filesystem tenant-neutral event role markdown
+Invocation: rg -n -i "Caylent|HubSpot portal|portal ID|Salesforce account|account ID|slack: hermes|hermes" agents/roles/event-adaptive-operator.role.md
+
+FAIL: forbidden tenant or adapter binding matched:
+87:        - tenant portal IDs
+262:This file must stay tenant-neutral and host-neutral. A Slack preference, Hermes binding, CRM portal binding, or customer launch rule belongs in a tenant overlay.

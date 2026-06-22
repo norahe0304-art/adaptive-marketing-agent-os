@@ -1,0 +1,43 @@
+Surface: local filesystem review-board HTML
+Invocation: test -r .omo/plans/adaptive-agent-review-board.zh-CN.html && rg -n -i "<input[^>]+type=[\\"' ]*checkbox|checkbox|sign-off|review|签|审" .omo/plans/adaptive-agent-review-board.zh-CN.html
+
+PASS: review-board HTML is readable and contains review/sign-off checkbox evidence.
+6:  <meta name="description" content="Adaptive Marketing Agent OS protocol and two seed agent sign-off packet.">
+8:  <title>Adaptive Marketing Agent OS - Protocol Sign-off</title>
+79:input[type=checkbox]{width:18px;height:18px;margin:3px 0 0;accent-color:var(--accent-primary);}
+95:            <span>Protocol sign-off packet</span>
+103:          <a href="#omo">OMO 审查</a>
+104:          <a href="#signoff">Sign-off</a>
+113:            <div class="eyebrow mono">Review Packet v0.1</div>
+114:            <h1 id="hero-title">这是要你 review 的协议正文，不是 review 导航。</h1>
+116:              你要签的是：一个底层 Adaptive Marketing Agent OS Protocol，以及两个 seed agent 的具体设计。
+121:            <h2>本页签字对象</h2>
+126:              <div><dt>当前状态</dt><dd>OMO 家族审查后 ITERATE 已补强，等待你最终 sign off。</dd></div>
+146:                <li><b>Capability / MCP boundary</b>：规定工具只能以 read、observe、dry_run、propose、apply 这些模式暴露。通过标准：工具权限可以审计，domain agent 不能偷偷拿到全局工具。</li>
+148:                <li><b>OMO governance</b>：规定 agent 做事必须经过 trigger、self-check、plan、delegate、evidence、QA、review gate、readback。通过标准：agent 不是聊天发挥，而是按执行协议完成工作。</li>
+156:              <p>协议层不是超级 agent，也不是业务 runtime。它不能替 Ads、Event、SEO 做领域判断；它只给这些 agent 一个共同的设计、执行和审计框架。</p>
+169:              <p>新增 agent 不是重新设计一套协议，而是填写同一张接入表。只要这张表填得完整，新 agent 就能被执行、审计和进化。</p>
+174:                <li><b>4. 声明 workflow contract</b>：写清 inputs、outputs、task graph、evidence、approval gate、failure behavior、readback。例子：JP readonly review；Caylent launch workflow。</li>
+215:            Sign-off 条款：Domain roles 只能实例化 shared evidence_contract、approval_policy、learning_rules、capability_surface。它们不能自创 protocol fields、permission modes、approval states、host kinds 或 evidence semantics。需要新语义时，先升级 shared protocol。
+224:            <p>这部分决定 agent 能不能安全做事。核心是：可观察、可提案、可审计，但 v1 不默认 live mutation。</p>
+270:  -> Metis/Momus review gate
+352:              <h3>JP Ads sign-off rules</h3>
+358:                <li>Overlay tenant fact 必须包含 source_of_truth、evidence_url、owner、last_verified_at、review_after、promotion_target 或 expiry_reason。</li>
+456:              <h3>Caylent sign-off rules</h3>
+472:            <h2 id="omo-title">五、OMO 家族审查结论</h2>
+473:            <p>Explorer、Librarian、Metis、Momus 已审。结论是 ITERATE，不是 REJECT。以下修正已进入本 packet。</p>
+491:                <li>Approval receipt 必须命名人类审批者和 action scope。</li>
+515:            <h2 id="signoff-title">六、你需要签的决定</h2>
+516:            <p>这些不是导航问题，而是协议是否成立的签字项。勾完后才进入生成实体 `agents/` 文件。</p>
+521:              <h3>Protocol sign-off</h3>
+523:                <li><input type="checkbox" aria-label="Shared protocol 可以 scale"><span><b>Shared protocol 可以 scale</b>未来 marketing agents 通过 onboarding contract 接入。</span></li>
+524:                <li><input type="checkbox" aria-label="Domain roles 不自创协议"><span><b>Domain roles 不自创协议</b>Ads/Event 只能实例化 shared schema。</span></li>
+525:                <li><input type="checkbox" aria-label="Apply gate 通过"><span><b>Apply gate 通过</b>v1 默认 read/propose-only，live apply 留给后续 runtime/security review。</span></li>
+526:                <li><input type="checkbox" aria-label="GEB 定义通过"><span><b>GEB 定义通过</b>它是 semantic + structural delta，不只是 learning。</span></li>
+531:              <h3>Seed agent sign-off</h3>
+533:                <li><input type="checkbox" aria-label="JP Ads agent 通过"><span><b>JP Ads agent 通过</b>base Ads role、Jetpartner overlay、readonly workflow 分清楚。</span></li>
+534:                <li><input type="checkbox" aria-label="Caylent Event agent 通过"><span><b>Caylent Event agent 通过</b>base Event host-neutral，Caylent overlay 绑定 Slack/Hermes。</span></li>
+535:                <li><input type="checkbox" aria-label="Overlay memory 通过"><span><b>Overlay memory 通过</b>只放稳定 operating contracts 和 source pointers。</span></li>
+536:                <li><input type="checkbox" aria-label="Evidence contract 通过"><span><b>Evidence contract 通过</b>所有判断、审批、失败、readback 都可审计。</span></li>
+542:            如果这 8 项都能签，下一步才是生成实体文件：`agents/protocols/*`、`agents/roles/*`、`agents/overlays/*`、`agents/workflows/*` 和 GEB `AGENTS.md` L1/L2/L3。
+550:        <span class="mono">Packet:</span> .omo/plans/adaptive-agent-review-board.zh-CN.html

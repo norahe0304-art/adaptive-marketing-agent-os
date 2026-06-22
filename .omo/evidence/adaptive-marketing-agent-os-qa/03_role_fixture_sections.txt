@@ -1,0 +1,9 @@
+Surface: local filesystem role and fixture markdown docs
+Invocation: check agents/roles/*.role.md and agents/examples/*.fixture.md for required sections identity, capability_surface, host_adapters, approval_policy, evidence_contract, learning_rules
+
+PASS agents/examples/caylent-event-role.fixture.md
+PASS agents/examples/jp-ads-role.fixture.md
+PASS agents/roles/ads-adaptive-operator.role.md
+PASS agents/roles/event-adaptive-operator.role.md
+
+PASS: all role and fixture files contain required schema terms.

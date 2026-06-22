@@ -1,0 +1,11 @@
+    1387 .omo/evidence/final-adaptive-marketing-agent-os-qa/03-geb-l2-l3-checks.txt
+      62 .omo/evidence/final-adaptive-marketing-agent-os-qa/09-forbidden-stale-vocab-rg.txt
+    1477 .omo/evidence/final-adaptive-marketing-agent-os-qa/02-structured-yaml-and-policy-checks-corrected.txt
+      52 .omo/evidence/final-adaptive-marketing-agent-os-qa/08-runtime-file-inventory.txt
+    1592 .omo/evidence/final-adaptive-marketing-agent-os-qa/06-structured-yaml-and-policy-checks-final.txt
+     130 .omo/evidence/final-adaptive-marketing-agent-os-qa/05-structured-yaml-and-policy-checks-clean.txt
+    1572 .omo/evidence/final-adaptive-marketing-agent-os-qa/07-tenant-isolation-rg-hits.txt
+     849 .omo/evidence/final-adaptive-marketing-agent-os-qa/01-structured-yaml-and-policy-checks.txt
+      21 .omo/evidence/final-adaptive-marketing-agent-os-qa/00-run-start.txt
+     909 .omo/evidence/final-adaptive-marketing-agent-os-qa/04-tenant-isolation-and-runtime-absence.txt
+    8051 total

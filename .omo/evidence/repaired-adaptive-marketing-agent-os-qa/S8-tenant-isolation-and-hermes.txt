@@ -1,0 +1,11 @@
+scenario=S8-TenantIsolationHermes
+criterion=tenant isolation for Ads/Event base roles and Caylent overlay contains slack: hermes
+surface=filesystem markdown
+invocation=rg tenant names in base roles; rg slack hermes in Caylent overlay
+
+[Base role tenant truth scan]
+PASS no tenant-specific overlay terms found in base roles
+
+[Caylent slack hermes scan]
+42:      slack: hermes
+PASS Caylent overlay contains slack: hermes

@@ -1,0 +1,49 @@
+scenario=S5-RoleFixtureFields
+criterion=role and fixture files contain required role package fields
+surface=filesystem markdown
+invocation=find agents/roles agents/examples -name "*.md" ! -name AGENTS.md; rg each required field per file
+
+PASS agents/examples/caylent-event-role.fixture.md
+  11:role_package:
+  12:  identity:
+  19:  capability_surface:
+  33:  host_adapters:
+  42:  permissions:
+  46:  approval_policy:
+  50:  evidence_contract:
+  58:  learning_rules:
+  63:  versioning:
+  57:      - post_run_delta
+PASS agents/examples/jp-ads-role.fixture.md
+  11:role_package:
+  12:  identity:
+  19:  capability_surface:
+  29:  host_adapters:
+  38:  permissions:
+  42:  approval_policy:
+  46:  evidence_contract:
+  54:  learning_rules:
+  59:  versioning:
+  53:      - post_run_delta
+PASS agents/roles/ads-adaptive-operator.role.md
+  13:role_package:
+  14:  identity:
+  138:  capability_surface:
+  125:  host_adapters:
+  198:  permissions:
+  203:  approval_policy:
+  223:  evidence_contract:
+  259:  learning_rules:
+  273:  versioning:
+  59:    - post_run_delta
+PASS agents/roles/event-adaptive-operator.role.md
+  13:role_package:
+  14:  identity:
+  127:  capability_surface:
+  114:  host_adapters:
+  192:  permissions:
+  197:  approval_policy:
+  217:  evidence_contract:
+  251:  learning_rules:
+  265:  versioning:
+  58:    - post_run_delta

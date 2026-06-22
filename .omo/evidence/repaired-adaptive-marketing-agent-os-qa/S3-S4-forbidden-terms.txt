@@ -1,0 +1,10 @@
+scenario=S3-S4-ForbiddenTerms
+criterion=no apply current mode and no stale permission/status drift terms
+surface=filesystem markdown
+invocation=rg forbidden patterns under agents
+
+[S3] mode apply scan
+PASS S3 no mode: apply or modes: [...apply...] patterns found
+
+[S4] stale drift term scan
+PASS S4 no stale drift terms found
