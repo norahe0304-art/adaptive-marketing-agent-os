@@ -25,13 +25,19 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 
 REQUIRED_FIELDS = [
     "identity", "purpose", "when_to_use", "inputs", "outputs",
-    "role_instructions", "skills", "memory_scope", "tools", "plugins",
-    "host_adapters", "capability_surface", "mcp_boundary", "permissions",
+    "role_instructions", "skills", "playbooks", "memory_scope",
+    "runtime_requirements", "capability_manifest",
     "lifecycle", "evidence_contract", "approval_policy", "success_criteria",
     "non_goals", "learning_rules", "versioning",
 ]
-ALLOWED_MODES = {"read", "observe", "dry_run", "propose"}
-ALLOWED_SURFACE_KEYS = {"modes", "default", "future_live_action_requires_approval"}
+ALLOWED_PROFILES = {
+    "read_observe",
+    "read_observe_propose",
+    "propose_only",
+    "paid_media_apply_lab_candidate",
+    "draft_asset_apply_lab_candidate",
+}
+BOUNDARY_SCHEMA = "agents/protocols/capability-boundary.schema.md"
 
 
 class ContractError(Exception):
@@ -64,28 +70,46 @@ def validate_role(path: Path) -> None:
     if "workflow_contract" in pkg:
         raise ContractError(f"{path}: role_package must not include workflow_contract")
 
-    if pkg["permissions"].get("max_mode_v1") != "propose":
-        raise ContractError(f"{path}: permissions.max_mode_v1 must be 'propose'")
+    for forbidden in ["tools", "plugins", "host_adapters", "capability_surface", "mcp_boundary", "permissions"]:
+        if forbidden in pkg:
+            raise ContractError(f"{path}: concrete runtime or legacy capability field '{forbidden}' is forbidden")
+
+    runtime = pkg["runtime_requirements"]
+    if runtime.get("binding_owner") != "tenant_overlay_or_workflow":
+        raise ContractError(f"{path}: runtime_requirements.binding_owner must be tenant_overlay_or_workflow")
+    abstract_surfaces = runtime.get("abstract_surfaces")
+    if not isinstance(abstract_surfaces, list) or not abstract_surfaces:
+        raise ContractError(f"{path}: runtime_requirements.abstract_surfaces must be a non-empty list")
+    if "concrete_bindings_forbidden" not in runtime:
+        raise ContractError(f"{path}: runtime_requirements.concrete_bindings_forbidden is required")
 
     learning = pkg["learning_rules"]
     if not isinstance(learning.get("routes"), dict) or not isinstance(learning.get("promotion_requires"), list):
         raise ContractError(f"{path}: bad learning_rules shape")
 
-    for surface, spec in pkg["capability_surface"].get("surfaces", {}).items():
-        extra = set(spec) - ALLOWED_SURFACE_KEYS
-        if extra:
-            raise ContractError(f"{path}: unknown surface keys {extra} in '{surface}'")
-        modes = set(spec.get("modes", []))
-        if not modes:
-            raise ContractError(f"{path}: missing modes in '{surface}'")
-        if not modes <= ALLOWED_MODES:
-            raise ContractError(f"{path}: bad modes {modes - ALLOWED_MODES} in '{surface}'")
-        default = spec.get("default")
-        if default is not None and default not in modes:
-            raise ContractError(f"{path}: default '{default}' not in modes for '{surface}'")
-        flag = spec.get("future_live_action_requires_approval")
-        if flag is not None and not isinstance(flag, bool):
-            raise ContractError(f"{path}: future_live_action_requires_approval must be bool in '{surface}'")
+    playbooks = pkg["playbooks"]
+    if not isinstance(playbooks.get("available"), list) or not playbooks["available"]:
+        raise ContractError(f"{path}: playbooks.available must be a non-empty list")
+    for playbook in playbooks["available"]:
+        for key in ["id", "name", "workflow_contract"]:
+            if key not in playbook:
+                raise ContractError(f"{path}: playbook entries require '{key}'")
+
+    manifest = pkg["capability_manifest"]
+    if manifest.get("boundary_schema") != BOUNDARY_SCHEMA:
+        raise ContractError(f"{path}: capability_manifest.boundary_schema must be {BOUNDARY_SCHEMA}")
+    if manifest.get("apply_lab_owner") != "workflow":
+        raise ContractError(f"{path}: capability_manifest.apply_lab_owner must be 'workflow'")
+    surfaces = manifest.get("surfaces")
+    if not isinstance(surfaces, dict) or not surfaces:
+        raise ContractError(f"{path}: capability_manifest.surfaces must be a non-empty map")
+    if set(abstract_surfaces) != set(surfaces):
+        raise ContractError(f"{path}: runtime_requirements.abstract_surfaces must match capability_manifest.surfaces")
+    for surface, spec in surfaces.items():
+        if set(spec) != {"profile"}:
+            raise ContractError(f"{path}: surface '{surface}' must contain only profile")
+        if spec["profile"] not in ALLOWED_PROFILES:
+            raise ContractError(f"{path}: unknown capability profile '{spec['profile']}' in '{surface}'")
 
 
 # ============================================================

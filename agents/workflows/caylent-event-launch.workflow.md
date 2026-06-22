@@ -65,18 +65,27 @@ workflow_contract:
   task_graph:
     - step: brief_received
       mode: read
+      capability_refs:
+        - document_source
+        - calendar_source
       outputs:
         - brief summary
         - missing fields
         - owner and deadline
     - step: context_collected
       mode: read
+      capability_refs:
+        - event_asset_system
+        - document_source
       outputs:
         - HubSpot campaign or placeholder reference
         - Salesforce account context reference
         - prior asset examples
     - step: drafting_assets
       mode: propose
+      capability_refs:
+        - event_asset_system
+        - document_source
       outputs:
         - landing page draft
         - email draft
@@ -84,6 +93,9 @@ workflow_contract:
         - list update proposal
     - step: ready_for_approval
       mode: propose
+      capability_refs:
+        - event_asset_system
+        - document_source
       outputs:
         - approval packet
         - affected assets
@@ -92,6 +104,8 @@ workflow_contract:
     - step: apply_lab_create_draft_assets
       mode: apply
       apply_lab: true
+      capability_refs:
+        - event_asset_system
       runs_only_when:
         - approved_for_apply_lab
         - runtime binding available
@@ -102,12 +116,18 @@ workflow_contract:
         - rollback reference
     - step: launch_packet_prepared
       mode: propose
+      capability_refs:
+        - event_asset_system
+        - document_source
       outputs:
         - future launch approval packet
         - blocked reason for live action
         - exact asset and list scope
     - step: readback
       mode: observe
+      capability_refs:
+        - event_asset_system
+        - document_source
       outputs:
         - final status
         - evidence table

@@ -14,3 +14,10 @@ if ! python3 "$repo_root/scripts/validate_roles.py"; then
   echo "fix the role/fixture files above, or run: python3 scripts/validate_roles.py" >&2
   exit 1
 fi
+
+if ! python3 "$repo_root/scripts/validate_mounted_agents.py"; then
+  echo ""
+  echo "pre-commit blocked: mounted agents violate assembled agent contract" >&2
+  echo "fix the mounted agent files above, or run: python3 scripts/validate_mounted_agents.py" >&2
+  exit 1
+fi

@@ -2,16 +2,17 @@
 > L2 | 父级: /agents/AGENTS.md
 
 成员清单
-role-package.schema.md: Role package schema，定义 identity/instructions/skills/memory/tools/plugins/host_adapters/lifecycle/evidence/approval/learning/versioning，并校验 role surface 字段。
-capability-boundary.schema.md: Capability and MCP boundary，定义 read/observe/dry_run/propose 默认权限、workflow-scoped apply_lab、surface record 字段。
-approval-evidence.schema.md: Approval and evidence schema，定义 ApprovalReceipt、EvidenceArtifact、apply_lab run evidence、approval_state 与 action_hash/scope/expiry/revocation 硬契约。
-host-adapter.interface.md: Host adapter interface，定义 slack/cli/portal/cron/api/codex 的 entrypoints、identity、session、approval、evidence handoff。
-omo-execution-governance.md: OMO execution governance，定义 trigger/self-check/plan/delegate/evidence/QA/review/readback。
-geb-semantic-delta.md: GEB semantic and structural delta，定义 learning placement 与 L1/L2/L3 同构回写。
-agent-onboarding.contract.md: Generic marketing agent onboarding contract，定义未来 agent 接入表。
-cross-role-validation.md: Cross-role validation，证明 shared protocol 与 domain-specific differences 可分离。
+role-package.schema.md: Role guardrail，定义 base role 的 identity、instructions、abstract surfaces、memory、evidence、approval、learning。
+capability-boundary.schema.md: Capability guardrail，定义 playbook workflow step 的 mode 与 capability_refs，不作为独立安装层。
+approval-evidence.schema.md: Approval/evidence guardrail，定义 ApprovalReceipt、EvidenceArtifact 与 apply_lab 证据硬契约。
+host-adapter.interface.md: Host adapter guardrail，定义 slack/cli/portal/cron/api/codex 如何调用 mounted role。
+omo-execution-governance.md: OMO execution guardrail，定义 trigger/self-check/plan/delegate/evidence/QA/review/readback。
+geb-semantic-delta.md: GEB learning guardrail，定义 role、tenant attachment、playbook workflow、skill candidate 与 L1/L2/L3 的 post-run delta 回写。
+agent-onboarding.contract.md: Role-first onboarding，定义 role、tenant attachments、playbooks 的接入模型。
+install-mount-lifecycle.protocol.md: Packaging note，定义 install role、attach tenant、run playbook、detach tenant 的最小拆卸语义。
+cross-role-validation.md: Validation guardrail，证明 Ads/Event 共用 role-first 模型且 playbook 不越权。
 
 边界
-protocols/ defines shared semantics only. Domain-specific facts belong in roles/, overlays/, and workflows/.
+protocols/ defines internal guardrails only. User-facing design remains one role that can attach tenants and run playbooks. Domain-specific facts belong in roles/, overlays/, and workflows/.
 
 [PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md

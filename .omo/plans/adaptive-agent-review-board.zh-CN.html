@@ -184,7 +184,7 @@ input[type=checkbox]{width:18px;height:18px;margin:3px 0 0;accent-color:var(--ac
               <div class="kv">
                 <div><b>Identity</b><span>identity, purpose, when_to_use, non_goals, versioning</span></div>
                 <div><b>Execution</b><span>inputs, outputs, lifecycle, success_criteria, readback</span></div>
-                <div><b>Capabilities</b><span>tools, plugins, capability_surface, mcp_boundary, permissions</span></div>
+                <div><b>Capabilities</b><span>tools, plugins, capability_manifest, shared capability profiles</span></div>
                 <div><b>Knowledge</b><span>role_instructions, skills, memory_scope, learning_rules</span></div>
                 <div><b>Host</b><span>host_adapters.required / optional / preferred / unsupported / notes</span></div>
                 <div><b>Audit</b><span>evidence_contract, approval_policy, evidence_gates</span></div>
@@ -212,7 +212,7 @@ input[type=checkbox]{width:18px;height:18px;margin:3px 0 0;accent-color:var(--ac
   notes: ""</code></pre>
 
           <p class="callout" style="margin-top: var(--space-5);">
-            Sign-off 条款：Domain roles 只能实例化 shared evidence_contract、approval_policy、learning_rules、capability_surface。它们不能自创 protocol fields、permission modes、approval states、host kinds 或 evidence semantics。需要新语义时，先升级 shared protocol。
+            Sign-off 条款：Domain roles 只能实例化 shared evidence_contract、approval_policy、learning_rules，并通过 capability_manifest 引用 shared capability profiles。它们不能自创 protocol fields、permission modes、approval states、host kinds 或 evidence semantics。需要新语义时，先升级 shared protocol。
           </p>
         </div>
       </section>

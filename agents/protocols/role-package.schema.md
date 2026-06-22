@@ -1,5 +1,5 @@
 <!--
-[INPUT]: Depends on agent-roles-spec concepts, approval-evidence.schema.md, OMO execution gates, and GEB semantic/structural delta.
+[INPUT]: Depends on agent-roles-spec concepts, install-mount-lifecycle.protocol.md, capability-boundary.schema.md, approval-evidence.schema.md, OMO execution gates, and GEB semantic/structural delta.
 [OUTPUT]: Provides the canonical role_package schema and minimum validation for all Adaptive Marketing Agent OS roles.
 [POS]: protocols shared schema consumed by roles, overlays, workflows, and examples.
 [PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
@@ -7,7 +7,7 @@
 
 # Role Package Schema
 
-Role is a complete operating package, not a prompt and not a single skill.
+Role is a complete operating package, not a prompt and not a single skill. A role can call skills and expose playbooks; each playbook is backed by a workflow contract.
 
 ## Required Object
 
@@ -28,37 +28,33 @@ role_package:
   skills:
     recommended: []
     optional: []
+  playbooks:
+    available:
+      - id: ""
+        name: ""
+        workflow_contract: ""
+        description: ""
+        skills_called: []
+        approval_gate: ""
+        tenant_overlay_required: true
   memory_scope:
     base_role_memory:
       allowed: []
       forbidden: []
-  tools:
-    platform_surfaces: []
-    supporting_surfaces: []
-  plugins:
-    required: []
-    optional: []
-  host_adapters:
-    required: []
-    optional: []
-    preferred: {}
-    unsupported: []
-    notes: ""
-  capability_surface:
-    default_mode: "propose"
-    max_mode_v1: "propose"
+  runtime_requirements:
+    binding_owner: "tenant_overlay_or_workflow"
+    abstract_surfaces: []
+    concrete_bindings_forbidden:
+      - provider account IDs
+      - MCP server config
+      - plugin install state
+      - host adapter implementation
+      - project secrets
+  capability_manifest:
+    boundary_schema: "agents/protocols/capability-boundary.schema.md"
+    default_profile: "propose_only"
+    apply_lab_owner: "workflow"
     surfaces: {}
-  mcp_boundary:
-    read: {}
-    observe: {}
-    dry_run: {}
-    propose: {}
-    future_live_action:
-      reserved_until: []
-  permissions:
-    default_mode: "propose"
-    max_mode_v1: "propose"
-    live_mutation: "runtime_security_review_required"
   lifecycle:
     states: []
   evidence_contract:
@@ -88,11 +84,12 @@ role_package:
 - `identity` names the role and its domain.
 - `tenant_overlay` is optional and only points to a tenant overlay in fixtures or composed role packages.
 - `role_instructions` describes role behavior, not tenant facts.
-- `skills` names callable domain skills or candidate skills.
+- `skills` names callable atomic actions or candidate actions. Skills are not playbooks.
+- `playbooks.available` names the role's callable business tasks. Each playbook points at a workflow contract; the role does not inline the workflow graph.
 - `memory_scope` separates durable memory from forbidden raw dumps.
-- `tools` and `plugins` are declared surfaces, not global access grants.
-- `host_adapters` is structured; do not replace it with free-text notes.
-- `capability_surface` must reference shared permission modes and declare `max_mode_v1: propose`.
+- `runtime_requirements` names abstract surfaces only. It does not bind providers, MCP servers, plugins, accounts, or hosts.
+- `runtime_requirements.abstract_surfaces` must match `capability_manifest.surfaces` keys.
+- `capability_manifest` binds abstract role surfaces to shared capability profiles. It must not restate raw mode lists.
 - `evidence_contract` must include source-backed artifacts and readback.
 - `approval_policy` must require a typed human receipt for any future live action.
 - `learning_rules.routes` must route deltas through GEB, and `learning_rules.promotion_requires` must state promotion gates.
@@ -100,11 +97,15 @@ role_package:
 
 ## Domain Role Constraint
 
-Domain roles may instantiate shared `evidence_contract`, `approval_policy`, `learning_rules`, and `capability_surface`; they must not introduce new protocol fields, permission modes, approval states, host kinds, or evidence semantics. New shared semantics require a protocol update first.
+Domain roles may instantiate shared `evidence_contract`, `approval_policy`, `learning_rules`, `runtime_requirements`, and `capability_manifest`; they must not introduce new protocol fields, permission modes, approval states, host kinds, or evidence semantics. New shared semantics require a protocol update first.
 
-Current role packages may describe live-action gates, but base role `capability_surface` values must stop at `propose`. V1 `mode: apply` is allowed only in workflow `apply_lab` steps with runtime binding, security review, an active `ApprovalReceipt`, and readback evidence.
+Current role packages may bind surfaces only to capability profiles. V1 `mode: apply` is allowed only in workflow `apply_lab` steps with runtime binding, security review, an active `ApprovalReceipt`, and readback evidence.
 
-`mcp_boundary.future_live_action` is a reserved non-executable section for documenting future live-action gates. It is not a permission mode and cannot appear in a workflow task `mode`.
+Role packages must not include concrete `tools`, `plugins`, `host_adapters`, legacy `capability_surface`, `mcp_boundary`, or `permissions` sections. Those sections duplicate the runtime binding or capability protocols and create drift.
+
+Concrete provider names, MCP bindings, plugin projection, host adapter implementation, tenant accounts, and project secrets belong in tenant overlays or workflow runtime bindings, not in base roles.
+
+Role is the reusable product unit. Tenant attachments bind real systems. Playbooks expose business tasks. Workflow contracts execute those playbooks. Skills are atomic actions called by the workflow.
 
 ## Minimum Validation
 
@@ -119,11 +120,13 @@ The validator (`scripts/validate_roles.py`) enforces, for every
 `agents/roles/*.role.md` and `agents/examples/*-role.fixture.md`:
 
 - all required fields present, and no `workflow_contract` inside a `role_package`;
-- `permissions.max_mode_v1 == "propose"`;
+- `playbooks.available` exists, is non-empty, and every entry has `id`, `name`, and `workflow_contract`;
+- no concrete `tools`, `plugins`, `host_adapters`, or legacy `capability_surface`, `mcp_boundary`, `permissions` sections;
+- `runtime_requirements.abstract_surfaces` is a non-empty list matching `capability_manifest.surfaces`;
 - `learning_rules.routes` is a map and `learning_rules.promotion_requires` is a list;
-- each `capability_surface.surfaces.*` uses only allowed keys, a non-empty
-  `modes` subset of `{read, observe, dry_run, propose}`, a `default` within
-  `modes`, and a boolean `future_live_action_requires_approval`.
+- `capability_manifest.boundary_schema` points at `capability-boundary.schema.md`;
+- each `capability_manifest.surfaces.*` uses only `profile`, and the profile is
+  defined by `capability-boundary.schema.md`.
 
 Changing the rules above means changing `scripts/validate_roles.py` and this
 section together — the executable and the prose stay isomorphic.

@@ -1,5 +1,5 @@
 <!--
-[INPUT]: Depends on role-package.schema.md, capability-boundary.schema.md, host-adapter.interface.md, omo-execution-governance.md, and geb-semantic-delta.md.
+[INPUT]: Depends on role-package.schema.md, capability-boundary.schema.md, omo-execution-governance.md, and geb-semantic-delta.md.
 [OUTPUT]: Provides the tenant-neutral Ads Adaptive Operator base role package.
 [POS]: roles base Ads role consumed by tenant overlays and Ads workflows; contains no tenant truth.
 [PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
@@ -83,6 +83,31 @@ role_package:
       - ads-youtube
       - ads-apple
 
+  playbooks:
+    available:
+      - id: daily-maintenance
+        name: Daily Maintenance
+        workflow_contract: tenant_overlay_or_workflow
+        description: "Review the tenant's daily evidence queue, draft decisions, request approval, execute only approved apply-lab operations, publish/read back, and route learning."
+        skills_called:
+          - ads-monitor
+          - ads-health
+          - ads-keywords
+          - ads-audit
+        approval_gate: required_for_apply_lab
+        tenant_overlay_required: true
+      - id: account-review
+        name: Account Review
+        workflow_contract: tenant_overlay_or_workflow
+        description: "Collect paid media, analytics, CRM, and landing-page evidence; diagnose account state; produce an approval-ready proposal."
+        skills_called:
+          - ads
+          - ads-audit
+          - ads-google
+          - ads-landing
+        approval_gate: required_for_apply_lab
+        tenant_overlay_required: true
+
   memory_scope:
     base_role_memory:
       allowed:
@@ -97,116 +122,36 @@ role_package:
         - tenant positioning
         - tenant budget commitments
 
-  tools:
-    platform_surfaces:
-      - google-ads
-      - meta-ads
-      - linkedin-ads
-      - microsoft-ads
-      - tiktok-ads
-      - youtube-ads
-      - apple-search-ads
-    supporting_surfaces:
-      - analytics
-      - crm.read
-      - landing-page-review
-      - documents
-      - browser
-      - memory
+  runtime_requirements:
+    binding_owner: tenant_overlay_or_workflow
+    abstract_surfaces:
+      - paid_media_platform
+      - analytics_source
+      - crm_quality_source
+      - landing_page_source
+      - memory_patch
+    concrete_bindings_forbidden:
+      - provider account IDs
+      - MCP server config
+      - plugin install state
+      - host adapter implementation
+      - project secrets
 
-  plugins:
-    required: []
-    optional:
-      - omo
-      - github
-      - google-drive
-      - hubspot
-
-  host_adapters:
-    required: []
-    optional:
-      - codex
-      - portal
-      - slack
-      - cli
-      - cron
-      - api
-    preferred: {}
-    unsupported: []
-    notes: "Ads can run in Codex, portal, Slack, CLI, cron, or API without making any host adapter part of the base role."
-
-  capability_surface:
-    default_mode: propose
-    max_mode_v1: propose
+  capability_manifest:
+    boundary_schema: agents/protocols/capability-boundary.schema.md
+    default_profile: paid_media_apply_lab_candidate
+    apply_lab_owner: workflow
     surfaces:
-      google-ads:
-        modes: [read, observe, dry_run, propose]
-        default: propose
-        future_live_action_requires_approval: true
-      meta-ads:
-        modes: [read, observe, dry_run, propose]
-        default: propose
-        future_live_action_requires_approval: true
-      linkedin-ads:
-        modes: [read, observe, dry_run, propose]
-        default: propose
-        future_live_action_requires_approval: true
-      analytics:
-        modes: [read, observe]
-        default: read
-        future_live_action_requires_approval: false
-      crm.read:
-        modes: [read, observe]
-        default: read
-        future_live_action_requires_approval: false
-      landing-page-review:
-        modes: [read, observe, propose]
-        default: observe
-        future_live_action_requires_approval: false
-      memory:
-        modes: [propose]
-        default: propose
-        future_live_action_requires_approval: true
-
-  mcp_boundary:
-    read:
-      allowed:
-        - account structure
-        - campaign performance
-        - landing-page content
-        - CRM quality summaries
-    observe:
-      allowed:
-        - trends
-        - anomalies
-        - policy warnings
-        - lead quality mismatch
-    dry_run:
-      allowed:
-        - budget simulation
-        - keyword or audience expansion preview
-        - creative variant preview
-    propose:
-      allowed:
-        - campaign changes
-        - new campaign draft
-        - budget shifts
-        - negative keyword additions
-        - tracking fixes
-    future_live_action:
-      reserved_until:
-        - runtime_security_review_id
-        - risk class
-        - exact account scope
-        - named approver
-        - typed approval receipt
-        - pre-change evidence
-        - rollback or irreversible-action note
-
-  permissions:
-    default_mode: propose
-    max_mode_v1: propose
-    live_mutation: runtime_security_review_required
+      paid_media_platform:
+        profile: paid_media_apply_lab_candidate
+      analytics_source:
+        profile: read_observe
+      crm_quality_source:
+        profile: read_observe
+      landing_page_source:
+        profile: read_observe_propose
+      memory_patch:
+        profile: propose_only
 
   approval_policy:
     default_state: not_requested

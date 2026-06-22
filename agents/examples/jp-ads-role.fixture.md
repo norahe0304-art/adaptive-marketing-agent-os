@@ -39,54 +39,58 @@ role_package:
       - ads-audit
     optional:
       - ads-google
+  playbooks:
+    available:
+      - id: daily-maintenance
+        name: Daily Maintenance
+        workflow_contract: agents/workflows/jetpartners-ads-daily-maintenance.workflow.md
+        description: JP Ads daily evidence queue, decisions, apply-lab gate, publish/readback, and learning route.
+        skills_called:
+          - ads-monitor
+          - ads-health
+          - ads-keywords
+          - ads-audit
+        approval_gate: required_for_apply_lab
+        tenant_overlay_required: true
+      - id: account-review
+        name: Account Review
+        workflow_contract: agents/workflows/jetpartners-ads-readonly-review.workflow.md
+        description: JP Ads read-only review with proposal-first approval packet.
+        skills_called:
+          - ads
+          - ads-audit
+          - ads-google
+        approval_gate: required_for_apply_lab
+        tenant_overlay_required: true
   memory_scope:
     base_role_memory:
       allowed:
         - reusable Ads review pattern
       forbidden:
         - tenant private account data
-  tools:
-    platform_surfaces:
-      - google-ads
-    supporting_surfaces:
-      - analytics
-      - landing-page-review
-  plugins:
-    required: []
-    optional:
-      - omo
-  capability_surface:
-    default_mode: propose
-    max_mode_v1: propose
+  runtime_requirements:
+    binding_owner: tenant_overlay_or_workflow
+    abstract_surfaces:
+      - paid_media_platform
+      - analytics_source
+      - landing_page_source
+    concrete_bindings_forbidden:
+      - provider account IDs
+      - MCP server config
+      - plugin install state
+      - host adapter implementation
+      - project secrets
+  capability_manifest:
+    boundary_schema: agents/protocols/capability-boundary.schema.md
+    default_profile: paid_media_apply_lab_candidate
+    apply_lab_owner: workflow
     surfaces:
-      google-ads:
-        modes: [read, observe, dry_run, propose]
-      analytics:
-        modes: [read, observe]
-      landing-page-review:
-        modes: [read, observe, propose]
-  host_adapters:
-    required: []
-    optional:
-      - codex
-      - portal
-      - slack
-    preferred: {}
-    unsupported: []
-    notes: "JP Ads can use Codex, portal, or Slack without changing the base role."
-  permissions:
-    default_mode: propose
-    max_mode_v1: propose
-    live_mutation: runtime_security_review_required
-  mcp_boundary:
-    read: {}
-    observe: {}
-    dry_run: {}
-    propose: {}
-    future_live_action:
-      reserved_until:
-        - runtime_security_review_id
-        - ApprovalReceipt
+      paid_media_platform:
+        profile: paid_media_apply_lab_candidate
+      analytics_source:
+        profile: read_observe
+      landing_page_source:
+        profile: read_observe_propose
   approval_policy:
     default_state: not_requested
     future_live_action_state: blocked_by_runtime_review

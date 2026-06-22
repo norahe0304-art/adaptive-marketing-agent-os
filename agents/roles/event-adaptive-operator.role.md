@@ -1,5 +1,5 @@
 <!--
-[INPUT]: Depends on role-package.schema.md, capability-boundary.schema.md, host-adapter.interface.md, omo-execution-governance.md, and geb-semantic-delta.md.
+[INPUT]: Depends on role-package.schema.md, capability-boundary.schema.md, omo-execution-governance.md, and geb-semantic-delta.md.
 [OUTPUT]: Provides the tenant-neutral Event Adaptive Operator base role package.
 [POS]: roles base Event role consumed by tenant overlays and event launch workflows; contains no tenant truth.
 [PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
@@ -76,6 +76,29 @@ role_package:
       - google-drive:google-docs
       - approval-process-reconciliation
 
+  playbooks:
+    available:
+      - id: event-launch-kit
+        name: Event Launch Kit
+        workflow_contract: tenant_overlay_or_workflow
+        description: "Turn an event brief into draft page, email, list, workflow, approval packet, and launch readback without publishing or sending unless approved."
+        skills_called:
+          - hubspot:hubspot
+          - hubspot:hubspot-customer-prep
+          - documents:documents
+        approval_gate: required_for_apply_lab
+        tenant_overlay_required: true
+      - id: event-asset-qa
+        name: Event Asset QA
+        workflow_contract: tenant_overlay_or_workflow
+        description: "Review draft event assets, source evidence, owner approvals, and launch blockers before handoff."
+        skills_called:
+          - hubspot:hubspot
+          - documents:documents
+          - approval-process-reconciliation
+        approval_gate: required_for_apply_lab
+        tenant_overlay_required: true
+
   memory_scope:
     base_role_memory:
       allowed:
@@ -90,109 +113,36 @@ role_package:
         - tenant event naming rules
         - tenant approval owners
 
-  tools:
-    platform_surfaces:
-      - hubspot.pages
-      - hubspot.emails
-      - hubspot.workflows
-      - hubspot.lists
-      - salesforce.read
-    supporting_surfaces:
-      - documents
-      - browser
-      - calendar
-      - memory
+  runtime_requirements:
+    binding_owner: tenant_overlay_or_workflow
+    abstract_surfaces:
+      - event_asset_system
+      - crm_context_source
+      - document_source
+      - calendar_source
+      - memory_patch
+    concrete_bindings_forbidden:
+      - provider account IDs
+      - MCP server config
+      - plugin install state
+      - host adapter implementation
+      - project secrets
 
-  plugins:
-    required: []
-    optional:
-      - hubspot
-      - google-drive
-      - outlook-calendar
-      - omo
-
-  host_adapters:
-    required: []
-    optional:
-      - portal
-      - codex
-      - slack
-      - cli
-      - cron
-      - api
-    preferred: {}
-    unsupported: []
-    notes: "The base Event role can run through multiple hosts. Tenant overlays choose required hosts and preferred adapters."
-
-  capability_surface:
-    default_mode: propose
-    max_mode_v1: propose
+  capability_manifest:
+    boundary_schema: agents/protocols/capability-boundary.schema.md
+    default_profile: draft_asset_apply_lab_candidate
+    apply_lab_owner: workflow
     surfaces:
-      hubspot.pages:
-        modes: [read, observe, dry_run, propose]
-        default: propose
-        future_live_action_requires_approval: true
-      hubspot.emails:
-        modes: [read, observe, dry_run, propose]
-        default: propose
-        future_live_action_requires_approval: true
-      hubspot.workflows:
-        modes: [read, observe, dry_run, propose]
-        default: propose
-        future_live_action_requires_approval: true
-      hubspot.lists:
-        modes: [read, observe, dry_run, propose]
-        default: propose
-        future_live_action_requires_approval: true
-      salesforce.read:
-        modes: [read, observe]
-        default: read
-        future_live_action_requires_approval: false
-      memory:
-        modes: [propose]
-        default: propose
-        future_live_action_requires_approval: true
-
-  mcp_boundary:
-    read:
-      allowed:
-        - event brief
-        - existing campaign assets
-        - CRM account context
-        - list membership summary
-        - workflow status
-    observe:
-      allowed:
-        - missing launch requirements
-        - asset inconsistency
-        - CRM context mismatch
-        - approval blocker
-    dry_run:
-      allowed:
-        - asset checklist simulation
-        - workflow activation preview
-        - list update preview
-    propose:
-      allowed:
-        - landing page draft
-        - email draft
-        - workflow draft
-        - list update proposal
-        - launch schedule proposal
-    future_live_action:
-      reserved_until:
-        - runtime_security_review_id
-        - risk class
-        - exact portal and asset scope
-        - named approver
-        - typed approval receipt
-        - pre-change evidence
-        - rollback or irreversible-action note
-
-  permissions:
-    default_mode: propose
-    max_mode_v1: propose
-    live_mutation: runtime_security_review_required
+      event_asset_system:
+        profile: draft_asset_apply_lab_candidate
+      crm_context_source:
+        profile: read_observe
+      document_source:
+        profile: read_observe_propose
+      calendar_source:
+        profile: read_observe
+      memory_patch:
+        profile: propose_only
 
   approval_policy:
     default_state: not_requested

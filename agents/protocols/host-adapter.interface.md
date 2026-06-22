@@ -1,5 +1,5 @@
 <!--
-[INPUT]: Depends on role-package.schema.md host_adapters and capability-boundary.schema.md capability restrictions.
+[INPUT]: Depends on role-package.schema.md runtime_requirements, tenant overlays, workflow runtime bindings, and capability-boundary.schema.md capability restrictions.
 [OUTPUT]: Provides host adapter interface for slack, cli, portal, cron, api, and codex hosts.
 [POS]: protocols invocation boundary between external environments and domain roles.
 [PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
@@ -7,7 +7,7 @@
 
 # Host Adapter Interface
 
-Host adapters define how an external environment invokes a role. They do not define the role itself.
+Host adapters define how an external environment invokes a role. They do not define the role itself, tenant memory, approval semantics, or the reasoning/runtime core.
 
 ## Host Kinds
 
@@ -18,7 +18,9 @@ Host adapters define how an external environment invokes a role. They do not def
 - `api`
 - `codex`
 
-Concrete host adapter implementations are tenant overlay choices. They are not Agent OS core protocol concepts.
+Concrete host adapter implementations are tenant overlay or workflow runtime-binding choices. They are not Agent OS core protocol concepts.
+
+A mounted agent may be Codex-first and still use Hermes as an optional Slack, approval, notification, or readback adapter.
 
 ## Interface Sections
 
@@ -54,6 +56,6 @@ host_adapter:
 
 ## Host Neutrality Rule
 
-Base roles should stay host-neutral unless the domain itself requires a host. Tenant overlays may require a host for a specific customer operating model.
+Base roles should stay host-neutral. Tenant overlays or workflow runtime bindings may require a host for a specific customer operating model.
 
 Example: a base role can stay host-neutral while a tenant overlay requires a collaboration host and names its preferred adapter.

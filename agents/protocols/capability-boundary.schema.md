@@ -1,19 +1,23 @@
 <!--
 [INPUT]: Depends on role-package.schema.md for role_package fields and host-adapter.interface.md for host-neutral invocation.
-[OUTPUT]: Provides shared capability modes, apply-lab gates, surface record fields, and MCP permission boundaries for all domain roles.
-[POS]: protocols permission boundary consumed by Ads, Event, and future marketing agents.
+[OUTPUT]: Provides embedded capability rules used by role playbook steps and role abstract surfaces.
+[POS]: protocols safety guardrail consumed by roles and playbooks; not a separate user-facing layer.
 [PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
 -->
 
-# Capability / MCP Boundary Schema
+# Capability Guardrail
 
-This protocol is host-neutral. It describes tool permission modes, not Slack, email, portal, or any one host UX.
+Capability is an internal guardrail embedded in the Role and its playbooks:
+
+- Role declares abstract surfaces.
+- Playbook steps reference those surfaces with `capability_refs`.
+- Mode checks prevent a step from doing more than the surface allows.
 
 ## Runtime Split
 
-- `provider-shared runtime`: external provider capability such as Google Ads, HubSpot, Salesforce, browser, docs, CRM, memory.
+- `provider-shared runtime`: external provider capability such as ads platforms, CRM, browser, docs, calendar, or memory.
 - `project-private binding`: tenant/project scoped binding that limits account, tenant, object, and approval policy.
-- `role-scoped manifest`: the role-specific list of allowed surfaces and modes.
+- `role-scoped manifest`: the role-specific list of abstract surfaces and capability profiles.
 
 ## Modes
 
@@ -42,7 +46,7 @@ Every V1 apply-lab mutation requires:
 
 If any item is missing, execution must stop at `propose`.
 
-## Capability Record
+## Internal Capability Record
 
 ```yaml
 capability:
@@ -59,7 +63,36 @@ capability:
   rollback_or_dry_run: ""
 ```
 
-## Apply Lab Record
+## Internal Capability Profiles
+
+Profiles are the single source of truth for mode semantics. Role packages bind
+surfaces to profile names; they do not restate raw mode lists.
+
+```yaml
+capability_profiles:
+  read_observe:
+    modes: [read, observe]
+    default: read
+    apply_lab_candidate: false
+  read_observe_propose:
+    modes: [read, observe, propose]
+    default: observe
+    apply_lab_candidate: false
+  propose_only:
+    modes: [propose]
+    default: propose
+    apply_lab_candidate: false
+  paid_media_apply_lab_candidate:
+    modes: [read, observe, dry_run, propose]
+    default: propose
+    apply_lab_candidate: true
+  draft_asset_apply_lab_candidate:
+    modes: [read, observe, dry_run, propose]
+    default: propose
+    apply_lab_candidate: true
+```
+
+## Workflow Apply Lab Record
 
 ```yaml
 apply_lab:
@@ -77,32 +110,48 @@ apply_lab:
     - post_apply readback EvidenceArtifact
 ```
 
-## Surface Record
+## Role Surface Binding Record
 
-Role `capability_surface.surfaces.*` entries may only use these fields:
+Role `capability_manifest.surfaces.*` entries may only use these fields:
 
-- `modes`: required list drawn from `read`, `observe`, `dry_run`, and `propose`.
-- `default`: optional mode value; when present, it must be included in `modes`.
-- `future_live_action_requires_approval`: optional boolean that marks whether the surface could ever need a future live-action gate.
+- `profile`: required capability profile name from this protocol.
 
-Base role surfaces must not list `apply`. Apply belongs to workflow `apply_lab` records and task steps that explicitly set `apply_lab: true`.
+Base role surfaces must not list raw `modes`. Apply belongs to workflow
+`apply_lab` records and task steps that explicitly set `apply_lab: true`.
 
 No domain role may add extra capability surface keys without updating this shared protocol first.
 
-## Example Surfaces
+## Workflow Step Binding
 
-- `google-ads`: read, observe, dry_run, propose by default; apply lab may execute only approved low-risk reversible operations.
-- `hubspot.pages`: read, dry_run, propose by default; apply lab may create approved draft pages, not publish.
-- `hubspot.emails`: read, dry_run, propose by default; apply lab may create approved draft emails, not send.
-- `hubspot.workflows`: read, dry_run, propose by default; apply lab may create draft workflow artifacts, not activate.
-- `salesforce`: read only.
-- `browser`: read, observe.
-- `docs`: read, propose.
-- `crm`: read, observe, propose.
-- `memory`: read, propose patch.
+Workflow steps are where safety becomes execution. Every task graph step declares which role surfaces it uses.
+
+```yaml
+workflow_step:
+  step: ""
+  mode: "read"
+  capability_refs: []
+```
+
+Rules:
+
+- `capability_refs` must be non-empty for every workflow step.
+- Every ref must exist in the mounted role's `capability_manifest.surfaces`.
+- Step `mode` must be allowed by every referenced capability profile, except `apply` may only appear when `apply_lab: true` and the referenced profile is an `apply_lab_candidate`.
+- Runtime bindings in the tenant overlay must map every referenced abstract surface before execution starts.
+- If a step needs a surface not listed by the role, stop and propose a role or workflow patch through GEB.
+
+## Example Runtime Bindings
+
+Concrete runtime bindings may map abstract surfaces like this:
+
+- `paid_media_platform` -> Google Ads, Meta Ads, LinkedIn Ads, or another tenant-approved paid media provider.
+- `event_asset_system` -> HubSpot pages, emails, workflows, lists, or another tenant-approved event asset system.
+- `crm_context_source` -> Salesforce, HubSpot CRM, Supabase, or another read-scoped customer data source.
+- `document_source` -> Google Docs, local docs, or another tenant-approved document surface.
+- `memory_patch` -> tenant memory or skill candidate proposal path.
 
 ## Forbidden
 
 - No global tool exposure.
-- No provider config files in this protocol directory.
+- No provider config files in this protocol directory or base role package.
 - No host-specific behavior such as Slack thread UX or tenant adapter runtime.

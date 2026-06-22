@@ -1,48 +1,60 @@
 <!--
 [INPUT]: Depends on role-package.schema.md, capability-boundary.schema.md, approval-evidence.schema.md, host-adapter.interface.md, and geb-semantic-delta.md.
-[OUTPUT]: Provides workflow_contract and onboarding checklist for any new marketing agent.
+[OUTPUT]: Provides the role-first onboarding contract for any new marketing agent.
 [POS]: protocols scale rule for adding future Ads, Event, SEO, Content, Lifecycle, or Partner Ops agents.
 [PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
 -->
 
 # Agent Onboarding Contract
 
-New marketing agents must be boring to add. They fill the same onboarding contract instead of inventing a new protocol.
+New marketing agents must be boring to add. A new agent starts with one role. Tenants attach to that role. Playbooks are callable business tasks inside the role. Each playbook is backed by an internal workflow contract and may call reusable skills.
 
 ## Required Declaration
 
 ```yaml
 agent_onboarding:
   domain: ""
-  base_role: ""
-  tenant_overlay: ""
-  workflow_contract: ""
-  capability_surface: []
-  host_adapters:
-    required: []
-    optional: []
-    preferred: {}
-    unsupported: []
-  evidence_contract: []
-  approval_policy: ""
-  approval_receipt_schema: "agents/protocols/approval-evidence.schema.md#ApprovalReceipt"
-  evidence_artifact_schema: "agents/protocols/approval-evidence.schema.md#EvidenceArtifact"
-  learning_route: []
-  post_run_delta: ""
+  role:
+    file: ""
+    purpose: ""
+    abstract_surfaces: []
+    learning_routes: []
+    tenant_attachments:
+      - file: ""
+        runtime_bindings: []
+        host_adapters: []
+        approval_surfaces: []
+        tenant_memory_rules: []
+    playbooks:
+      - file: ""
+        workflow_contract: ""
+        skills_called: []
+        task_graph: []
+        evidence_required: []
+        approval_gate: ""
+        readback: ""
 ```
+
+## Naming
+
+- `skill`: atomic reusable action, such as spend check, search-term clustering, landing-page relevance review, or CRM lead-quality lookup.
+- `playbook`: business task route exposed by a role, such as daily maintenance, account review, event launch kit, or keyword expansion.
+- `workflow_contract`: machine-readable execution graph behind a playbook. It owns steps, modes, capability refs, evidence, approval, failure behavior, and readback.
 
 ## Onboarding Steps
 
 1. Declare `domain`: Ads, Event, SEO, Content, Lifecycle, Partner Ops, or another named marketing domain.
-2. Declare `base_role`: reusable role file with no tenant truth.
-3. Declare `tenant_overlay`: stable operating contract and source pointers.
-4. Declare `workflow_contract`: inputs, outputs, task graph, evidence, approval gate, failure behavior, readback.
-5. Declare `learning_route`: tenant memory, industry playbook, workflow patch, skill candidate, or protocol update.
+2. Declare `role`: who the agent is, what abstract surfaces it needs, where learning can land, which skills it can call, and which playbooks it can run.
+3. Attach tenant: bind real systems, host adapters, approval surfaces, and tenant memory rules.
+4. Run a playbook: task graph, capability refs, evidence, approval gate, and readback.
 
 ## Acceptance
 
 - Base role contains no tenant truth.
 - Overlay contains no unbounded transcript, CRM export, or raw campaign history.
-- Workflow stops at propose unless a future runtime security review and full approval gate exist.
+- Install surface stays simple: install role, attach tenant, run playbook.
+- Base role does not restate raw capability modes; it references shared capability profiles through abstract surfaces.
+- Base role does not bind concrete tools, plugins, MCP providers, accounts, or host adapters.
+- Playbook stops at propose unless its workflow contract has scoped apply_lab, runtime binding, and full approval/evidence gates.
 - Host adapter choice does not leak into shared protocol.
-- GEB delta route is declared before completion.
+- GEB route is a post-run guardrail.

@@ -38,62 +38,46 @@ role_package:
       - hubspot:hubspot
     optional:
       - documents:documents
+  playbooks:
+    available:
+      - id: event-launch-kit
+        name: Event Launch Kit
+        workflow_contract: agents/workflows/caylent-event-launch.workflow.md
+        description: Caylent event brief to HubSpot draft assets, approval packet, and launch readback.
+        skills_called:
+          - hubspot:hubspot
+          - documents:documents
+        approval_gate: required_for_apply_lab
+        tenant_overlay_required: true
   memory_scope:
     base_role_memory:
       allowed:
         - reusable Event launch pattern
       forbidden:
         - tenant CRM object IDs
-  tools:
-    platform_surfaces:
-      - hubspot.pages
-      - hubspot.emails
-      - hubspot.workflows
-      - hubspot.lists
-      - salesforce.read
-    supporting_surfaces:
-      - documents
-  plugins:
-    required: []
-    optional:
-      - hubspot
-      - omo
-  capability_surface:
-    default_mode: propose
-    max_mode_v1: propose
+  runtime_requirements:
+    binding_owner: tenant_overlay_or_workflow
+    abstract_surfaces:
+      - event_asset_system
+      - crm_context_source
+      - document_source
+    concrete_bindings_forbidden:
+      - provider account IDs
+      - MCP server config
+      - plugin install state
+      - host adapter implementation
+      - project secrets
+  capability_manifest:
+    boundary_schema: agents/protocols/capability-boundary.schema.md
+    default_profile: draft_asset_apply_lab_candidate
+    apply_lab_owner: workflow
     surfaces:
-      hubspot.pages:
-        modes: [read, observe, dry_run, propose]
-      hubspot.emails:
-        modes: [read, observe, dry_run, propose]
-      hubspot.workflows:
-        modes: [read, observe, dry_run, propose]
-      hubspot.lists:
-        modes: [read, observe, dry_run, propose]
-      salesforce.read:
-        modes: [read, observe]
-  host_adapters:
-    required: []
-    optional:
-      - portal
-      - codex
-      - slack
-    preferred: {}
-    unsupported: []
-    notes: "Caylent can require Slack in overlay without binding the base Event role."
-  permissions:
-    default_mode: propose
-    max_mode_v1: propose
-    live_mutation: runtime_security_review_required
-  mcp_boundary:
-    read: {}
-    observe: {}
-    dry_run: {}
-    propose: {}
-    future_live_action:
-      reserved_until:
-        - runtime_security_review_id
-        - ApprovalReceipt
+      event_asset_system:
+        profile: draft_asset_apply_lab_candidate
+      crm_context_source:
+        profile: read_observe
+      document_source:
+        profile: read_observe_propose
   approval_policy:
     default_state: not_requested
     future_live_action_state: blocked_by_runtime_review

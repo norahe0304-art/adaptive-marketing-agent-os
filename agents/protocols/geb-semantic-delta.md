@@ -14,8 +14,8 @@ GEB is not only learning. Every result must decide both semantic placement and s
 - `tenant_memory_patch`: tenant-only operating truth or source pointer.
 - `industry_playbook_patch`: reusable domain pattern across tenants.
 - `role_schema_patch`: role package field or boundary change.
-- `workflow_patch`: repeatable task graph or gate change.
-- `skill_patch`: improvement to an existing stable skill.
+- `workflow_patch`: playbook execution graph, gate, failure behavior, or readback change.
+- `skill_patch`: improvement to an atomic reusable action called by one or more playbooks.
 - `new_skill_candidate`: candidate produced from repeated stable sessions.
 - `protocol_update`: shared semantic change required by multiple roles.
 
@@ -73,4 +73,4 @@ replay_artifact:
   target_skill_candidate: ""
 ```
 
-Session distillation may create memory, playbook, workflow, or skill-candidate deltas. Only a replay artifact can promote a session pattern into a skill candidate.
+Session distillation may create memory, playbook/workflow, or skill-candidate deltas. If the whole business route changes, patch the playbook workflow. If an atomic reusable action stabilizes, promote or patch a skill. Only a replay artifact can promote a session pattern into a skill candidate.

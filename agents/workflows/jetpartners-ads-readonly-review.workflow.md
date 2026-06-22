@@ -23,6 +23,7 @@ workflow_contract:
     max_risk_class_v1: reversible_low
     allowed_operations:
       - add negative keyword
+      - add exact positive keyword
       - add account or campaign label
       - create platform draft or experiment draft
     forbidden_operations:
@@ -58,10 +59,16 @@ workflow_contract:
       - dashboard or export source available
       - CRM quality source available when lead quality is discussed
       - landing page source available when relevance is discussed
+      - DataForSEO or Google Ads volume evidence available before any positive keyword proposal, unless explicitly scoped as a narrow exact local-route test
 
   task_graph:
     - step: collect_evidence
       mode: read
+      capability_refs:
+        - paid_media_platform
+        - analytics_source
+        - crm_quality_source
+        - landing_page_source
       outputs:
         - platform metrics
         - dashboard reference
@@ -69,6 +76,10 @@ workflow_contract:
         - landing page reference
     - step: classify_account_state
       mode: observe
+      capability_refs:
+        - paid_media_platform
+        - analytics_source
+        - crm_quality_source
       outputs:
         - trend summary
         - anomaly list
@@ -76,6 +87,9 @@ workflow_contract:
         - risk class
     - step: draft_proposal
       mode: propose
+      capability_refs:
+        - paid_media_platform
+        - landing_page_source
       outputs:
         - proposed changes
         - expected impact
@@ -83,6 +97,9 @@ workflow_contract:
         - risk notes
     - step: approval_gate
       mode: propose
+      capability_refs:
+        - paid_media_platform
+        - memory_patch
       outputs:
         - approval packet
         - named approver request
@@ -90,6 +107,8 @@ workflow_contract:
     - step: apply_lab_execute_approved_change
       mode: apply
       apply_lab: true
+      capability_refs:
+        - paid_media_platform
       runs_only_when:
         - approved_for_apply_lab
         - runtime binding available
@@ -100,6 +119,9 @@ workflow_contract:
         - rollback reference
     - step: readback
       mode: observe
+      capability_refs:
+        - paid_media_platform
+        - analytics_source
       outputs:
         - final decision summary
         - evidence table
@@ -125,6 +147,7 @@ workflow_contract:
       - Supabase qualified lead source reference when used
       - landing page URL when used
       - proposal artifact path
+      - DataForSEO or Google Ads volume evidence for positive keyword proposals
       - approval receipt if future live action is requested
       - apply_run artifact if apply_lab executes
 

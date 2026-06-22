@@ -43,17 +43,30 @@ tenant_overlay:
     unsupported: []
     notes: "Caylent event operations use Slack as the required host and Hermes as the preferred Slack adapter."
 
-  tool_bindings:
-    hubspot:
-      surfaces:
-        - pages
-        - emails
-        - workflows
-        - lists
-      binding_rule: "Use configured tenant connector only; never store secrets in this overlay."
-    salesforce:
-      mode: read
-      usage: "Use for account and campaign context evidence; no CRM writes from this workflow."
+  runtime_bindings:
+    binding_owner: tenant_overlay
+    abstract_surface_map:
+      event_asset_system:
+        provider: hubspot
+        provider_surfaces:
+          - pages
+          - emails
+          - workflows
+          - lists
+        binding_rule: "Use configured tenant connector only; never store secrets in this overlay."
+      crm_context_source:
+        provider: salesforce
+        mode: read
+        usage: "Use for account and campaign context evidence; no CRM writes from this workflow."
+      document_source:
+        provider: tenant-document-store
+        mode: read_observe_propose
+      calendar_source:
+        provider: tenant-calendar
+        mode: read_observe
+      memory_patch:
+        provider: tenant-memory
+        mode: propose
 
   operating_contract:
     event_launch_defaults:
@@ -108,7 +121,7 @@ tenant_overlay:
       expiry_reason: ""
     - id: caylent-hubspot-draft-surfaces
       fact: "Caylent Event workflow may prepare HubSpot page, email, workflow, and list proposals."
-      source_of_truth: tool_bindings.hubspot.surfaces
+      source_of_truth: runtime_bindings.abstract_surface_map.event_asset_system.provider_surfaces
       evidence_url: .omo/plans/adaptive-agent-review-board.zh-CN.html
       owner: event-operator
       last_verified_at: "2026-06-21"
@@ -117,7 +130,7 @@ tenant_overlay:
       expiry_reason: ""
     - id: caylent-salesforce-read-only
       fact: "Salesforce context is read-only in the Caylent Event workflow."
-      source_of_truth: tool_bindings.salesforce.mode
+      source_of_truth: runtime_bindings.abstract_surface_map.crm_context_source.mode
       evidence_url: .omo/plans/adaptive-agent-review-board.zh-CN.html
       owner: event-operator
       last_verified_at: "2026-06-21"
