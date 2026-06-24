@@ -130,3 +130,32 @@ The validator (`scripts/validate_roles.py`) enforces, for every
 
 Changing the rules above means changing `scripts/validate_roles.py` and this
 section together — the executable and the prose stay isomorphic.
+
+## Schema-ization Trigger
+
+The validators are hand-written `if` checks on purpose. At this scale that is the
+right call: direct, readable, zero-dependency, offline-verifiable — virtues a
+pure-spec protocol repo should not trade away lightly. Note also that the
+**highest-value** checks are not schema-able at all: filesystem existence of
+referenced files (`require_existing`) and the cross-file `mount playbooks ⊆ role
+playbooks` invariant live outside any JSON/YAML schema and stay in Python
+regardless. Schema would only declutter the cheap shape rules (required keys,
+enums, const values, forbidden keys), while splitting one validator into two
+layers and adding a runtime dependency.
+
+Move the shape rules into a single machine-readable schema (the validator loads
+it; the semantic + filesystem checks stay in Python) WHEN any of these triggers
+fires — not before:
+
+- a **third** role-schema variant appears (two hand-synced copies is fine; three
+  is drift waiting to happen);
+- `REQUIRED_FIELDS` / `ALLOWED_PROFILES` in `validate_roles.py` **drift** from
+  this document (the same-fact-in-two-places bug actually bites);
+- the shape rules **outgrow** a readable if-chain (roughly: a reviewer can no
+  longer hold the rule set in their head).
+
+When that day comes, the goal is **one** source of truth, not a fourth copy:
+make the data schema canonical, have both this prose and the validator derive
+from it, and keep only the semantic/filesystem invariants as code. Prefer a
+zero-dependency data file over pulling in `jsonschema` / `pydantic` unless the
+shape surface has grown enough to earn the dependency.
