@@ -19,7 +19,7 @@ role_package:
     version: ""
     domain: ""
     layer: ""
-  tenant_overlay: ""
+  tenant_overlay: ""        # optional
   purpose: ""
   when_to_use: []
   inputs: {}
@@ -150,7 +150,10 @@ fires — not before:
 - a **third** role-schema variant appears (two hand-synced copies is fine; three
   is drift waiting to happen);
 - `REQUIRED_FIELDS` / `ALLOWED_PROFILES` in `validate_roles.py` **drift** from
-  this document (the same-fact-in-two-places bug actually bites);
+  this document — and this trigger is **self-firing**: `scripts/check_schema_sync.py`
+  (run by pre-commit)审判s the constants against this doc's `role_package` keys
+  and `capability-boundary.schema.md`'s `capability_profiles`, failing the commit
+  on any drift, so the same-fact-in-two-places bug cannot rot silently;
 - the shape rules **outgrow** a readable if-chain (roughly: a reviewer can no
   longer hold the rule set in their head).
 
