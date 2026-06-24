@@ -15,7 +15,7 @@ scripts/ - Contract validators and git pre-commit hook (executes role package an
 </directory>
 
 <config>
-README.md - Human entrypoint for v0.3.4 repo purpose, structure, and validation commands
+README.md - Human entrypoint for v0.3.6 repo purpose, structure, and validation commands
 </config>
 
 <config>
@@ -27,7 +27,7 @@ VERSION - 协议版本唯一真相源；所有 vX.Y.Z 字面量由 check_version
 </config>
 
 <architecture>
-Role is the reusable product unit. A tenant attachment binds that role to one customer and its real systems. A mounted agent is the assembled runtime contract. Playbooks are the role's callable business tasks; each playbook is backed by an internal workflow contract and may call reusable skills. Capability, approval, evidence, OMO, install, and GEB are internal guardrails.
+Role is the reusable product unit. A tenant attachment binds that role to one customer and its real systems. A mounted agent is the assembled runtime contract. Playbooks are the role's callable business tasks; each playbook is backed by an internal workflow contract and may call reusable skills. Run-state ledger files hold structured readbacks, proactive reusable-learning verdicts, verified deltas, and reviewed tenant-memory pointers in consumer repos. Capability, approval, evidence, OMO, install, adapters, and GEB are internal guardrails.
 </architecture>
 
 <rules>
@@ -35,8 +35,10 @@ Role is the reusable product unit. A tenant attachment binds that role to one cu
 - Domain roles must not bind tenant tools, provider accounts, host adapters, or customer truth.
 - Mounted agents compose one base role, one tenant attachment, named playbooks, and runtime source pointers.
 - Skill is an atomic reusable action; playbook is a business task route; workflow is the machine-readable execution contract behind a playbook.
+- Durable agent state lives in repo artifacts: role, overlay, workflow, state ledger, and reviewed GEB deltas. Runtime adapters are replaceable execution surfaces.
+- Overlays and state ledger may hold secret references only; literal API keys, OAuth tokens, passwords, and private keys are forbidden.
 - V1 `apply` exists only as workflow-scoped `apply_lab`: default mode remains `propose`; mutation requires runtime binding, typed approval, evidence, exact scope, and readback.
-- GEB runs after work: route learning to role, tenant attachment, playbook, skill candidate, protocol, or L1/L2/L3 docs.
+- GEB runs after work: every runtime must report `persisted`, `proposed`, or `no-op`, then route learning to role, tenant attachment, playbook, skill candidate, protocol, state ledger, or L1/L2/L3 docs.
 </rules>
 
 法则: 极简·稳定·导航·版本精确

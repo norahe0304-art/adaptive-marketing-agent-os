@@ -33,7 +33,7 @@ Tenant overlays map those abstract surfaces to concrete providers such as Google
 
 ## Runtime Neutrality
 
-Base roles and tenant overlays stay runtime-neutral. Which agent runtime runs a playbook (Codex, Claude Code, Claude Tag, or another) is the user's choice and is never a protocol member. A tenant overlay may name a collaboration surface where humans approve and read back, but never a runtime.
+Base roles and tenant overlays stay runtime-neutral. Which agent runtime runs a playbook (Codex, Claude Code, Hermes, browser automation, local runtime, MCP-backed tools, or another) is the user's choice and is never a protocol member. A tenant overlay may name a collaboration surface where humans approve and read back, but never a runtime.
 
 ## Seed Proofs
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# [INPUT]: 读取 scripts/scaffold_consumer.py、agents/templates/ 与协议树(agents/protocols, agents/roles, validators)，打包成一个自包含 skill bundle。
+# [INPUT]: 读取 scripts/scaffold_consumer.py、scripts/dry_run_agent.py、agents/templates/ 与协议树(agents/protocols, agents/roles, validators)，打包成一个自包含 skill bundle。
 # [OUTPUT]: 对外提供 build_skill 打包器；把生成回路装进一个 Claude Code / Codex skill 目录(含 SKILL.md)，别人装上就能长 agent，无需访问本 repo。
 # [POS]: scripts 第三条分发入口的构建器;skill 是协议的派生物，repo 保持纯 spec。
 # [PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
@@ -30,9 +30,9 @@ This skill bundles the Adaptive Marketing Agent OS generation loop. It grows a
 consumer agent instance from a real scenario, pins the protocol, and validates —
 all self-contained, no access to any external repo required.
 
-The protocol is `role + playbook + GEB learning`. Runtime is the user's choice and
-is never baked in: this skill GENERATES the agent; the user points any runtime
-(Codex / Claude Code / Claude Tag / CLI / Slack) at the result.
+The protocol is `role + playbook + run-state ledger + GEB learning`. Runtime is
+the user's choice and is never baked in: this skill GENERATES the agent; the user
+points any runtime (Codex / Claude Code / Hermes / Browser / CLI) at the result.
 
 ## When invoked
 
@@ -56,11 +56,12 @@ is never baked in: this skill GENERATES the agent; the user points any runtime
    ```
 
    It pins the bundled protocol under `<dest>/protocol/` and stamps a green,
-   minimal instance (overlay + mounted agent + workflow + entrypoint).
+   minimal instance (overlay + mounted agent + workflow + entrypoint + state ledger).
 
 3. Fill the `TODO` markers in the generated files from the real scenario
    (overlay tenant truth, playbook approval/readback, workflow task_graph).
-   Never bind a runtime, never store credentials, never edit `<dest>/protocol/`.
+   Store secret references only; never bind a runtime, never store credentials,
+   never edit `<dest>/protocol/`.
 
 4. Re-validate:
 
@@ -68,7 +69,13 @@ is never baked in: this skill GENERATES the agent; the user points any runtime
    python3 "<dest>/protocol/scripts/validate_mounted_agents.py" --root <dest> --glob 'agents/*.agent.md'
    ```
 
-5. Tell the user to point any runtime at `<dest>/agents/<name>.agent.md`. The
+5. Warm up the runtime contract without side effects:
+
+   ```bash
+   python3 "<dest>/protocol/scripts/dry_run_agent.py" --root <dest> --agent agents/<name>.agent.md --playbook <playbook>
+   ```
+
+6. Tell the user to point any runtime at `<dest>/agents/<name>.agent.md`. The
    approval/evidence gates live in the playbook, so no runtime can bypass them.
 
 `$SKILL_DIR` is this skill's own directory. The full generation loop, schemas,
@@ -84,7 +91,7 @@ def build(dest: Path, skill_name: str, version: str) -> None:
     # Bundle the protocol snapshot + the hands + the templates (same subset consumers vendor).
     for sub in ["protocols", "roles", "templates"]:
         shutil.copytree(REPO_ROOT / "agents" / sub, dest / "agents" / sub)
-    for script in ["scaffold_consumer.py", "validate_roles.py", "validate_mounted_agents.py"]:
+    for script in ["scaffold_consumer.py", "validate_roles.py", "validate_mounted_agents.py", "dry_run_agent.py"]:
         shutil.copy2(REPO_ROOT / "scripts" / script, dest / "scripts" / script)
     (dest / "SKILL.md").write_text(SKILL_MD.format(skill_name=skill_name))
     try:

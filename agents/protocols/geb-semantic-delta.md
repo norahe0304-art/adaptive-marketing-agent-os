@@ -1,6 +1,6 @@
 <!--
-[INPUT]: Depends on AGENTS.md L1/L2 docs, role-package.schema.md learning_rules, and OMO final_readback.
-[OUTPUT]: Provides post_run_delta routing, knowledge_updates, skill_candidate_updates, and structural L1/L2/L3 sync rules.
+[INPUT]: Depends on AGENTS.md L1/L2 docs, role-package.schema.md learning_rules, run-state-ledger.protocol.md, and OMO final_readback.
+[OUTPUT]: Provides proactive learning verdicts, post_run_delta routing, run-state delta records, knowledge_updates, skill_candidate_updates, and structural L1/L2/L3 sync rules.
 [POS]: protocols GEB governance for semantic and structural evolution.
 [PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
 -->
@@ -8,6 +8,7 @@
 # GEB Semantic and Structural Delta
 
 GEB is not only learning. Every result must decide both semantic placement and structural documentation impact.
+The runtime must say that decision out loud before the run is considered complete.
 
 ## Delta Classes
 
@@ -31,10 +32,16 @@ Structural deltas preserve L1/L2/L3 isomorphism for every created, moved, rename
 
 ```yaml
 post_run_delta:
+  run_readback_ref: "agents/state/runs/<run_id>.readback.yaml"
+  reusable_learning_verdict: "persisted | proposed | no-op"
   semantic_delta:
     class: ""
     target: ""
     evidence_id: ""
+    delta_record_ref: "agents/state/deltas/<delta_id>.yaml"
+    persistence_state: "persisted | proposed | none"
+    reason: ""
+    safety_check: "no credentials, OAuth tokens, raw exports, raw transcripts, or unreviewed tenant facts"
   structural_delta:
     files_created: []
     files_moved: []
@@ -44,6 +51,25 @@ post_run_delta:
   skill_candidate_updates: []
   final_readback: ""
 ```
+
+## Proactive Learning Verdict
+
+Every runtime must end a real run with exactly one reusable-learning verdict:
+
+- `persisted`: a verified reusable delta was written back to its owning artifact.
+- `proposed`: a reusable delta appears valid, but needs owner confirmation before writing.
+- `no-op`: no reusable learning should be persisted from this run.
+
+For `persisted` and `proposed`, the readback must name the route, target path,
+evidence reference, reason, and safety check. The safety check must explicitly
+confirm that no credentials, OAuth tokens, raw exports, raw transcripts, or
+unreviewed tenant facts are being stored.
+
+The final readback is not the raw session transcript. It is a structured summary
+that points to evidence, decisions, blocked items, and approved semantic deltas.
+Stable learning becomes durable only after it is written as a reviewed
+`geb_delta_record` in the run-state ledger or as a patch to the owning role,
+overlay, workflow, skill candidate, protocol, or AGENTS.md file.
 
 ## Skill Candidate Rule
 

@@ -56,17 +56,25 @@ your-repo/
     <tenant>-<domain>.overlay.md    your tenant truth (fill the TODOs)
     <domain>-operator.role.md       your role (when generated)
     workflows/*.workflow.md         how the work runs
+    state/                          structured readbacks, verified deltas, memory pointers
 ```
 
-1. Fill the `TODO` markers from your real scenario.
+1. Fill the `TODO` markers from your real scenario. Store secret references only
+   (`${ENV_NAME}`, `vault://...`, `1password://...`), never literal keys or tokens.
 2. Validate:
    ```bash
    python3 protocol/scripts/validate_mounted_agents.py --root . --glob 'agents/*.agent.md'
    ```
-3. Point **any** runtime (Codex, Claude Code, Claude Tag, a CLI, a Slack mention)
+3. Dry-run the mounted playbook:
+   ```bash
+   python3 protocol/scripts/dry_run_agent.py --root . --agent agents/<tenant>-<domain>.agent.md --playbook <your-playbook>
+   ```
+4. Point **any** runtime (Codex, Claude Code, Hermes, browser automation,
+   MCP-backed tools, internal tools, or a local runner)
    at `agents/<tenant>-<domain>.agent.md`. The approval/evidence gates live in the
    playbook, so no runtime can bypass them.
-4. After each real run, route a GEB learning delta — the agent keeps improving
-   while the protocol stays clean.
+5. After each real run, write a structured readback under `agents/state/runs/`
+   and route any reusable learning as a reviewed GEB delta under
+   `agents/state/deltas/` or the owning agent artifact.
 
 See `README.md` for the full model and `agents/protocols/` for the contracts.

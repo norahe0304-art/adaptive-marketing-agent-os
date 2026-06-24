@@ -1,0 +1,29 @@
+<!--
+[INPUT]: Depends on agents/__NAME__.overlay.md and protocol/agents/protocols/run-state-ledger.protocol.md.
+[OUTPUT]: Provides reviewed tenant memory pointers for the __NAME_TITLE__ Agent.
+[POS]: consumer instance state ledger; stores stable __TENANT__ facts only after evidence-backed readback.
+[PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
+-->
+
+# __NAME_TITLE__ Tenant Memory
+
+Stable __TENANT__ facts belong here only after readback and evidence review.
+Use pointers, not dumps.
+
+```yaml
+tenant_memory_records: []
+```
+
+## Memory Rule
+
+Each record must include:
+
+- source_of_truth
+- evidence_url_or_path
+- owner
+- last_verified_at
+- review_after
+- contradiction_check
+
+Never store credentials, OAuth tokens, raw CRM exports, raw transcripts, or
+unbounded logs.

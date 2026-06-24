@@ -1,5 +1,5 @@
 <!--
-[INPUT]: Depends on role-package.schema.md, agent-onboarding.contract.md, capability-boundary.schema.md, approval-evidence.schema.md, and geb-semantic-delta.md.
+[INPUT]: Depends on role-package.schema.md, agent-onboarding.contract.md, capability-boundary.schema.md, approval-evidence.schema.md, run-state-ledger.protocol.md, and geb-semantic-delta.md.
 [OUTPUT]: Provides a simple install role, attach tenant, run playbook, and detach tenant note for Adaptive Marketing Agent OS agents.
 [POS]: protocols optional packaging guardrail; not a fourth business object.
 [PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
@@ -47,6 +47,10 @@ tenant_attachment:
   approval_surfaces: []
   evidence_roots: []
   learning_routes: []
+  state_roots:
+    - agents/state/runs
+    - agents/state/deltas
+    - agents/state/memory
   excludes:
     - shared protocol changes
     - base role behavior changes
@@ -69,6 +73,11 @@ mounted_agent:
   playbooks: []
   runtime_refs: []
   entrypoint_refs: []
+  state_refs:
+    - agents/state/AGENTS.md
+    - agents/state/runs
+    - agents/state/deltas
+    - agents/state/memory/tenant-memory.md
   does_not_install:
     - credentials
     - provider account secrets
@@ -77,6 +86,7 @@ mounted_agent:
     - base role
     - workflow contracts
     - audit evidence
+    - run readbacks
     - approved learning deltas
 ```
 
@@ -87,8 +97,9 @@ install_role
   -> attach_tenant
   -> mount_agent
   -> activate_playbook
+  -> dry_run_boot
   -> run
-  -> readback
+  -> write_run_readback
   -> route_geb_delta
   -> detach_tenant_when_needed
 ```
@@ -99,6 +110,7 @@ install_role
 - Tenant attach is reversible: detach removes project-private bindings without modifying the base role.
 - Mounted agent install is composition only: it adds references and routing, not credentials or live mutation permission.
 - Mounted agent detach removes tenant runtime projection, not the reusable role, playbooks, audit evidence, or approved learnings.
+- Run-state ledger is durable tenant memory, not runtime cache. Detach may revoke live access, but must preserve or explicitly export required readbacks and approved deltas.
 - Adaptive behavior is post-run: GEB may patch tenant memory, playbook workflow tails, skill candidates, or protocol proposals after readback.
 - Provider runtime may be shared, but the tenant attachment decides which tenant and role may use it.
 - `apply` is never installed by a role. It can only be enabled by a workflow-scoped `apply_lab`.
@@ -124,6 +136,8 @@ removal_readback:
   runtime_bindings_revoked: []
   entrypoints_unprojected: []
   evidence_archives_retained: []
+  run_readbacks_retained_or_exported: []
+  verified_deltas_retained_or_exported: []
   tenant_memory_retained_or_exported: []
   blocked_reason: ""
 ```

@@ -1,15 +1,16 @@
 # Adaptive Marketing Agent OS
 
-A runtime-neutral **protocol** for growing marketing agents. v0.3.4.
+A runtime-neutral **protocol** for growing marketing agents. v0.3.6.
 
 > **New here? → [QUICKSTART.md](QUICKSTART.md)** — grow your own agent in one command.
 
-The protocol is three things: **role** (who the agent is) · **playbook** (the
-work it does, which calls skills) · **GEB learning** (how it improves after each
-run). Which runtime runs the agent — Codex, Claude Code, Claude Tag, a CLI, a
-Slack mention — is **your choice and is never part of the protocol**. The
-approval/evidence gates live in the playbook, so whatever runtime runs the work
-must pass them.
+The protocol is four things: **role** (who the agent is) · **playbook** (the
+work it does, which calls skills) · **run-state ledger** (structured readback,
+reusable-learning verdicts, and verified memory pointers) · **GEB learning**
+(how it improves after each run). Which runtime runs the agent — Codex, Claude Code, Hermes, browser
+automation, a CLI, or an internal tool — is **your choice and is never durable
+agent state**. The approval/evidence gates live in the playbook, so whatever
+runtime runs the work must pass them.
 
 This repo is **pure spec**: schema, gates, validators, a generation loop, and
 tenant-neutral base roles. Real tenant agents live in their own consumer repos
@@ -44,8 +45,9 @@ python3 scripts/scaffold_consumer.py \
 ```
 
 All three produce the same thing: a consumer instance (mounted agent + overlay +
-workflows) pinned to the protocol and validated. Then point any runtime at
-`agents/<name>.agent.md`, fill the `TODO` markers from the real scenario, and run.
+workflows + state ledger) pinned to the protocol and validated. Then fill the
+`TODO` markers from the real scenario, dry-run the mounted playbook, and point
+any runtime at `agents/<name>.agent.md`.
 
 ## Concepts
 
@@ -54,7 +56,8 @@ workflows) pinned to the protocol and validated. Then point any runtime at
 - **playbook** — a business job the role exposes (e.g. daily maintenance), backed by a workflow.
 - **workflow** — the machine-readable execution graph behind a playbook (steps, capability refs, approval gates, readback).
 - **overlay** — a tenant attachment: customer truth + runtime bindings, mounted on a base role.
-- **GEB learning** — post-run deltas that patch memory/playbook/skill/protocol, each gated by evidence + owner + review.
+- **run-state ledger** — structured `agents/state/` readbacks, reusable-learning verdicts, verified GEB deltas, and reviewed tenant-memory pointers. No raw transcripts or secrets.
+- **GEB learning** — post-run deltas that either persist, propose, or explicitly no-op memory/playbook/skill/protocol changes, each gated by evidence + owner + review.
 
 The full how-to-use is in `agents/protocols/`: `agent-generation.loop.md` (grow an
 agent), `protocol-consumption.contract.md` (pin / reference / validate),
@@ -64,6 +67,7 @@ agent), `protocol-consumption.contract.md` (pin / reference / validate),
 
 ```
 agents/protocols/   schemas, gates, consumption + generation contracts
+agents/adapters/    thin runtime boot notes; runtime is replaceable
 agents/roles/       reference roles (optional seeds — use, fork, or replace)
 agents/templates/   stubs the generation loop stamps into a consumer instance
 scripts/            validators, scaffolder, skill builder, pre-commit hook
@@ -75,5 +79,13 @@ bootstrap.sh        one-line consumer bootstrap
 ```bash
 python3 scripts/validate_roles.py
 python3 scripts/validate_mounted_agents.py
+python3 scripts/check_version_sync.py
+python3 scripts/check_schema_sync.py
 git config core.hooksPath scripts/githooks   # enable the commit gate
+```
+
+Consumer repos also get a runtime warm-up check:
+
+```bash
+python3 protocol/scripts/dry_run_agent.py --root . --agent agents/<name>.agent.md --playbook <playbook>
 ```

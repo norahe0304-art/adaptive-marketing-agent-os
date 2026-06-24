@@ -3,22 +3,24 @@
 
 This is the __NAME_TITLE__ **agent instance**, generated against the Adaptive
 Marketing Agent OS protocol pinned under `../protocol/`. The protocol ships the
-invariants (schema + gates + validators + GEB rails); this directory holds the
-generated, tenant-specific composition for __TENANT__.
+invariants (schema + gates + validators + run-state rails + GEB rails); this
+directory holds the generated, tenant-specific composition for __TENANT__.
 
 成员清单
-__NAME__.agent.md: Mounted agent. Composes the protocol's `__ROLE_ID__` base role (in ../protocol) with the local overlay, playbooks, this repo as work substrate, and a neutral entrypoint. Runtime is the user's choice.
+__NAME__.agent.md: Mounted agent. Composes the protocol's `__ROLE_ID__` base role (in ../protocol) with the local overlay, playbooks, this repo as work substrate, a neutral entrypoint, and proactive GEB readback. Runtime is the user's choice.
 __NAME__.overlay.md: __TENANT__ tenant attachment. Operating contracts, source pointers, runtime bindings, tenant memory records. mounts_on `__ROLE_ID__` by id.
 __NAME__.entrypoint.md: Runtime-neutral doorway to the mounted agent.
-workflows/: Playbook workflow contracts. Reference role/overlay by id, so they are path-portable.
+workflows/: Playbook workflow contracts. Reference role/overlay by id, require proactive reusable-learning verdicts, and stay path-portable.
+state/: Run-state ledger. Structured readbacks, proactive reusable-learning verdicts, verified GEB deltas, and reviewed tenant memory pointers; never raw transcripts or secrets.
 
 边界
 This is a consumer instance, not the protocol. It never edits files under
 `../protocol/`. Protocol-layer refs resolve to `protocol/agents/...`; instance
 refs resolve here. Tenant truth, credentials, and live mutation permission never
-go into the protocol copy.
+go into the protocol copy. Secret references are allowed; literal secrets are not.
 
 校验
 python3 protocol/scripts/validate_mounted_agents.py --root . --glob 'agents/*.agent.md'
+python3 protocol/scripts/dry_run_agent.py --root . --agent agents/__NAME__.agent.md --playbook __PLAYBOOK__
 
 [PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md

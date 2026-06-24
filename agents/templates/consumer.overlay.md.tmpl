@@ -1,5 +1,5 @@
 <!--
-[INPUT]: Depends on protocol/agents/roles/__ROLE_ID__.role.md and __TENANT__ operating evidence.
+[INPUT]: Depends on __ROLE_PATH__ and __TENANT__ operating evidence.
 [OUTPUT]: Provides the __TENANT__ tenant overlay for __NAME_TITLE__.
 [POS]: consumer instance tenant attachment; tenant truth only, never changes the shared protocol.
 [PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
@@ -22,12 +22,25 @@ tenant_overlay:
     allowed_here:
       - stable operating contracts
       - source pointers
+      - secret references only
       - approval owners or approval surfaces
     forbidden_here:
       - reusable base-role rules
       - shared Agent OS protocol
       - uncited tenant facts
       - credentials or provider secrets
+      - literal secret values
+
+  secret_reference_rule:
+    allowed_reference_forms:
+      - "${ENV_NAME}"
+      - "vault://path/to/secret"
+      - "1password://vault/item/field"
+    forbidden:
+      - API key values
+      - OAuth tokens
+      - passwords
+      - private key material
 
   source_of_truth:
     # TODO: name each real system and its stable meaning, e.g.

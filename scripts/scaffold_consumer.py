@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-# [INPUT]: 读取 agents/templates/*.tmpl 与协议树(agents/protocols, agents/roles, scripts/validate_*.py)，按场景参数生成一个消费方 agent 实例。
-# [OUTPUT]: 对外提供 scaffold_consumer 脚手架；在 <dest> 下盖出 pin 好协议的最小可校验 agent 实例骨架。
+# [INPUT]: 读取 agents/templates/*.tmpl 与协议树(agents/protocols, agents/roles, validators, dry_run_agent.py)，按场景参数生成一个消费方 agent 实例。
+# [OUTPUT]: 对外提供 scaffold_consumer 脚手架；在 <dest> 下盖出 pin 好协议、含 run-state ledger 的最小可校验 agent 实例骨架。
 # [POS]: scripts 生成回路的「手」，确定性盖骨架;内容由 runtime 填 TODO，validator 把关。
 # [PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
 from __future__ import annotations
@@ -50,14 +50,14 @@ def vendor_protocol(dest: Path, version: str) -> None:
     # Ship the invariants + the reference-role library (optional seeds you may fork).
     for sub in ["protocols", "roles"]:
         shutil.copytree(REPO_ROOT / "agents" / sub, proto / "agents" / sub)
-    for script in ["validate_roles.py", "validate_mounted_agents.py"]:
+    for script in ["validate_roles.py", "validate_mounted_agents.py", "dry_run_agent.py"]:
         shutil.copy2(REPO_ROOT / "scripts" / script, proto / "scripts" / script)
     (proto / "VERSION").write_text(
         "name: adaptive-marketing-agent-os\n"
         f"version: {version}\n"
         f"source_commit: {source_commit()}\n"
         "mechanism: vendored-copy\n"
-        "resync: re-run scaffold or re-copy agents/{protocols,roles} + scripts validators at the new tag\n"
+        "resync: re-run scaffold or re-copy agents/{protocols,roles} + scripts at the new tag\n"
     )
 
 
@@ -129,12 +129,20 @@ def main() -> int:
 
     vendor_protocol(dest, args.version)
     (agents / "workflows").mkdir(parents=True, exist_ok=True)
+    (agents / "state" / "runs").mkdir(parents=True, exist_ok=True)
+    (agents / "state" / "deltas").mkdir(parents=True, exist_ok=True)
+    (agents / "state" / "memory").mkdir(parents=True, exist_ok=True)
     (agents / f"{args.name}.agent.md").write_text(render("consumer.agent.md.tmpl", repl))
     (agents / f"{args.name}.overlay.md").write_text(render("consumer.overlay.md.tmpl", repl))
     (agents / f"{args.name}.entrypoint.md").write_text(render("consumer.entrypoint.md.tmpl", repl))
     (agents / "workflows" / f"{args.name}-{args.playbook}.workflow.md").write_text(
         render("consumer.workflow.md.tmpl", repl))
     (agents / "AGENTS.md").write_text(render("consumer.AGENTS.md.tmpl", repl))
+    (agents / "state" / "AGENTS.md").write_text(render("consumer.state.AGENTS.md.tmpl", repl))
+    (agents / "state" / "memory" / "tenant-memory.md").write_text(
+        render("consumer.tenant-memory.md.tmpl", repl))
+    (agents / "state" / "runs" / ".gitkeep").write_text("")
+    (agents / "state" / "deltas" / ".gitkeep").write_text("")
     # L1 constitution closes the agents/AGENTS.md `父级: /AGENTS.md` link.
     # Write-if-absent: never clobber a consumer repo that already owns a root AGENTS.md.
     root_l1 = dest / "AGENTS.md"
@@ -158,7 +166,7 @@ def main() -> int:
         print(f"  role            -> agents/{args.role}.role.md (your own, {args.role_mode})")
     if root_l1_written:
         print(f"  root L1 (宪法)   -> AGENTS.md (seeded; closes the agents/ 父级 link)")
-    print(f"  fill the TODO markers from the real scenario, then re-validate.")
+    print(f"  fill the TODO markers from the real scenario, then validate and dry-run.")
 
     if args.no_validate:
         return 0

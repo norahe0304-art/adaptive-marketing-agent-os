@@ -1,13 +1,17 @@
 # __NAME_TITLE__ — tenant agent instance
 
 A __TENANT__ agent instance grown against the Adaptive Marketing Agent OS
-protocol. The protocol ships the invariants (schema + gates + validators + GEB
-rails); this repo holds the generated, tenant-specific composition and the
-pinned protocol copy. Runtime (Codex / Claude Code / Claude Tag / CLI / Slack)
-is your choice and is never part of the instance.
+protocol. The protocol ships the invariants (schema + gates + validators +
+run-state rails + GEB rails); this repo holds the generated, tenant-specific
+composition and the pinned protocol copy. Runtime (Codex / Claude Code / Hermes
+/ browser / local / MCP-backed) is your choice and is never durable agent state.
 
 <directory>
 agents/ - Generated agent instance for __TENANT__ (mounted agent, overlay, entrypoint, playbook workflows). L2 map: agents/AGENTS.md
+</directory>
+
+<directory>
+agents/state/ - Run-state ledger for structured readbacks, proactive reusable-learning verdicts, verified GEB deltas, and reviewed tenant memory pointers
 </directory>
 
 <directory>

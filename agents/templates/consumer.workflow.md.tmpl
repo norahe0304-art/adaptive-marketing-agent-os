@@ -64,7 +64,27 @@ workflow_contract:
       - what was reviewed
       - what was proposed or applied
       - evidence used
+      - run-state ledger path
+      - reusable learning verdict: persisted, proposed, or no-op
+      - GEB route target path when learning should be persisted
+      - safety check confirming no credentials, OAuth tokens, raw exports, raw transcripts, or unreviewed tenant facts are being stored
       - learning route
+
+  proactive_learning_gate:
+    required: true
+    runtime_must_say:
+      - "No reusable learning found; no GEB writeback recommended."
+      - "Reusable learning found; recommended route is {route} -> {target_path} because {reason}."
+      - "Reusable learning persisted to {target_path}; evidence was {evidence_ref}."
+    no_silent_success: true
+    writeback_policy:
+      may_write_without_extra_prompt_when:
+        - user explicitly asked to persist verified learning
+        - evidence and route target are named
+        - write target is an owning agent artifact, workflow, state ledger record, or protocol proposal outside protocol/
+        - content contains no secrets, raw exports, raw transcripts, or unreviewed tenant facts
+      otherwise:
+        - stop at recommendation and ask for confirmation before editing repo files
 
   semantic_delta:
     default_route: workflow_patch

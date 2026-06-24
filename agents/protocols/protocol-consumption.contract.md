@@ -12,10 +12,10 @@ fills in role + playbook + tenant truth for its real scenario, and points any
 agent runtime at the result. This file defines how that consumption works so an
 instance can live in a different repo and still validate.
 
-The protocol ships only the invariants: **schema + gates + validators + GEB
-learning rails**. role / playbook / overlay / GEB-delta *content* is generated
-per scenario by the consumer. Runtime is the consumer's choice. Tenant instances
-do not live here.
+The protocol ships only the invariants: **schema + gates + validators +
+run-state rails + GEB learning rails**. role / playbook / overlay / readback /
+GEB-delta *content* is generated per scenario by the consumer. Runtime is the
+consumer's choice. Tenant instances do not live here.
 
 ## What the protocol ships (the invariant)
 
@@ -23,7 +23,7 @@ do not live here.
 agents/protocols/   contracts + schemas (this layer)
 agents/roles/       reference roles = optional seeds (use, fork, or replace) + schema proof
 agents/templates/   stubs the generation loop stamps into a consumer instance
-scripts/            validators + scaffolder + skill builder + pre-commit hook
+scripts/            validators + dry-run warm-up + scaffolder + skill builder + pre-commit hook
 ```
 
 ## What a consumer holds (the generated instance)
@@ -35,6 +35,10 @@ scripts/            validators + scaffolder + skill builder + pre-commit hook
     <tenant>.overlay.md     tenant truth; mounts_on a base role id
     <tenant>.agent.md       mounted agent: role + tenant_attachment + work_substrate + entrypoints
     workflows/*.workflow.md  playbook contracts (reference role/overlay by id)
+    state/
+      runs/*.readback.yaml   structured run readbacks
+      deltas/*.yaml          verified learning deltas
+      memory/tenant-memory.md reviewed tenant memory pointers
 ```
 
 ## Pinning
@@ -44,7 +48,7 @@ A consumer pins one protocol version. Two supported mechanisms:
 ```yaml
 protocol_pin:
   name: adaptive-marketing-agent-os
-  version: v0.3.4
+  version: v0.3.6
   mechanism: vendored-copy        # or: git-submodule
   vendored_copy:
     path: protocol/               # protocol tree copied under here
@@ -53,7 +57,7 @@ protocol_pin:
   git_submodule:
     path: protocol/
     url: https://github.com/norahe0304-art/adaptive-marketing-agent-os.git
-    pinned_ref: v0.3.4            # checkout the tag commit, then `git add protocol`
+    pinned_ref: v0.3.6            # checkout the tag commit, then `git add protocol`
 ```
 
 `vendored-copy` is the default: self-contained, offline-verifiable, no submodule
@@ -91,14 +95,28 @@ workflow contract — i.e. the instance is correctly assembled against the pinne
 protocol. The protocol repo itself stays green with zero tenants: its mounted
 glob is empty (valid for a spec repo) and the reference roles prove the schema.
 
+The consumer can then warm up a runtime without side effects:
+
+```bash
+python3 protocol/scripts/dry_run_agent.py \
+  --root . \
+  --agent agents/<tenant>.agent.md \
+  --playbook <playbook>
+```
+
+Green means the runtime can parse the mounted agent, resolve role/overlay/
+workflow/state, inspect TODO debt, and emit a readback skeleton before touching
+external systems.
+
 ## Lifecycle
 
 ```text
 pin protocol@version
   -> generate overlay + mounted + workflows for the real scenario
   -> validate against the pinned protocol
-  -> point any runtime (Codex / Claude Code / Claude Tag / ...) at <tenant>.agent.md
-  -> run -> readback -> route GEB delta
+  -> dry-run boot the mounted playbook
+  -> point any runtime (Codex / Claude Code / Hermes / browser / local / MCP-backed) at <tenant>.agent.md
+  -> run -> write readback under agents/state/runs -> report learning verdict -> route verified GEB delta
   -> bump protocol version when the spec evolves; re-pin and re-validate
 ```
 
@@ -108,6 +126,11 @@ pin protocol@version
   protocol repo, get a new version, and reach the consumer through a re-pin.
 - A consumer never copies tenant truth, credentials, or live mutation permission
   into `protocol/`.
+- A consumer stores secret references only (`${ENV_NAME}`, `vault://...`,
+  `1password://...`), never literal API keys, OAuth tokens, passwords, or
+  private keys.
+- A consumer stores durable learning as structured readbacks and reviewed
+  deltas, not raw chat transcripts.
 - Generated role/playbook/overlay/GEB content is free; the validator is the gate
   that keeps every generated artifact safe and composable.
 - Bumping the protocol version is the only way new shared semantics (schema

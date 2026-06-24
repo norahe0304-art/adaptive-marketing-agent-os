@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-# [INPUT]: 读取 agents/mounted/*.agent.md 的 yaml 块及其 base role 声明；检查 role、tenant attachment、playbook、work_substrate、entrypoints 引用。
+# [INPUT]: 读取 agents/mounted/*.agent.md 的 yaml 块及其 base role 声明；检查 role、tenant attachment、playbook、work_substrate、entrypoints、run-state 和 proactive GEB 引用。
 # [OUTPUT]: 对外提供 mounted agent 装配校验器；通过返回 0，违约返回 1 并打印第一个错误。
-# [POS]: scripts mounted-agent 校验器，审判 assembled agent 是否接上 role、tenant、work_substrate，且 mount playbooks ⊆ role playbooks（子集，非相等；role 空声明则显式跳过并留痕）；无 tenant 特例，runtime 不在协议内不校验。
+# [POS]: scripts mounted-agent 校验器，审判 assembled agent 是否接上 role、tenant、work_substrate、state ledger、proactive learning gate，且 mount playbooks ⊆ role playbooks（子集，非相等；role 空声明则显式跳过并留痕）；无 tenant 特例，runtime 不在协议内不校验。
 # [PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
 from __future__ import annotations
 
@@ -52,6 +52,34 @@ def role_playbook_ids(role_path: Path) -> set[str]:
     return {p["id"] for p in available if isinstance(p, dict) and "id" in p}
 
 
+def contains_phrase(items: list, phrase: str) -> bool:
+    return any(phrase in str(item) for item in items)
+
+
+def validate_workflow_gate(workflow_ref: str, agent_path: Path, playbook_id: str) -> None:
+    workflow_path = resolve_ref(workflow_ref)
+    require_existing(workflow_path, f"playbook {playbook_id} workflow_contract", agent_path)
+    workflow = yaml_block(workflow_path).get("workflow_contract")
+    if not isinstance(workflow, dict):
+        raise ContractError(f"{workflow_path}: missing workflow_contract")
+    readback = workflow.get("readback")
+    include = readback.get("include") if isinstance(readback, dict) else None
+    if not isinstance(include, list) or not include:
+        raise ContractError(f"{workflow_path}: workflow_contract.readback.include must be non-empty")
+    for phrase in ["reusable learning verdict", "safety check"]:
+        if not contains_phrase(include, phrase):
+            raise ContractError(f"{workflow_path}: readback.include must mention {phrase}")
+    gate = workflow.get("proactive_learning_gate")
+    if not isinstance(gate, dict) or gate.get("required") is not True:
+        raise ContractError(f"{workflow_path}: proactive_learning_gate.required must be true")
+    if gate.get("no_silent_success") is not True:
+        raise ContractError(f"{workflow_path}: proactive_learning_gate.no_silent_success must be true")
+    if not isinstance(gate.get("runtime_must_say"), list) or not gate["runtime_must_say"]:
+        raise ContractError(f"{workflow_path}: proactive_learning_gate.runtime_must_say must be non-empty")
+    if not isinstance(gate.get("writeback_policy"), dict):
+        raise ContractError(f"{workflow_path}: proactive_learning_gate.writeback_policy must be a map")
+
+
 def validate_agent(path: Path) -> None:
     agent = yaml_block(path).get("mounted_agent")
     if not isinstance(agent, dict):
@@ -64,6 +92,7 @@ def validate_agent(path: Path) -> None:
         "install_contract",
         "detach_contract",
         "boot_sequence",
+        "run_state_contract",
         "playbooks",
         "runtime_boundaries",
         "geb_learning",
@@ -116,6 +145,33 @@ def validate_agent(path: Path) -> None:
     for ref in always_read:
         require_existing(resolve_ref(ref), "boot_sequence.always_read", path)
 
+    run_state = agent["run_state_contract"]
+    if not isinstance(run_state, dict):
+        raise ContractError(f"{path}: run_state_contract must be a map")
+    for key in ["root", "run_readbacks", "geb_deltas", "tenant_memory", "protocol"]:
+        if key not in run_state:
+            raise ContractError(f"{path}: run_state_contract missing {key}")
+        target = resolve_ref(run_state[key])
+        require_existing(target, f"run_state_contract.{key}", path)
+    for key in ["root", "run_readbacks", "geb_deltas"]:
+        target = resolve_ref(run_state[key])
+        if not target.is_dir():
+            raise ContractError(f"{path}: run_state_contract.{key} is not a directory: {target}")
+    for key in ["tenant_memory", "protocol"]:
+        target = resolve_ref(run_state[key])
+        if not target.is_file():
+            raise ContractError(f"{path}: run_state_contract.{key} is not a file: {target}")
+
+    geb_learning = agent["geb_learning"]
+    if not isinstance(geb_learning, dict):
+        raise ContractError(f"{path}: geb_learning must be a map")
+    if geb_learning.get("proactive_readback_required") is not True:
+        raise ContractError(f"{path}: geb_learning.proactive_readback_required must be true")
+    if not isinstance(geb_learning.get("runtime_must_report"), list) or not geb_learning["runtime_must_report"]:
+        raise ContractError(f"{path}: geb_learning.runtime_must_report must be a non-empty list")
+    if not isinstance(geb_learning.get("route_rules"), dict) or not geb_learning["route_rules"]:
+        raise ContractError(f"{path}: geb_learning.route_rules must be a non-empty map")
+
     playbooks = agent["playbooks"]
     if not isinstance(playbooks, dict) or not playbooks:
         raise ContractError(f"{path}: playbooks must be a non-empty map")
@@ -139,11 +195,13 @@ def validate_agent(path: Path) -> None:
         workflow = spec.get("workflow_contract")
         if not workflow:
             raise ContractError(f"{path}: playbook {playbook_id} missing workflow_contract")
-        require_existing(resolve_ref(workflow), f"playbook {playbook_id} workflow_contract", path)
+        validate_workflow_gate(workflow, path, playbook_id)
         if spec.get("default_mode") != "propose":
             raise ContractError(f"{path}: playbook {playbook_id} default_mode must be propose")
         if "approval_required_before" not in spec or "readback_required" not in spec:
             raise ContractError(f"{path}: playbook {playbook_id} missing approval/readback lists")
+        if not contains_phrase(spec["readback_required"], "reusable learning verdict"):
+            raise ContractError(f"{path}: playbook {playbook_id} readback_required must mention reusable learning verdict")
 
 
 def main() -> int:

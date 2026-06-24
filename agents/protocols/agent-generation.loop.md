@@ -1,5 +1,5 @@
 <!--
-[INPUT]: Depends on agent-onboarding.contract.md, protocol-consumption.contract.md, role-package.schema.md, capability-boundary.schema.md, geb-semantic-delta.md, the scaffold_consumer.py scaffolder, and the validators.
+[INPUT]: Depends on agent-onboarding.contract.md, protocol-consumption.contract.md, role-package.schema.md, capability-boundary.schema.md, run-state-ledger.protocol.md, geb-semantic-delta.md, the scaffold_consumer.py scaffolder, and the validators.
 [OUTPUT]: Provides the executable loop that grows a conformant consumer agent from a real scenario, for any runtime.
 [POS]: protocols generation loop; turns onboarding from a description into a runnable recipe. The protocol grows agents.
 [PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
@@ -46,7 +46,7 @@ and gates are fixed; role / playbook / overlay / GEB-delta content is dynamic.
      --role <id> --role-mode own : fork a reference role into your repo and adapt it
      --name <id>                 : override the instance id (default <tenant>-<domain>)
      -> pins the protocol under <dest>/protocol/
-     -> emits a green, minimal overlay + mounted agent + workflow + entrypoint
+     -> emits a green, minimal overlay + mounted agent + workflow + entrypoint + state ledger
         (+ a local role, unless you referenced a shipped one)
 
 3. GENERATE  fill the TODO markers from the scenario (any runtime):
@@ -54,17 +54,24 @@ and gates are fixed; role / playbook / overlay / GEB-delta content is dynamic.
      overlay   -> source_of_truth, runtime_bindings, approval_surfaces, memory records
      mounted   -> playbook approval/readback lists, runtime_boundaries
      workflow  -> task_graph steps, capability_refs, apply_lab, evidence_packet
+     state     -> reviewed tenant memory pointers only; no raw transcript, no secrets
      never bind a runtime; never store credentials; never edit protocol/
 
 4. VALIDATE  run the judge:
      python3 protocol/scripts/validate_mounted_agents.py --root . --glob 'agents/*.agent.md'
      not green -> back to step 3. green -> the instance is well-formed.
 
-5. RUN       point any runtime (Codex / Claude Code / Claude Tag / CLI / Slack) at
+5. DRY-RUN   warm up the runtime contract without side effects:
+     python3 protocol/scripts/dry_run_agent.py \
+       --root . --agent agents/<name>.agent.md --playbook <kebab>
+     not green -> back to step 3. green -> runtime can parse the mounted contract.
+
+6. RUN       point any runtime (Codex / Claude Code / Hermes / Browser / CLI) at
      agents/<name>.agent.md. The gates live in the playbook, so the runtime can
      be anything and still cannot bypass approval/evidence.
 
-6. LEARN     after each real run, route a GEB delta (geb-semantic-delta.md):
+7. LEARN     after each real run, write a readback under agents/state/runs and
+     route a GEB delta (geb-semantic-delta.md):
      tenant memory / workflow tail / skill candidate / protocol proposal,
      each carrying evidence + owner + review_after + contradiction_check.
      The agent keeps growing; the base role and protocol stay clean.

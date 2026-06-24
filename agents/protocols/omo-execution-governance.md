@@ -1,5 +1,5 @@
 <!--
-[INPUT]: Depends on OMO agent discipline and capability-boundary.schema.md permission modes.
+[INPUT]: Depends on OMO agent discipline, capability-boundary.schema.md permission modes, and run-state-ledger.protocol.md.
 [OUTPUT]: Provides execution_gates and final_readback lifecycle for all roles.
 [POS]: protocols execution governance consumed by workflows and roles.
 [PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
@@ -33,7 +33,7 @@ trigger
 - `execute by permission`: respect read/observe/dry_run/propose. `apply` is reserved until a future runtime security review exists.
 - `QA`: verify output against evidence, role schema, and workflow contract.
 - `review gate`: use Metis/Momus for contradiction and plan-gate review when risk is high.
-- `final_readback`: summarize actions, evidence, decisions, blocked items, and post_run_delta.
+- `final_readback`: summarize actions, evidence, decisions, blocked items, run-state ledger target, and post_run_delta.
 
 ## Evidence Gates
 
@@ -50,6 +50,7 @@ Approval evidence must conform to `agents/protocols/approval-evidence.schema.md#
 
 ## Completion Rule
 
-A role is not complete until it has final_readback and a post_run_delta route.
+A role is not complete until it has final_readback, a run-state ledger target,
+and a post_run_delta route.
 
-V1 completion cannot claim live external mutation. If a workflow reaches a live-action request, completion means a proposal, approval packet, blocked reason, and post_run_delta route.
+V1 completion cannot claim live external mutation. If a workflow reaches a live-action request, completion means a proposal, approval packet, blocked reason, readback target, and post_run_delta route.
