@@ -1,30 +1,75 @@
-# Agency Agents
+# Adaptive Marketing Agent OS
 
-Adaptive Marketing Agent OS v0.1.0.
+A runtime-neutral **protocol** for growing marketing agents. v0.1.0.
 
-This repository defines the protocol surface for installable marketing agents:
-one reusable role, one tenant attachment, mounted playbooks, runtime pointers, and
-validation gates that keep the package honest.
+The protocol is three things: **role** (who the agent is) · **playbook** (the
+work it does, which calls skills) · **GEB learning** (how it improves after each
+run). Which runtime runs the agent — Codex, Claude Code, Claude Tag, a CLI, a
+Slack mention — is **your choice and is never part of the protocol**. The
+approval/evidence gates live in the playbook, so whatever runtime runs the work
+must pass them.
 
-## Structure
+This repo is **pure spec**: schema, gates, validators, a generation loop, and
+tenant-neutral base roles. Real tenant agents live in their own consumer repos
+that pin this protocol (see `agents/protocols/protocol-consumption.contract.md`).
 
-- `agents/protocols/` - internal guardrails for schema, safety, execution, learning, packaging, onboarding, and validation.
-- `agents/roles/` - tenant-neutral base roles.
-- `agents/overlays/` - tenant attachments and runtime bindings.
-- `agents/workflows/` - machine-readable workflow contracts behind playbooks.
-- `agents/mounted/` - assembled agent definitions.
-- `scripts/` - validators and the pre-commit hook.
-- `.omo/` - planning, review, and evidence artifacts.
+## Use it — three ways
+
+**1. One-line bootstrap** (pin + scaffold + validate, any environment)
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/norahe0304-art/adaptive-marketing-agent-os/master/bootstrap.sh | sh -s -- \
+  --name acme-ads --domain Ads --tenant Acme \
+  --role ads-adaptive-operator --playbook daily-maintenance --dest .
+```
+
+**2. Skill** (self-contained, no repo access needed)
+
+```bash
+python3 scripts/build_skill.py --dest ~/.claude/skills/grow-marketing-agent
+# then invoke the skill in your runtime: "grow an ads agent for Acme"
+```
+
+**3. Manual** (vendor + scaffold)
+
+```bash
+python3 scripts/scaffold_consumer.py \
+  --name acme-ads --domain Ads --tenant Acme \
+  --role ads-adaptive-operator --playbook daily-maintenance --dest ../acme-ads
+```
+
+All three produce the same thing: a consumer instance (mounted agent + overlay +
+workflows) pinned to the protocol and validated. Then point any runtime at
+`agents/<name>.agent.md`, fill the `TODO` markers from the real scenario, and run.
+
+## Concepts
+
+- **role** — the reusable, tenant-neutral product unit (`agents/roles/`).
+- **skill** — an atomic action a playbook calls (e.g. spend check, keyword cluster).
+- **playbook** — a business job the role exposes (e.g. daily maintenance), backed by a workflow.
+- **workflow** — the machine-readable execution graph behind a playbook (steps, capability refs, approval gates, readback).
+- **overlay** — a tenant attachment: customer truth + runtime bindings, mounted on a base role.
+- **GEB learning** — post-run deltas that patch memory/playbook/skill/protocol, each gated by evidence + owner + review.
+
+The full how-to-use is in `agents/protocols/`: `agent-generation.loop.md` (grow an
+agent), `protocol-consumption.contract.md` (pin / reference / validate),
+`agent-onboarding.contract.md` (add a new agent).
+
+## Structure (pure spec)
+
+```
+agents/protocols/   schemas, gates, consumption + generation contracts
+agents/roles/       tenant-neutral base roles (Ads, Event, ...)
+agents/templates/   stubs the generation loop stamps into a consumer instance
+agents/examples/    schema fixtures (validation proof, green with zero tenants)
+scripts/            validators, scaffolder, skill builder, pre-commit hook
+bootstrap.sh        one-line consumer bootstrap
+```
 
 ## Validate
 
 ```bash
 python3 scripts/validate_roles.py
 python3 scripts/validate_mounted_agents.py
-```
-
-To enable the local commit gate:
-
-```bash
-git config core.hooksPath scripts/githooks
+git config core.hooksPath scripts/githooks   # enable the commit gate
 ```
