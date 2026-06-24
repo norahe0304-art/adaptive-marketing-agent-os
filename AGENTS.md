@@ -15,7 +15,7 @@ scripts/ - Contract validators and git pre-commit hook (executes role package an
 </directory>
 
 <config>
-README.md - Human entrypoint for v0.3.3 repo purpose, structure, and validation commands
+README.md - Human entrypoint for v0.3.4 repo purpose, structure, and validation commands
 </config>
 
 <config>
