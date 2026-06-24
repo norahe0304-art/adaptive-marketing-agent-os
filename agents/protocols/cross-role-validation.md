@@ -29,7 +29,7 @@ Role outputs may include `post_run_delta` as a promised deliverable. Role files 
 
 `event-adaptive-operator` declares abstract Event surfaces such as `event_asset_system`, `crm_context_source`, `document_source`, and `calendar_source`.
 
-Tenant overlays map those abstract surfaces to concrete providers such as Google Ads, HubSpot, Salesforce, or Supabase.
+Tenant overlays map those abstract surfaces to concrete providers chosen by the consumer repo.
 
 ## Runtime Neutrality
 

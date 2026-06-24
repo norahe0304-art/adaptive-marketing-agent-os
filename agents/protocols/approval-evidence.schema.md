@@ -15,7 +15,7 @@ Approvals and evidence are data contracts, not prose. A role may prepare an appr
 approval_receipt:
   id: ""
   status: "active"
-  channel: "slack | portal | document | codex | api"
+  channel: "chat | portal | document | runtime | api"
   receipt_url_or_path: ""
   approver_identity:
     name: ""

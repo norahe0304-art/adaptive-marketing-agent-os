@@ -144,14 +144,14 @@ Rules:
 
 Concrete runtime bindings may map abstract surfaces like this:
 
-- `paid_media_platform` -> Google Ads, Meta Ads, LinkedIn Ads, or another tenant-approved paid media provider.
-- `event_asset_system` -> HubSpot pages, emails, workflows, lists, or another tenant-approved event asset system.
-- `crm_context_source` -> Salesforce, HubSpot CRM, Supabase, or another read-scoped customer data source.
-- `document_source` -> Google Docs, local docs, or another tenant-approved document surface.
+- `paid_media_platform` -> tenant-approved paid media provider.
+- `event_asset_system` -> tenant-approved event page, email, workflow, list, or asset system.
+- `crm_context_source` -> tenant-approved CRM, CDP, warehouse, or other read-scoped customer data source.
+- `document_source` -> tenant-approved document surface.
 - `memory_patch` -> tenant memory or skill candidate proposal path.
 
 ## Forbidden
 
 - No global tool exposure.
 - No provider config files in this protocol directory or base role package.
-- No runtime- or host-specific behavior such as Slack thread UX or a particular agent runtime.
+- No runtime- or host-specific behavior such as chat thread UX or a particular agent runtime.

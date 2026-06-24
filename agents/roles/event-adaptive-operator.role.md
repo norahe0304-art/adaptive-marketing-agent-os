@@ -35,8 +35,8 @@ role_package:
   non_goals:
     - defining the shared Agent OS protocol
     - storing tenant-specific event truth
-    - binding every event role to Slack
-    - treating a specific Slack adapter as OS core
+    - binding every event role to one collaboration surface
+    - treating a specific chat adapter as OS core
     - publishing pages, sending emails, or activating workflows without approval
 
   inputs:
@@ -67,13 +67,13 @@ role_package:
 
   skills:
     recommended:
-      - hubspot:hubspot
-      - hubspot:hubspot-customer-prep
-      - documents:documents
+      - event_asset_system
+      - crm_context_source
+      - document_packet_draft
       - planning-strategist
     optional:
-      - outlook-calendar:outlook-calendar
-      - google-drive:google-docs
+      - calendar_source
+      - document_source
       - approval-process-reconciliation
 
   playbooks:
@@ -83,9 +83,9 @@ role_package:
         workflow_contract: tenant_overlay_or_workflow
         description: "Turn an event brief into draft page, email, list, workflow, approval packet, and launch readback without publishing or sending unless approved."
         skills_called:
-          - hubspot:hubspot
-          - hubspot:hubspot-customer-prep
-          - documents:documents
+          - event_asset_system
+          - crm_context_source
+          - document_packet_draft
         approval_gate: required_for_apply_lab
         tenant_overlay_required: true
       - id: event-asset-qa
@@ -93,8 +93,8 @@ role_package:
         workflow_contract: tenant_overlay_or_workflow
         description: "Review draft event assets, source evidence, owner approvals, and launch blockers before handoff."
         skills_called:
-          - hubspot:hubspot
-          - documents:documents
+          - event_asset_system
+          - document_packet_draft
           - approval-process-reconciliation
         approval_gate: required_for_apply_lab
         tenant_overlay_required: true
@@ -221,4 +221,4 @@ role_package:
 
 ## Base Role Rule
 
-This file must stay tenant-neutral and host-neutral. A Slack preference, tenant adapter binding, CRM portal binding, or customer launch rule belongs in a tenant overlay.
+This file must stay tenant-neutral and host-neutral. A collaboration-surface preference, tenant adapter binding, CRM portal binding, or customer launch rule belongs in a tenant overlay.

@@ -48,7 +48,7 @@ A consumer pins one protocol version. Two supported mechanisms:
 ```yaml
 protocol_pin:
   name: adaptive-marketing-agent-os
-  version: v0.3.6
+  version: v0.3.7
   mechanism: vendored-copy        # or: git-submodule
   vendored_copy:
     path: protocol/               # protocol tree copied under here
@@ -57,7 +57,7 @@ protocol_pin:
   git_submodule:
     path: protocol/
     url: https://github.com/norahe0304-art/adaptive-marketing-agent-os.git
-    pinned_ref: v0.3.6            # checkout the tag commit, then `git add protocol`
+    pinned_ref: v0.3.7            # checkout the tag commit, then `git add protocol`
 ```
 
 `vendored-copy` is the default: self-contained, offline-verifiable, no submodule
