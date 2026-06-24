@@ -69,20 +69,27 @@ def main() -> int:
                    help="instance id / file slug; default <tenant>-<domain> (e.g. acme-ads)")
     p.add_argument("--domain", required=True, help="marketing domain, e.g. Event")
     p.add_argument("--tenant", required=True, help="tenant/customer name, e.g. Caylent")
-    p.add_argument("--role", required=True, help="role id; a protocol reference role to use/fork, or your own new role id")
-    p.add_argument("--role-mode", choices=["reference", "own", "new"], default="reference",
-                   help="reference: use a shipped reference role; own: fork it into your repo; new: generate a blank role stub to fill")
+    p.add_argument("--role", default=None,
+                   help="role id; omit to generate your own role for the domain (<domain>-operator), or pass a reference role id to reuse/fork")
+    p.add_argument("--role-mode", choices=["reference", "own", "new"], default=None,
+                   help="reference: use a shipped reference role; own: fork it into your repo; new: generate a blank role stub. Default: reference when --role is given, else new")
     p.add_argument("--role-title", default=None, help="display title for a new/own role")
     p.add_argument("--playbook", default="first-playbook", help="kebab playbook id, e.g. event-launch")
     p.add_argument("--title", default=None, help="display title; default derived from --name")
     p.add_argument("--playbook-title", default=None, help="display title for the playbook")
     p.add_argument("--dest", required=True, help="consumer repo path to scaffold into")
-    p.add_argument("--version", default="v0.3.1", help="protocol version to stamp in the pin")
+    p.add_argument("--version", default="v0.3.2", help="protocol version to stamp in the pin")
     p.add_argument("--force", action="store_true", help="overwrite an existing agents/ in dest")
     p.add_argument("--no-validate", action="store_true", help="skip the post-scaffold validation run")
     args = p.parse_args()
     if not args.name:
         args.name = f"{slugify(args.tenant)}-{slugify(args.domain)}"
+    # Universal default: no role given -> generate your own role for the domain.
+    if not args.role:
+        args.role = f"{slugify(args.domain)}-operator"
+        args.role_mode = "new"
+    elif args.role_mode is None:
+        args.role_mode = "reference"
 
     source_role = REPO_ROOT / "agents/roles" / f"{args.role}.role.md"
     if args.role_mode in ("reference", "own") and not source_role.exists():
@@ -134,6 +141,10 @@ def main() -> int:
     print(f"scaffolded consumer instance at {dest}")
     print(f"  protocol pinned -> {dest}/protocol/VERSION ({args.version})")
     print(f"  mounted agent   -> agents/{args.name}.agent.md")
+    if args.role_mode == "reference":
+        print(f"  role            -> protocol/agents/roles/{args.role}.role.md (reference, shared)")
+    else:
+        print(f"  role            -> agents/{args.role}.role.md (your own, {args.role_mode})")
     print(f"  fill the TODO markers from the real scenario, then re-validate.")
 
     if args.no_validate:
