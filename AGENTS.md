@@ -15,11 +15,15 @@ scripts/ - Contract validators and git pre-commit hook (executes role package an
 </directory>
 
 <config>
-README.md - Human entrypoint for v0.1.0 repo purpose, structure, and validation commands
+README.md - Human entrypoint for v0.3.3 repo purpose, structure, and validation commands
 </config>
 
 <config>
 DESIGN.md - Visual design system for strategy and review HTML packets
+</config>
+
+<config>
+VERSION - 协议版本唯一真相源；所有 vX.Y.Z 字面量由 check_version_sync.py 对此审判，scaffold 默认读此
 </config>
 
 <architecture>

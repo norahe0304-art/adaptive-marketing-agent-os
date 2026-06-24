@@ -1,0 +1,23 @@
+# __NAME_TITLE__ — tenant agent instance
+
+A __TENANT__ agent instance grown against the Adaptive Marketing Agent OS
+protocol. The protocol ships the invariants (schema + gates + validators + GEB
+rails); this repo holds the generated, tenant-specific composition and the
+pinned protocol copy. Runtime (Codex / Claude Code / Claude Tag / CLI / Slack)
+is your choice and is never part of the instance.
+
+<directory>
+agents/ - Generated agent instance for __TENANT__ (mounted agent, overlay, entrypoint, playbook workflows). L2 map: agents/AGENTS.md
+</directory>
+
+<directory>
+protocol/ - Pinned copy of the Adaptive Marketing Agent OS protocol (schema + gates + validators + reference roles). Never edited here; re-pin to upgrade. Version: protocol/VERSION
+</directory>
+
+<config>
+protocol/VERSION - The pinned protocol name + version + source commit this instance validates against
+</config>
+
+法则: 极简·稳定·导航·版本精确
+
+[PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md

@@ -21,3 +21,10 @@ if ! python3 "$repo_root/scripts/validate_mounted_agents.py"; then
   echo "fix the mounted agent files above, or run: python3 scripts/validate_mounted_agents.py" >&2
   exit 1
 fi
+
+if ! python3 "$repo_root/scripts/check_version_sync.py"; then
+  echo ""
+  echo "pre-commit blocked: version literals drift from VERSION" >&2
+  echo "fix the version above, or run: python3 scripts/check_version_sync.py" >&2
+  exit 1
+fi
