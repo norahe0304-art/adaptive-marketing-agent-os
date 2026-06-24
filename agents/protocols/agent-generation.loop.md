@@ -34,16 +34,23 @@ and gates are fixed; role / playbook / overlay / GEB-delta content is dynamic.
 ```text
 1. SCENARIO  collect the brief:
      domain, tenant, real systems (providers), approval surface,
-     which base role to mount, which playbooks the agent must run
+     the role (use a reference role, fork one, or define your own),
+     which playbooks the agent must run
 
 2. SCAFFOLD  run the hands (deterministic):
      python3 scripts/scaffold_consumer.py \
        --name <kebab-id> --domain <Domain> --tenant <Tenant> \
-       --role <base-role-id> --playbook <kebab> --dest <consumer-repo>
+       --role <role-id> --role-mode reference|own|new \
+       --playbook <kebab> --dest <consumer-repo>
+     --role-mode reference : mount a shipped reference role (shared, reuse its wisdom)
+     --role-mode own       : fork a reference role into your repo (own + start from a seed)
+     --role-mode new       : generate a blank role stub for your own domain
      -> pins the protocol under <dest>/protocol/
      -> emits a green, minimal overlay + mounted agent + workflow + entrypoint
+        (+ a local role when --role-mode own/new)
 
 3. GENERATE  fill the TODO markers from the scenario (any runtime):
+     role*     -> identity, purpose, abstract surfaces, playbooks   (own/new only)
      overlay   -> source_of_truth, runtime_bindings, approval_surfaces, memory records
      mounted   -> playbook approval/readback lists, runtime_boundaries
      workflow  -> task_graph steps, capability_refs, apply_lab, evidence_packet
@@ -70,10 +77,17 @@ runs, and every post-run change passes the GEB rails. A runtime can invent the
 content; it cannot invent a way around the gates. That is the difference between
 an adaptive agent and a hallucinating one.
 
-## Adding a new base role
+## Roles are dynamic too
 
-If no shipped base role fits the domain, that is a protocol change, not a
-consumer change: add `agents/roles/<domain>-adaptive-operator.role.md` in the
-protocol repo, validate with `scripts/validate_roles.py`, cut a new protocol
-version, and consumers re-pin to it. Base roles are the one part the protocol
-grows centrally; everything else grows in the consumer.
+Marketing domains are unbounded, so the protocol does NOT decide which domains
+exist. It ships the role *schema* and a small library of reference roles
+(`agents/roles/`) as optional seeds. For your domain you may:
+
+- `--role-mode reference` — mount a shipped reference role (reuse its wisdom);
+- `--role-mode own` — fork a reference role into your repo and adapt it;
+- `--role-mode new` — define your own role from the schema-shaped template.
+
+Defining a new domain is a **consumer action, not a protocol change** — no PR, no
+re-pin gate. The only thing the protocol grows centrally is the role *schema*. If
+a role you wrote turns out broadly reusable, you may contribute it back to the
+reference library, but that is optional, never required to ship.

@@ -11,7 +11,7 @@ repo_root="$(git rev-parse --show-toplevel)"
 if ! python3 "$repo_root/scripts/validate_roles.py"; then
   echo ""
   echo "pre-commit blocked: role packages violate role-package.schema.md" >&2
-  echo "fix the role/fixture files above, or run: python3 scripts/validate_roles.py" >&2
+  echo "fix the role files above, or run: python3 scripts/validate_roles.py" >&2
   exit 1
 fi
 

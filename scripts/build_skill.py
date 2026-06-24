@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# [INPUT]: 读取 scripts/scaffold_consumer.py、agents/templates/ 与协议树(agents/protocols, agents/roles, agents/examples, validators)，打包成一个自包含 skill bundle。
+# [INPUT]: 读取 scripts/scaffold_consumer.py、agents/templates/ 与协议树(agents/protocols, agents/roles, validators)，打包成一个自包含 skill bundle。
 # [OUTPUT]: 对外提供 build_skill 打包器；把生成回路装进一个 Claude Code / Codex skill 目录(含 SKILL.md)，别人装上就能长 agent，无需访问本 repo。
 # [POS]: scripts 第三条分发入口的构建器;skill 是协议的派生物，repo 保持纯 spec。
 # [PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
@@ -74,7 +74,7 @@ def build(dest: Path, skill_name: str, version: str) -> None:
     (dest / "agents").mkdir(parents=True)
     (dest / "scripts").mkdir(parents=True)
     # Bundle the protocol snapshot + the hands + the templates (same subset consumers vendor).
-    for sub in ["protocols", "roles", "examples", "templates"]:
+    for sub in ["protocols", "roles", "templates"]:
         shutil.copytree(REPO_ROOT / "agents" / sub, dest / "agents" / sub)
     for script in ["scaffold_consumer.py", "validate_roles.py", "validate_mounted_agents.py"]:
         shutil.copy2(REPO_ROOT / "scripts" / script, dest / "scripts" / script)
@@ -98,7 +98,7 @@ def main() -> int:
     p.add_argument("--dest", default=str(REPO_ROOT / "dist/skill/grow-marketing-agent"),
                    help="output skill directory (default: dist/skill/grow-marketing-agent, gitignored)")
     p.add_argument("--skill-name", default="grow-marketing-agent", help="skill name in SKILL.md frontmatter")
-    p.add_argument("--version", default="v0.1.0", help="protocol version to stamp")
+    p.add_argument("--version", default="v0.3.0", help="protocol version to stamp")
     args = p.parse_args()
 
     dest = Path(args.dest).resolve()

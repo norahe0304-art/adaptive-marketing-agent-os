@@ -2,8 +2,7 @@
 > L2 | 父级: /AGENTS.md
 
 成员清单
-protocols/: Internal guardrails for schema, safety, execution, learning, packaging, onboarding, and validation.
-examples/: Schema fixtures proving role package composition without granting runtime access.
+protocols/: Internal guardrails for schema, safety, execution, learning, packaging, onboarding, consumption, generation, and validation.
 mounted/: Assembled agent definitions that bind a base role, tenant attachment, playbooks, work substrate, and entrypoints. Runtime-neutral; which agent runtime runs it is the user's choice.
 roles/: Tenant-neutral base roles for marketing domains.
 overlays/: Tenant attachments holding stable operating contracts, source pointers, and runtime bindings. Real tenants live in consumer repos; only neutral/domain-proof overlays stay here.

@@ -1,5 +1,5 @@
 <!--
-[INPUT]: Depends on role-package.schema.md, agent-onboarding.contract.md, Ads and Event fixture files.
+[INPUT]: Depends on role-package.schema.md, agent-onboarding.contract.md, and the reference roles in agents/roles/.
 [OUTPUT]: Provides cross-role validation proving shared schema vs domain-specific runtime binding differences.
 [POS]: protocols validation layer for proving the Agent OS is not Ads-only.
 [PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
@@ -7,7 +7,7 @@
 
 # Cross-Role Validation
 
-The shared protocol must be shaped so future domain roles can join without changing the core every time. The Ads and Event fixtures prove the first two distinct consumers; they do not prove every future domain by themselves.
+The shared protocol must be shaped so future domain roles can join without changing the core every time. The Ads and Event reference roles prove two distinct domains conform to one schema; they are optional seeds, not the canon of domains. A consumer may use them, fork them, or define its own role — the schema is the only invariant.
 
 ## Shared Schema
 
@@ -37,8 +37,9 @@ Base roles and tenant overlays stay runtime-neutral. Which agent runtime runs a 
 
 ## Seed Proofs
 
-- The Ads overlay fixture proves domain role plus tenant overlay composition.
-- The Event overlay fixture proves a second domain role plus tenant overlay composition.
+- The `ads-adaptive-operator` reference role proves the Ads domain conforms to the schema.
+- The `event-adaptive-operator` reference role proves a second, different domain conforms to the same schema.
+- Real consumer instances (e.g. the 30x-ads and caylent-event repos) are the live proof that the protocol grows runnable agents across domains.
 
 ## Validation Command
 
@@ -49,7 +50,7 @@ import re
 import yaml
 
 bad = [
-    "required_for_" + "apply",
+    "required_for_" + "apply" + r"(?!_lab)",
     "blocked_until_" + "approval",
     r"post[_-]launch[_-]delta",
     "owner_" + "layer",
@@ -96,7 +97,7 @@ def yaml_block(path):
 
 role_packages = {}
 
-for path in [*Path("agents/roles").glob("*.role.md"), *Path("agents/examples").glob("*-role.fixture.md")]:
+for path in Path("agents/roles").glob("*.role.md"):
     doc = yaml_block(path)
     pkg = doc.get("role_package")
     if not isinstance(pkg, dict):

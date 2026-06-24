@@ -21,9 +21,9 @@ do not live here.
 
 ```
 agents/protocols/   contracts + schemas (this layer)
-agents/roles/       tenant-neutral base roles (reusable product units)
-agents/examples/    schema fixtures = validation proof, green without any tenant
-scripts/            validators + pre-commit hook (the judge)
+agents/roles/       reference roles = optional seeds (use, fork, or replace) + schema proof
+agents/templates/   stubs the generation loop stamps into a consumer instance
+scripts/            validators + scaffolder + skill builder + pre-commit hook
 ```
 
 ## What a consumer holds (the generated instance)
@@ -49,7 +49,7 @@ protocol_pin:
   vendored_copy:
     path: protocol/               # protocol tree copied under here
     stamp: protocol/VERSION       # records name, version, source commit
-    resync: "re-copy agents/{protocols,roles,examples} + scripts at the new tag"
+    resync: "re-copy agents/{protocols,roles} + scripts at the new tag"
   git_submodule:
     path: protocol/
     url: https://github.com/norahe0304-art/adaptive-marketing-agent-os.git
@@ -89,7 +89,7 @@ Green means: the mounted agent resolves its base role (in the pinned protocol),
 its tenant attachment, its work substrate, its entrypoints, and every playbook
 workflow contract — i.e. the instance is correctly assembled against the pinned
 protocol. The protocol repo itself stays green with zero tenants: its mounted
-glob is empty (valid for a spec repo) and `examples/` fixtures prove the schema.
+glob is empty (valid for a spec repo) and the reference roles prove the schema.
 
 ## Lifecycle
 
