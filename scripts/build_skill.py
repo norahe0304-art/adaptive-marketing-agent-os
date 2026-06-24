@@ -91,7 +91,7 @@ def build(dest: Path, skill_name: str, version: str) -> None:
     # Bundle the protocol snapshot + the hands + the templates (same subset consumers vendor).
     for sub in ["protocols", "roles", "templates"]:
         shutil.copytree(REPO_ROOT / "agents" / sub, dest / "agents" / sub)
-    for script in ["scaffold_consumer.py", "validate_roles.py", "validate_mounted_agents.py", "dry_run_agent.py"]:
+    for script in ["scaffold_consumer.py", "validate_roles.py", "validate_mounted_agents.py", "dry_run_agent.py", "check_run_conformance.py"]:
         shutil.copy2(REPO_ROOT / "scripts" / script, dest / "scripts" / script)
     (dest / "SKILL.md").write_text(SKILL_MD.format(skill_name=skill_name))
     try:
