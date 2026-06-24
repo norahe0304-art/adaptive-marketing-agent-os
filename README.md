@@ -19,9 +19,10 @@ that pin this protocol (see `agents/protocols/protocol-consumption.contract.md`)
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/norahe0304-art/adaptive-marketing-agent-os/master/bootstrap.sh | sh -s -- \
-  --domain Ads --tenant Acme --playbook daily-maintenance --dest .
-# generates your own role for the domain (ads-operator) + instance (acme-ads).
-# reuse a curated reference role instead: add --role ads-adaptive-operator
+  --domain <your-domain> --tenant <your-tenant> --playbook <your-playbook> --dest .
+# e.g.  --domain SEO --tenant Acme --playbook content-audit
+# generates your own role (<domain>-operator) + instance (<tenant>-<domain>).
+# reuse a curated reference role instead: add --role <reference-role-id>
 # override the instance id: add --name <id>
 ```
 
@@ -36,7 +37,8 @@ python3 scripts/build_skill.py --dest ~/.claude/skills/grow-marketing-agent
 
 ```bash
 python3 scripts/scaffold_consumer.py \
-  --domain Ads --tenant Acme --playbook daily-maintenance --dest ../acme-ads
+  --domain <your-domain> --tenant <your-tenant> --playbook <your-playbook> --dest <your-repo>
+# e.g.  --domain SEO --tenant Acme --playbook content-audit --dest ../acme-seo
 ```
 
 All three produce the same thing: a consumer instance (mounted agent + overlay +

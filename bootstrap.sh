@@ -7,7 +7,8 @@
 # any runtime (Codex / Claude Code / Claude Tag / CLI / Slack) at the result.
 #
 #   curl -fsSL https://raw.githubusercontent.com/norahe0304-art/adaptive-marketing-agent-os/master/bootstrap.sh | sh -s -- \
-#     --domain Ads --tenant Acme --playbook daily-maintenance --dest .
+#     --domain <your-domain> --tenant <your-tenant> --playbook <your-playbook> --dest .
+#   e.g. --domain SEO --tenant Acme --playbook content-audit
 #   Default: generates your own role (<domain>-operator) + instance (<tenant>-<domain>).
 #   Reuse a reference role: add --role <id>. Override id: add --name <id>.
 #
