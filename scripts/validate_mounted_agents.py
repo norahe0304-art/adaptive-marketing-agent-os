@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-# [INPUT]: 读取 agents/mounted/*.agent.md 的 yaml 块，并检查其 role、tenant attachment、playbook、work_substrate、entrypoints 引用。
+# [INPUT]: 读取 agents/mounted/*.agent.md 的 yaml 块及其 base role 声明；检查 role、tenant attachment、playbook、work_substrate、entrypoints 引用。
 # [OUTPUT]: 对外提供 mounted agent 装配校验器；通过返回 0，违约返回 1 并打印第一个错误。
-# [POS]: scripts mounted-agent 校验器，审判 assembled agent 是否真的接上 role、tenant、playbook、work_substrate；runtime 不在协议内，不校验。
+# [POS]: scripts mounted-agent 校验器，审判 assembled agent 是否接上 role、tenant、work_substrate，且其 playbook 面与 role 声明一致；无 tenant 特例，runtime 不在协议内不校验。
 # [PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
 from __future__ import annotations
 
@@ -41,6 +41,15 @@ def resolve_ref(ref: str) -> Path:
 def require_existing(path: Path, label: str, owner: Path) -> None:
     if not path.exists():
         raise ContractError(f"{owner}: missing {label}: {path}")
+
+
+def role_playbook_ids(role_path: Path) -> set[str]:
+    # The role is the product unit; it declares its callable playbook surface.
+    # Returns the declared id set, or empty if the role lists none (nothing to
+    # enforce against — a role still being filled is not a failure here).
+    pkg = yaml_block(role_path).get("role_package", {})
+    available = (pkg.get("playbooks") or {}).get("available") or []
+    return {p["id"] for p in available if isinstance(p, dict) and "id" in p}
 
 
 def validate_agent(path: Path) -> None:
@@ -110,16 +119,17 @@ def validate_agent(path: Path) -> None:
     playbooks = agent["playbooks"]
     if not isinstance(playbooks, dict) or not playbooks:
         raise ContractError(f"{path}: playbooks must be a non-empty map")
-    if agent["identity"].get("id") == "jetpartners-ads-agent":
-        expected = {
-            "daily-maintenance",
-            "account-review",
-            "keyword-hygiene",
-            "account-health-check",
-            "monthly-report",
-        }
-        if set(playbooks) != expected:
-            raise ContractError(f"{path}: jetpartners-ads-agent playbooks must be {sorted(expected)}")
+    # Declaration-vs-reference, not tenant branches: every playbook a mount
+    # references must be one its base role declares. Completeness (which subset a
+    # tenant exposes) is product policy; consistency (no playbook outside the
+    # role's surface) is the assembly invariant. Source of truth is the role, so
+    # this holds for any role and any tenant — no customer name in the validator.
+    declared = role_playbook_ids(resolve_ref(product["role"]))
+    undeclared = set(playbooks) - declared if declared else set()
+    if undeclared:
+        raise ContractError(
+            f"{path}: playbooks {sorted(undeclared)} are not declared by the role's "
+            f"surface {sorted(declared)}")
     for playbook_id, spec in playbooks.items():
         workflow = spec.get("workflow_contract")
         if not workflow:
@@ -135,7 +145,7 @@ def main() -> int:
     global ROOT
     parser = argparse.ArgumentParser(description="Validate mounted agent assembly against the protocol.")
     parser.add_argument("--root", default=str(REPO_ROOT),
-                        help="repo root to resolve refs against (a consumer repo when JP lives elsewhere)")
+                        help="repo root to resolve refs against (the consumer repo when the instance lives elsewhere)")
     parser.add_argument("--glob", default="agents/mounted/*.agent.md",
                         help="glob (relative to --root) for mounted agent files")
     args = parser.parse_args()

@@ -3,3 +3,7 @@
 
 # skill build output
 /dist/
+
+# Python cache (validators leave these after running)
+__pycache__/
+*.py[cod]
