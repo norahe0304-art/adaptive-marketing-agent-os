@@ -1,0 +1,114 @@
+<!--
+[INPUT]: Depends on role-package.schema.md, agent-onboarding.contract.md, install-mount-lifecycle.protocol.md, and the scripts/ validators.
+[OUTPUT]: Provides the contract for how an external repo pins, references, and validates this protocol to grow its own agent.
+[POS]: protocols consumption boundary; turns the protocol from one local repo into a versioned spec any repo can read.
+[PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
+-->
+
+# Protocol Consumption Contract
+
+This protocol is a product other repos consume. A consumer reads the protocol,
+fills in role + playbook + tenant truth for its real scenario, and points any
+agent runtime at the result. This file defines how that consumption works so an
+instance can live in a different repo and still validate.
+
+The protocol ships only the invariants: **schema + gates + validators + GEB
+learning rails**. role / playbook / overlay / GEB-delta *content* is generated
+per scenario by the consumer. Runtime is the consumer's choice. Tenant instances
+do not live here.
+
+## What the protocol ships (the invariant)
+
+```
+agents/protocols/   contracts + schemas (this layer)
+agents/roles/       tenant-neutral base roles (reusable product units)
+agents/examples/    schema fixtures = validation proof, green without any tenant
+scripts/            validators + pre-commit hook (the judge)
+```
+
+## What a consumer holds (the generated instance)
+
+```
+<consumer-repo>/
+  protocol/                 pinned copy of this protocol at a version (see Pinning)
+  agents/
+    <tenant>.overlay.md     tenant truth; mounts_on a base role id
+    <tenant>.agent.md       mounted agent: role + tenant_attachment + work_substrate + entrypoints
+    workflows/*.workflow.md  playbook contracts (reference role/overlay by id)
+```
+
+## Pinning
+
+A consumer pins one protocol version. Two supported mechanisms:
+
+```yaml
+protocol_pin:
+  name: adaptive-marketing-agent-os
+  version: v0.1.0
+  mechanism: vendored-copy        # or: git-submodule
+  vendored_copy:
+    path: protocol/               # protocol tree copied under here
+    stamp: protocol/VERSION       # records name, version, source commit
+    resync: "re-copy agents/{protocols,roles,examples} + scripts at the new tag"
+  git_submodule:
+    path: protocol/
+    url: https://github.com/norahe0304-art/adaptive-marketing-agent-os.git
+    pinned_ref: v0.1.0            # checkout the tag commit, then `git add protocol`
+```
+
+`vendored-copy` is the default: self-contained, offline-verifiable, no submodule
+ceremony. `git-submodule` is the stricter pin when the consumer wants the exact
+commit tracked by git.
+
+## Reference resolution
+
+References are ordinary relative paths, resolved against the consumer repo root:
+
+- **protocol-layer refs** point into the pinned copy: `protocol/agents/roles/...`,
+  `protocol/agents/protocols/...`.
+- **instance-layer refs** are consumer-local: `agents/<tenant>.overlay.md`,
+  `agents/workflows/...`.
+- **work_substrate / entrypoints** are consumer-local or absolute machine paths.
+- **role / overlay inside a workflow** are referenced by **id**, not path, so
+  workflows are path-portable and move between repos unchanged.
+
+No URI scheme, no resolver: because the protocol is physically present at
+`protocol/`, every path just resolves.
+
+## Validation
+
+The consumer runs the protocol's own validator against its repo:
+
+```bash
+python3 protocol/scripts/validate_mounted_agents.py \
+  --root . \
+  --glob 'agents/*.agent.md'
+```
+
+Green means: the mounted agent resolves its base role (in the pinned protocol),
+its tenant attachment, its work substrate, its entrypoints, and every playbook
+workflow contract — i.e. the instance is correctly assembled against the pinned
+protocol. The protocol repo itself stays green with zero tenants: its mounted
+glob is empty (valid for a spec repo) and `examples/` fixtures prove the schema.
+
+## Lifecycle
+
+```text
+pin protocol@version
+  -> generate overlay + mounted + workflows for the real scenario
+  -> validate against the pinned protocol
+  -> point any runtime (Codex / Claude Code / Claude Tag / ...) at <tenant>.agent.md
+  -> run -> readback -> route GEB delta
+  -> bump protocol version when the spec evolves; re-pin and re-validate
+```
+
+## Rules
+
+- A consumer never edits files under `protocol/`. Protocol changes happen in the
+  protocol repo, get a new version, and reach the consumer through a re-pin.
+- A consumer never copies tenant truth, credentials, or live mutation permission
+  into `protocol/`.
+- Generated role/playbook/overlay/GEB content is free; the validator is the gate
+  that keeps every generated artifact safe and composable.
+- Bumping the protocol version is the only way new shared semantics (schema
+  fields, capability profiles, approval states, GEB routes) reach consumers.

@@ -2,14 +2,11 @@
 > L2 | 父级: /agents/AGENTS.md
 
 成员清单
-jetpartners-ads-readonly-review.workflow.md: Internal workflow contract behind the JP Ads review playbook, covering lead quality/search-term review plus approval-gated apply lab.
-jetpartners-ads-daily-maintenance.workflow.md: Internal workflow contract behind the JP Ads daily maintenance playbook, mapping 30x-ads morning brief, decision queue, apply-lab gate, dashboard readback, and learning route.
-jetpartners-ads-keyword-hygiene.workflow.md: Internal workflow contract behind the JP Ads keyword hygiene playbook, covering search-term triage, negatives/positives, DataForSEO evidence, conflict audits, and GEB tail updates.
-jetpartners-ads-account-health-check.workflow.md: Internal workflow contract behind the JP Ads account health check playbook, covering readiness probes, drift scans, blocker diagnosis, owner actions, and GEB tail updates.
-jetpartners-ads-monthly-report.workflow.md: Internal workflow contract behind the JP Ads monthly report playbook, covering month-window evidence, client-facing narrative, delivery gate, readback, and GEB tail updates.
-caylent-event-launch.workflow.md: Internal workflow contract behind the Caylent Event launch playbook, covering HubSpot draft kit, approval loop, and draft-asset apply lab.
+caylent-event-launch.workflow.md: Internal workflow contract behind the Caylent Event launch playbook, covering HubSpot draft kit, approval loop, and draft-asset apply lab. In-repo Event-domain proof.
+
+注：tenant 专属 workflow 随实例搬到消费方 repo。JP Ads 的五个 workflow 已搬到 30x-ads/agents/workflows/。workflow 用 id 引用 role/overlay，所以跨 repo 搬迁零改动。
 
 边界
-workflows/ defines machine-readable execution contracts behind role playbooks. A workflow may call skills and define approval-gated `apply_lab` steps, but it does not execute platform mutations itself.
+workflows/ defines machine-readable execution contracts behind role playbooks. A workflow may call skills and define approval-gated `apply_lab` steps, but it does not execute platform mutations itself. Tenant-specific workflows live in consumer repos; only neutral/domain-proof workflows stay here.
 
 [PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md

@@ -5,6 +5,7 @@
 # [PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
 from __future__ import annotations
 
+import argparse
 import re
 import sys
 from pathlib import Path
@@ -12,6 +13,10 @@ from pathlib import Path
 import yaml
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
+# Two-repo aware: refs resolve against ROOT. In the protocol repo ROOT is this
+# repo; in a consumer repo (e.g. 30x-ads) ROOT is the consumer, where the
+# protocol is vendored under protocol/ and instance files live under agents/.
+ROOT = REPO_ROOT
 
 
 class ContractError(Exception):
@@ -30,7 +35,7 @@ def resolve_ref(ref: str) -> Path:
     path = Path(ref)
     if path.is_absolute():
         return path
-    return REPO_ROOT / path
+    return ROOT / path
 
 
 def require_existing(path: Path, label: str, owner: Path) -> None:
@@ -127,10 +132,21 @@ def validate_agent(path: Path) -> None:
 
 
 def main() -> int:
-    targets = sorted((REPO_ROOT / "agents/mounted").glob("*.agent.md"))
+    global ROOT
+    parser = argparse.ArgumentParser(description="Validate mounted agent assembly against the protocol.")
+    parser.add_argument("--root", default=str(REPO_ROOT),
+                        help="repo root to resolve refs against (a consumer repo when JP lives elsewhere)")
+    parser.add_argument("--glob", default="agents/mounted/*.agent.md",
+                        help="glob (relative to --root) for mounted agent files")
+    args = parser.parse_args()
+    ROOT = Path(args.root).resolve()
+
+    targets = sorted(ROOT.glob(args.glob))
     if not targets:
-        print("validate_mounted_agents: no mounted agents found", file=sys.stderr)
-        return 1
+        # A spec/protocol repo carries no live tenant; the assembly proof lives
+        # in consumer repos. Empty is valid, not a failure.
+        print(f"validate_mounted_agents: no mounted agents under {ROOT}/{args.glob} (spec repo, ok)")
+        return 0
 
     for path in targets:
         try:
@@ -138,7 +154,11 @@ def main() -> int:
         except ContractError as err:
             print(f"FAIL  {err}", file=sys.stderr)
             return 1
-        print(f"ok    {path.relative_to(REPO_ROOT)}")
+        try:
+            rel = path.relative_to(ROOT)
+        except ValueError:
+            rel = path
+        print(f"ok    {rel}")
 
     print(f"PASS  {len(targets)} mounted agent(s) conform")
     return 0
