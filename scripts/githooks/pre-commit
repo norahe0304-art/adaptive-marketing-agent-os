@@ -28,3 +28,10 @@ if ! python3 "$repo_root/scripts/check_version_sync.py"; then
   echo "fix the version above, or run: python3 scripts/check_version_sync.py" >&2
   exit 1
 fi
+
+if ! python3 "$repo_root/scripts/check_schema_sync.py"; then
+  echo ""
+  echo "pre-commit blocked: validate_roles.py constants drift from the schema docs" >&2
+  echo "fix the drift above, or run: python3 scripts/check_schema_sync.py" >&2
+  exit 1
+fi
