@@ -4,13 +4,18 @@ A runtime-neutral **protocol** for growing marketing agents. v0.3.9.
 
 > **New here? → [QUICKSTART.md](QUICKSTART.md)** — grow your own agent in one command.
 
-The protocol is four things: **role** (who the agent is) · **playbook** (the
-work it does, which calls skills) · **run-state ledger** (structured readback,
-reusable-learning verdicts, and verified memory pointers) · **GEB learning**
-(how it improves after each run). Which runtime runs the agent — Codex, Claude Code, Hermes, browser
-automation, a CLI, or an internal tool — is **your choice and is never durable
-agent state**. The approval/evidence gates live in the playbook, so whatever
-runtime runs the work must pass them.
+The protocol is three things: **role** (who the agent is) · **playbook** (the
+work it does, which calls skills) · **GEB learning** (how it improves after each
+run). That is the whole idea. Everything else — the run-state ledger, adapters,
+the validators, the contracts — is **depth in service of those three**, reached
+for only when you need it. Which runtime runs the agent — Codex, Claude Code, a
+CLI, an internal tool — is **your choice and is never durable agent state**. The
+approval/evidence gates live in the playbook, so whatever runtime runs the work
+must pass them.
+
+> **Stability.** v0.3.9 is the stable baseline. The surface is **frozen**: a new
+> contract, adapter, judge, or field is added only to close a real bug, never to
+> gild. Minimal · stable · navigable — in that order.
 
 This repo is **pure spec**: schema, gates, validators, a generation loop, and
 tenant-neutral base roles. Real tenant agents live in their own consumer repos
