@@ -42,7 +42,7 @@ role_package:
     available:
       - id: event-launch-kit
         name: Event Launch Kit
-        workflow_contract: agents/workflows/caylent-event-launch.workflow.md
+        workflow_contract: tenant_overlay_or_workflow
         description: Caylent event brief to HubSpot draft assets, approval packet, and launch readback.
         skills_called:
           - hubspot:hubspot
