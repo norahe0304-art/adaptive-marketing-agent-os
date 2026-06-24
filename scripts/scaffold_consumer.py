@@ -6,6 +6,7 @@
 from __future__ import annotations
 
 import argparse
+import re
 import shutil
 import subprocess
 import sys
@@ -13,6 +14,10 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 TEMPLATES = REPO_ROOT / "agents/templates"
+
+
+def slugify(text: str) -> str:
+    return re.sub(r"[^a-z0-9]+", "-", text.lower()).strip("-")
 
 
 def title_case(name: str) -> str:
@@ -60,7 +65,8 @@ def render(template: str, repl: dict) -> str:
 
 def main() -> int:
     p = argparse.ArgumentParser(description="Scaffold a consumer agent instance pinned to this protocol.")
-    p.add_argument("--name", required=True, help="kebab id, e.g. caylent-event")
+    p.add_argument("--name", default=None,
+                   help="instance id / file slug; default <tenant>-<domain> (e.g. acme-ads)")
     p.add_argument("--domain", required=True, help="marketing domain, e.g. Event")
     p.add_argument("--tenant", required=True, help="tenant/customer name, e.g. Caylent")
     p.add_argument("--role", required=True, help="role id; a protocol reference role to use/fork, or your own new role id")
@@ -71,10 +77,12 @@ def main() -> int:
     p.add_argument("--title", default=None, help="display title; default derived from --name")
     p.add_argument("--playbook-title", default=None, help="display title for the playbook")
     p.add_argument("--dest", required=True, help="consumer repo path to scaffold into")
-    p.add_argument("--version", default="v0.3.0", help="protocol version to stamp in the pin")
+    p.add_argument("--version", default="v0.3.1", help="protocol version to stamp in the pin")
     p.add_argument("--force", action="store_true", help="overwrite an existing agents/ in dest")
     p.add_argument("--no-validate", action="store_true", help="skip the post-scaffold validation run")
     args = p.parse_args()
+    if not args.name:
+        args.name = f"{slugify(args.tenant)}-{slugify(args.domain)}"
 
     source_role = REPO_ROOT / "agents/roles" / f"{args.role}.role.md"
     if args.role_mode in ("reference", "own") and not source_role.exists():

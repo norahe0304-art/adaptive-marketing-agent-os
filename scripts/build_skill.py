@@ -31,20 +31,21 @@ is never baked in: this skill GENERATES the agent; the user points any runtime
 ## When invoked
 
 1. Collect the scenario from the user (ask only for what is missing):
-   - `name`     kebab id, e.g. `acme-ads`
    - `domain`   marketing domain, e.g. `Ads` or `Event`
    - `tenant`   customer name, e.g. `Acme`
    - `role`     base role id in the protocol — list available roles with:
                 `ls "$SKILL_DIR/agents/roles"/*.role.md`
    - `playbook` kebab playbook id, e.g. `daily-maintenance`
    - `dest`     the user's repo to scaffold into (default: current directory)
+   - `role-mode` reference (use a shipped role) | own (fork one) | new (define your own); default reference
+   - `name`     optional — instance id; defaults to `<tenant>-<domain>` (e.g. acme-ads)
 
 2. Run the scaffolder (the hands — deterministic):
 
    ```bash
    python3 "$SKILL_DIR/scripts/scaffold_consumer.py" \\
-     --name <name> --domain <Domain> --tenant <Tenant> \\
-     --role <role-id> --playbook <playbook> --dest <dest>
+     --domain <Domain> --tenant <Tenant> \\
+     --role <role-id> --role-mode <mode> --playbook <playbook> --dest <dest>
    ```
 
    It pins the bundled protocol under `<dest>/protocol/` and stamps a green,
@@ -98,7 +99,7 @@ def main() -> int:
     p.add_argument("--dest", default=str(REPO_ROOT / "dist/skill/grow-marketing-agent"),
                    help="output skill directory (default: dist/skill/grow-marketing-agent, gitignored)")
     p.add_argument("--skill-name", default="grow-marketing-agent", help="skill name in SKILL.md frontmatter")
-    p.add_argument("--version", default="v0.3.0", help="protocol version to stamp")
+    p.add_argument("--version", default="v0.3.1", help="protocol version to stamp")
     args = p.parse_args()
 
     dest = Path(args.dest).resolve()
