@@ -150,8 +150,9 @@ degrade to manual (such as asking the user to paste in what the connector would
 have read). It proposes the binding:
 
 - names the unbound surface and its overlay `binding_rule`;
-- names a concrete connector to wire in the user's chosen runtime (an MCP server,
-  a CLI, a browser session, ...) — which runtime stays the user's choice;
+- names the connector type that best fits the surface and the chosen runtime —
+  MCP server, CLI, browser session, API binding, ... — with no default toward any
+  one kind; which runtime, and which connector, stays the user's choice;
 - gives the exact `runtime_bindings` entry it would add to the tenant overlay, as
   a reference only — secrets stay in env or a secret store, never in the overlay;
 - requests authorization, then stays at `propose` until it is granted.
