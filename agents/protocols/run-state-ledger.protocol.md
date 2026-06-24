@@ -94,3 +94,22 @@ geb_delta_record:
 - Runtime metrics such as token usage are optional and must stay under `runtime.metrics`; they are diagnostic, not memory.
 - Apply-mode records require an active `ApprovalReceipt` and post-apply readback.
 - Protocol-level changes are proposed as `protocol_update`; consumer repos do not edit pinned `protocol/` directly.
+
+## Conformance Replay
+
+Structural validators prove a contract is well-formed; they cannot prove a run
+behaved. The readback is the run's own declared record, so it can be judged after
+the fact:
+
+```bash
+python3 protocol/scripts/check_run_conformance.py --root . --glob 'agents/state/runs/*.readback.yaml'
+```
+
+It fails the run if the readback violates an invariant no static check could
+reach: an `applied` action without active approval, evidence, and a post-apply
+readback (propose-first broken); a missing or incomplete reusable-learning
+verdict (silent success); or a literal secret stored instead of a reference. This
+moves behavioral compliance from "trust the runtime" to "the run's own record is
+judged." Honest limit: it judges what the readback declares, not ground truth — a
+lying readback can pass, so the replay complements, never replaces, the approval
+and evidence gates.

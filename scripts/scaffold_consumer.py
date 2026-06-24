@@ -50,7 +50,7 @@ def vendor_protocol(dest: Path, version: str) -> None:
     # Ship the invariants + the reference-role library (optional seeds you may fork).
     for sub in ["protocols", "roles"]:
         shutil.copytree(REPO_ROOT / "agents" / sub, proto / "agents" / sub)
-    for script in ["validate_roles.py", "validate_mounted_agents.py", "dry_run_agent.py"]:
+    for script in ["validate_roles.py", "validate_mounted_agents.py", "dry_run_agent.py", "check_run_conformance.py"]:
         shutil.copy2(REPO_ROOT / "scripts" / script, proto / "scripts" / script)
     (proto / "VERSION").write_text(
         "name: adaptive-marketing-agent-os\n"
