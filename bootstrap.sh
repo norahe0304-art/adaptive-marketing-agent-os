@@ -7,8 +7,9 @@
 # any runtime (Codex / Claude Code / Claude Tag / CLI / Slack) at the result.
 #
 #   curl -fsSL https://raw.githubusercontent.com/norahe0304-art/adaptive-marketing-agent-os/master/bootstrap.sh | sh -s -- \
-#     --name acme-ads --domain Ads --tenant Acme \
+#     --domain Ads --tenant Acme \
 #     --role ads-adaptive-operator --playbook daily-maintenance --dest .
+#   (--name defaults to <tenant>-<domain>, e.g. acme-ads; pass --name to override)
 #
 # Env overrides: AMAO_VERSION (default v0.1.0), AMAO_REPO (clone URL).
 # ============================================================

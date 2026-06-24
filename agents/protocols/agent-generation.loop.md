@@ -39,9 +39,10 @@ and gates are fixed; role / playbook / overlay / GEB-delta content is dynamic.
 
 2. SCAFFOLD  run the hands (deterministic):
      python3 scripts/scaffold_consumer.py \
-       --name <kebab-id> --domain <Domain> --tenant <Tenant> \
+       --domain <Domain> --tenant <Tenant> \
        --role <role-id> --role-mode reference|own|new \
        --playbook <kebab> --dest <consumer-repo>
+     (--name defaults to <tenant>-<domain>; pass --name to override)
      --role-mode reference : mount a shipped reference role (shared, reuse its wisdom)
      --role-mode own       : fork a reference role into your repo (own + start from a seed)
      --role-mode new       : generate a blank role stub for your own domain
