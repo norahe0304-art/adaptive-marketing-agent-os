@@ -15,5 +15,10 @@ Rules:
 - Tenant overlays or workflow runtime bindings may point those surfaces at MCP-backed providers.
 - Secret values stay in environment variables or secret stores; overlays may store only references.
 - A missing MCP binding blocks apply and produces a readback; it must not mutate the base role.
+- That readback must also propose the binding: name the unbound surface, the MCP
+  provider it would wire, and the exact overlay `runtime_bindings` reference to add
+  (a reference only, no secret), then request authorization. Blocking is the safe
+  floor; proposing the binding is the generative half — never degrade to asking the
+  user for screenshots of what the connector would have read.
 
 This keeps MCP useful without making the agent depend on one runtime host.

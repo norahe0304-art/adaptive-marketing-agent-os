@@ -140,6 +140,26 @@ Rules:
 - Runtime bindings in the tenant overlay must map every referenced abstract surface before execution starts.
 - If a step needs a surface not listed by the role, stop and propose a role or workflow patch through GEB.
 
+## Unbound Surface Binding
+
+A named abstract surface may have no reachable runtime connector in the current
+runtime: the overlay maps the surface to a provider, but no connector is wired,
+or the wired one is unreachable. Blocking apply on a missing binding is the safe
+floor — but the agent must not stop at "I cannot," and must never silently
+degrade to manual (such as asking the user to paste in what the connector would
+have read). It proposes the binding:
+
+- names the unbound surface and its overlay `binding_rule`;
+- names a concrete connector to wire in the user's chosen runtime (an MCP server,
+  a CLI, a browser session, ...) — which runtime stays the user's choice;
+- gives the exact `runtime_bindings` entry it would add to the tenant overlay, as
+  a reference only — secrets stay in env or a secret store, never in the overlay;
+- requests authorization, then stays at `propose` until it is granted.
+
+Proposing the binding is the generative half of the same rule that blocks apply
+on a missing binding. The agent closes the gap it found instead of handing it
+back.
+
 ## Example Runtime Bindings
 
 Concrete runtime bindings may map abstract surfaces like this:
