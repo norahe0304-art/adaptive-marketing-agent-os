@@ -33,19 +33,20 @@ is never baked in: this skill GENERATES the agent; the user points any runtime
 1. Collect the scenario from the user (ask only for what is missing):
    - `domain`   marketing domain, e.g. `Ads` or `Event`
    - `tenant`   customer name, e.g. `Acme`
-   - `role`     base role id in the protocol — list available roles with:
-                `ls "$SKILL_DIR/agents/roles"/*.role.md`
    - `playbook` kebab playbook id, e.g. `daily-maintenance`
    - `dest`     the user's repo to scaffold into (default: current directory)
-   - `role-mode` reference (use a shipped role) | own (fork one) | new (define your own); default reference
-   - `name`     optional — instance id; defaults to `<tenant>-<domain>` (e.g. acme-ads)
+   - `role`     optional — omit to generate your own role for the domain
+                (`<domain>-operator`); pass a reference role id to reuse one.
+                list reference roles: `ls "$SKILL_DIR/agents/roles"/*.role.md`
+   - `name`     optional — instance id; defaults to `<tenant>-<domain>`
 
 2. Run the scaffolder (the hands — deterministic):
 
    ```bash
+   # default: generate your own role for the domain
    python3 "$SKILL_DIR/scripts/scaffold_consumer.py" \\
-     --domain <Domain> --tenant <Tenant> \\
-     --role <role-id> --role-mode <mode> --playbook <playbook> --dest <dest>
+     --domain <Domain> --tenant <Tenant> --playbook <playbook> --dest <dest>
+   # reuse a curated reference role instead: add --role <id> [--role-mode own]
    ```
 
    It pins the bundled protocol under `<dest>/protocol/` and stamps a green,
@@ -99,7 +100,7 @@ def main() -> int:
     p.add_argument("--dest", default=str(REPO_ROOT / "dist/skill/grow-marketing-agent"),
                    help="output skill directory (default: dist/skill/grow-marketing-agent, gitignored)")
     p.add_argument("--skill-name", default="grow-marketing-agent", help="skill name in SKILL.md frontmatter")
-    p.add_argument("--version", default="v0.3.1", help="protocol version to stamp")
+    p.add_argument("--version", default="v0.3.2", help="protocol version to stamp")
     args = p.parse_args()
 
     dest = Path(args.dest).resolve()

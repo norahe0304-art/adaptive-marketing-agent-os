@@ -40,15 +40,14 @@ and gates are fixed; role / playbook / overlay / GEB-delta content is dynamic.
 2. SCAFFOLD  run the hands (deterministic):
      python3 scripts/scaffold_consumer.py \
        --domain <Domain> --tenant <Tenant> \
-       --role <role-id> --role-mode reference|own|new \
        --playbook <kebab> --dest <consumer-repo>
-     (--name defaults to <tenant>-<domain>; pass --name to override)
-     --role-mode reference : mount a shipped reference role (shared, reuse its wisdom)
-     --role-mode own       : fork a reference role into your repo (own + start from a seed)
-     --role-mode new       : generate a blank role stub for your own domain
+     default (no --role)         : generate your own role <domain>-operator (role-mode new)
+     --role <id>                 : reuse a shipped reference role (role-mode reference)
+     --role <id> --role-mode own : fork a reference role into your repo and adapt it
+     --name <id>                 : override the instance id (default <tenant>-<domain>)
      -> pins the protocol under <dest>/protocol/
      -> emits a green, minimal overlay + mounted agent + workflow + entrypoint
-        (+ a local role when --role-mode own/new)
+        (+ a local role, unless you referenced a shipped one)
 
 3. GENERATE  fill the TODO markers from the scenario (any runtime):
      role*     -> identity, purpose, abstract surfaces, playbooks   (own/new only)
