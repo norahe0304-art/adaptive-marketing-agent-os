@@ -1,0 +1,179 @@
+<!--
+[INPUT]: Depends on protocol/agents/protocols/role-package.schema.md, capability-boundary.schema.md, and geb-semantic-delta.md.
+[OUTPUT]: Provides a consumer-owned base role for the __DOMAIN__ domain.
+[POS]: consumer instance base role, generated from the role template; define your own domain here. Reference roles in protocol/agents/roles/ are optional seeds you may fork instead.
+[PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
+-->
+
+# __ROLE_TITLE__ Role
+
+A consumer-owned base role for the __DOMAIN__ domain. The protocol ships the role
+*schema* and optional reference roles; this is your own role, generated and owned
+in your repo. It stays tenant-neutral — customer truth belongs in the overlay.
+
+```yaml
+role_package:
+  identity:
+    id: __ROLE_ID__
+    name: __ROLE_TITLE__
+    version: 0.1.0
+    domain: __DOMAIN__
+    layer: base_role
+
+  purpose:
+    - "TODO: what this role diagnoses or produces in the __DOMAIN__ domain"
+    - Execute only through explicit capability and approval gates.
+    - Route durable lessons into GEB deltas instead of hidden prompt drift.
+
+  when_to_use:
+    - "TODO: list the situations this role is for"
+
+  non_goals:
+    - defining the shared Agent OS protocol
+    - storing tenant-specific facts
+    - live mutation without an approval receipt
+
+  inputs:
+    brief:
+      required: true
+      description: "goal, scope, time window, and expected output"
+    tenant_overlay:
+      required: false
+      description: stable operating contract and source pointers for a specific customer
+    evidence_sources:
+      required: true
+      description: "TODO: the evidence classes this role reads"
+
+  outputs:
+    - diagnosis
+    - proposal
+    - approval_packet
+    - evidence_readback
+    - post_run_delta
+
+  role_instructions:
+    operating_principles:
+      - Separate observation from mutation.
+      - Prefer read-only review and proposal when risk is unclear.
+      - Never promote a tenant observation into the base role.
+      - "TODO: add the hard-won operating principles of this domain"
+
+  skills:
+    recommended:
+      - "TODO: atomic actions this role may call (e.g. an audit or lookup skill)"
+    optional: []
+
+  playbooks:
+    available:
+      - id: __PLAYBOOK__
+        name: __PLAYBOOK_TITLE__
+        workflow_contract: tenant_overlay_or_workflow
+        description: "TODO: the business job this playbook runs"
+        skills_called: []
+        approval_gate: required_for_apply_lab
+        tenant_overlay_required: true
+
+  memory_scope:
+    base_role_memory:
+      allowed:
+        - domain operating principles
+        - reusable heuristics
+        - workflow templates
+      forbidden:
+        - tenant ids
+        - tenant performance facts
+        - tenant contacts
+        - tenant positioning
+
+  runtime_requirements:
+    binding_owner: tenant_overlay_or_workflow
+    abstract_surfaces:
+      - primary_source
+      - memory_patch
+    concrete_bindings_forbidden:
+      - provider account IDs
+      - MCP server config
+      - plugin install state
+      - runtime or host binding
+      - project secrets
+
+  capability_manifest:
+    boundary_schema: protocol/agents/protocols/capability-boundary.schema.md
+    default_profile: read_observe_propose
+    apply_lab_owner: workflow
+    surfaces:
+      primary_source:
+        profile: read_observe_propose
+      memory_patch:
+        profile: propose_only
+
+  approval_policy:
+    default_state: not_requested
+    future_live_action_state: blocked_by_runtime_review
+    receipt_schema: protocol/agents/protocols/approval-evidence.schema.md#ApprovalReceipt
+    approval_required_for:
+      - "TODO: list mutations that need a typed human receipt"
+      - memory promotion beyond tenant overlay
+    approval_packet_requires:
+      - proposed action
+      - reason
+      - expected impact
+      - evidence links
+      - rollback plan or irreversible-action note
+
+  evidence_contract:
+    artifact_schema: protocol/agents/protocols/approval-evidence.schema.md#EvidenceArtifact
+    required:
+      - source name
+      - source URL or export path
+      - time window
+      - owner or requester
+      - readback summary
+    forbidden:
+      - uncited claims
+      - hidden tenant memory updates
+      - unapproved live mutation claims
+
+  lifecycle:
+    states:
+      - triggered
+      - self_checked
+      - scoped
+      - evidence_collected
+      - plan_drafted
+      - approval_ready
+      - executed_or_proposed
+      - readback_complete
+      - post_run_delta_routed
+
+  success_criteria:
+    - The role can produce a proposal without tenant facts.
+    - Any tenant fact enters through an overlay or cited evidence.
+    - Every run ends with evidence readback and post_run_delta routing.
+
+  learning_rules:
+    routes:
+      memory: tenant-specific stable facts
+      playbook: repeated domain operating rule
+      workflow: repeated multi-step process
+      skill: stable repeatable execution procedure
+      protocol: reusable OS-level constraint
+    promotion_requires:
+      - repeated evidence
+      - owner
+      - expiry or review date
+      - target layer
+      - contradiction check
+
+  versioning:
+    owner: __TENANT__
+    review_gate: ""
+    status: draft
+    change_log: []
+```
+
+## Base Role Rule
+
+This file stays tenant-neutral. Customer truth belongs in the overlay; run outputs
+belong in evidence packets plus post_run_delta routes. It is a starting point —
+fill every `TODO` for your domain, or fork a protocol reference role instead.

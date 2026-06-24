@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# [INPUT]: 读取 agents/templates/*.tmpl 与协议树(agents/protocols, agents/roles, agents/examples, scripts/validate_*.py)，按场景参数生成一个消费方 agent 实例。
+# [INPUT]: 读取 agents/templates/*.tmpl 与协议树(agents/protocols, agents/roles, scripts/validate_*.py)，按场景参数生成一个消费方 agent 实例。
 # [OUTPUT]: 对外提供 scaffold_consumer 脚手架；在 <dest> 下盖出 pin 好协议的最小可校验 agent 实例骨架。
 # [POS]: scripts 生成回路的「手」，确定性盖骨架;内容由 runtime 填 TODO，validator 把关。
 # [PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
@@ -37,7 +37,8 @@ def vendor_protocol(dest: Path, version: str) -> None:
         shutil.rmtree(proto)
     (proto / "agents").mkdir(parents=True)
     (proto / "scripts").mkdir(parents=True)
-    for sub in ["protocols", "roles", "examples"]:
+    # Ship the invariants + the reference-role library (optional seeds you may fork).
+    for sub in ["protocols", "roles"]:
         shutil.copytree(REPO_ROOT / "agents" / sub, proto / "agents" / sub)
     for script in ["validate_roles.py", "validate_mounted_agents.py"]:
         shutil.copy2(REPO_ROOT / "scripts" / script, proto / "scripts" / script)
@@ -46,7 +47,7 @@ def vendor_protocol(dest: Path, version: str) -> None:
         f"version: {version}\n"
         f"source_commit: {source_commit()}\n"
         "mechanism: vendored-copy\n"
-        "resync: re-run scaffold or re-copy agents/{protocols,roles,examples} + scripts validators at the new tag\n"
+        "resync: re-run scaffold or re-copy agents/{protocols,roles} + scripts validators at the new tag\n"
     )
 
 
@@ -62,19 +63,24 @@ def main() -> int:
     p.add_argument("--name", required=True, help="kebab id, e.g. caylent-event")
     p.add_argument("--domain", required=True, help="marketing domain, e.g. Event")
     p.add_argument("--tenant", required=True, help="tenant/customer name, e.g. Caylent")
-    p.add_argument("--role", required=True, help="base role id in the protocol, e.g. event-adaptive-operator")
+    p.add_argument("--role", required=True, help="role id; a protocol reference role to use/fork, or your own new role id")
+    p.add_argument("--role-mode", choices=["reference", "own", "new"], default="reference",
+                   help="reference: use a shipped reference role; own: fork it into your repo; new: generate a blank role stub to fill")
+    p.add_argument("--role-title", default=None, help="display title for a new/own role")
     p.add_argument("--playbook", default="first-playbook", help="kebab playbook id, e.g. event-launch")
     p.add_argument("--title", default=None, help="display title; default derived from --name")
     p.add_argument("--playbook-title", default=None, help="display title for the playbook")
     p.add_argument("--dest", required=True, help="consumer repo path to scaffold into")
-    p.add_argument("--version", default="v0.1.0", help="protocol version to stamp in the pin")
+    p.add_argument("--version", default="v0.3.0", help="protocol version to stamp in the pin")
     p.add_argument("--force", action="store_true", help="overwrite an existing agents/ in dest")
     p.add_argument("--no-validate", action="store_true", help="skip the post-scaffold validation run")
     args = p.parse_args()
 
-    role_file = REPO_ROOT / "agents/roles" / f"{args.role}.role.md"
-    if not role_file.exists():
-        print(f"FAIL  unknown base role '{args.role}': {role_file} not found", file=sys.stderr)
+    source_role = REPO_ROOT / "agents/roles" / f"{args.role}.role.md"
+    if args.role_mode in ("reference", "own") and not source_role.exists():
+        avail = ", ".join(sorted(p.name[:-len(".role.md")] for p in (REPO_ROOT / "agents/roles").glob("*.role.md")))
+        print(f"FAIL  no reference role '{args.role}' (available: {avail}); use --role-mode new to define your own",
+              file=sys.stderr)
         return 1
 
     dest = Path(args.dest).resolve()
@@ -83,12 +89,20 @@ def main() -> int:
         print(f"FAIL  {agents} already exists (use --force to overwrite)", file=sys.stderr)
         return 1
 
+    # reference = share the protocol's role; own/new = the consumer owns its role.
+    if args.role_mode == "reference":
+        role_path = f"protocol/agents/roles/{args.role}.role.md"
+    else:
+        role_path = f"agents/{args.role}.role.md"
+
     repl = {
         "__NAME__": args.name,
         "__NAME_TITLE__": args.title or title_case(args.name),
         "__DOMAIN__": args.domain,
         "__TENANT__": args.tenant,
         "__ROLE_ID__": args.role,
+        "__ROLE_PATH__": role_path,
+        "__ROLE_TITLE__": args.role_title or title_case(args.role),
         "__PLAYBOOK__": args.playbook,
         "__PLAYBOOK_TITLE__": args.playbook_title or title_case(args.playbook),
     }
@@ -101,6 +115,13 @@ def main() -> int:
     (agents / "workflows" / f"{args.name}-{args.playbook}.workflow.md").write_text(
         render("consumer.workflow.md.tmpl", repl))
     (agents / "AGENTS.md").write_text(render("consumer.AGENTS.md.tmpl", repl))
+
+    # Own a role locally: fork a reference role, or generate a blank stub to fill.
+    if args.role_mode == "own":
+        forked = source_role.read_text().replace("agents/protocols/", "protocol/agents/protocols/")
+        (agents / f"{args.role}.role.md").write_text(forked)
+    elif args.role_mode == "new":
+        (agents / f"{args.role}.role.md").write_text(render("consumer.role.md.tmpl", repl))
 
     print(f"scaffolded consumer instance at {dest}")
     print(f"  protocol pinned -> {dest}/protocol/VERSION ({args.version})")

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-# [INPUT]: 读取 agents/roles/*.role.md 与 agents/examples/*-role.fixture.md 的 yaml 块；
-#          契约定义来自 agents/protocols/role-package.schema.md。
+# [INPUT]: 读取 agents/roles/*.role.md 的 yaml 块；契约定义来自 agents/protocols/role-package.schema.md。
+#          roles/ 是参考 role 库(可 fork 可无视);消费方自有 role 用 validate_mounted_agents 校验装配。
 # [OUTPUT]: 对外提供命令行校验器；通过返回 0，违约返回 1 并打印第一个错误。
 # [POS]: scripts 唯一真相源校验器，被 scripts/githooks/pre-commit 调用，是 role-package.schema.md 的执行相。
 # [PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
@@ -116,12 +116,9 @@ def validate_role(path: Path) -> None:
 # 入口 —— 收集目标、逐个校验、汇报
 # ============================================================
 def main() -> int:
-    targets = sorted([
-        *(REPO_ROOT / "agents/roles").glob("*.role.md"),
-        *(REPO_ROOT / "agents/examples").glob("*-role.fixture.md"),
-    ])
+    targets = sorted((REPO_ROOT / "agents/roles").glob("*.role.md"))
     if not targets:
-        print("validate_roles: no role packages found", file=sys.stderr)
+        print("validate_roles: no reference role packages found", file=sys.stderr)
         return 1
 
     for path in targets:

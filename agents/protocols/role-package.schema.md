@@ -1,7 +1,7 @@
 <!--
 [INPUT]: Depends on agent-roles-spec concepts, install-mount-lifecycle.protocol.md, capability-boundary.schema.md, approval-evidence.schema.md, OMO execution gates, and GEB semantic/structural delta.
 [OUTPUT]: Provides the canonical role_package schema and minimum validation for all Adaptive Marketing Agent OS roles.
-[POS]: protocols shared schema consumed by roles, overlays, workflows, and examples.
+[POS]: protocols shared schema consumed by reference roles, consumer-owned roles, overlays, and workflows.
 [PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
 -->
 
@@ -82,7 +82,7 @@ role_package:
 ## Field Rules
 
 - `identity` names the role and its domain.
-- `tenant_overlay` is optional and only points to a tenant overlay in fixtures or composed role packages.
+- `tenant_overlay` is optional and only points to a tenant overlay in composed role packages.
 - `role_instructions` describes role behavior, not tenant facts.
 - `skills` names callable atomic actions or candidate actions. Skills are not playbooks.
 - `playbooks.available` names the role's callable business tasks. Each playbook points at a workflow contract; the role does not inline the workflow graph.
@@ -117,7 +117,7 @@ python3 scripts/validate_roles.py
 ```
 
 The validator (`scripts/validate_roles.py`) enforces, for every
-`agents/roles/*.role.md` and `agents/examples/*-role.fixture.md`:
+`agents/roles/*.role.md` (the reference roles):
 
 - all required fields present, and no `workflow_contract` inside a `role_package`;
 - `playbooks.available` exists, is non-empty, and every entry has `id`, `name`, and `workflow_contract`;

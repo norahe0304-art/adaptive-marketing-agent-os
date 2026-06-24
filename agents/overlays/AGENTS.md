@@ -2,7 +2,7 @@
 > L2 | 父级: /agents/AGENTS.md
 
 成员清单
-（空）真实 tenant overlay 是「用协议生成的实例」，住在消费方 repo，不住协议 repo。schema 证明见 examples/ 的 *-role.fixture.md。
+（空）真实 tenant overlay 是「用协议生成的实例」，住在消费方 repo，不住协议 repo。参考 role 见 roles/，活体实例见消费方 repo。
 
 已搬出的实例：JP Ads -> 30x-ads/agents/jetpartners-ads.overlay.md；Caylent Event -> /Users/nora/caylent-event/agents/caylent-event.overlay.md。
 

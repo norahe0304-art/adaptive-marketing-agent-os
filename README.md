@@ -44,7 +44,7 @@ workflows) pinned to the protocol and validated. Then point any runtime at
 
 ## Concepts
 
-- **role** — the reusable, tenant-neutral product unit (`agents/roles/`).
+- **role** — the reusable, tenant-neutral product unit. The protocol ships *reference* roles (`agents/roles/`) you may use, fork (`--role-mode own`), or replace with your own (`--role-mode new`). Marketing domains are unbounded; the schema is the invariant, not the list of domains.
 - **skill** — an atomic action a playbook calls (e.g. spend check, keyword cluster).
 - **playbook** — a business job the role exposes (e.g. daily maintenance), backed by a workflow.
 - **workflow** — the machine-readable execution graph behind a playbook (steps, capability refs, approval gates, readback).
@@ -59,9 +59,8 @@ agent), `protocol-consumption.contract.md` (pin / reference / validate),
 
 ```
 agents/protocols/   schemas, gates, consumption + generation contracts
-agents/roles/       tenant-neutral base roles (Ads, Event, ...)
+agents/roles/       reference roles (optional seeds — use, fork, or replace)
 agents/templates/   stubs the generation loop stamps into a consumer instance
-agents/examples/    schema fixtures (validation proof, green with zero tenants)
 scripts/            validators, scaffolder, skill builder, pre-commit hook
 bootstrap.sh        one-line consumer bootstrap
 ```
