@@ -1,6 +1,8 @@
 # Adaptive Marketing Agent OS
 
-A runtime-neutral **protocol** for growing marketing agents. v0.1.0.
+A runtime-neutral **protocol** for growing marketing agents. v0.3.2.
+
+> **New here? → [QUICKSTART.md](QUICKSTART.md)** — grow your own agent in one command.
 
 The protocol is three things: **role** (who the agent is) · **playbook** (the
 work it does, which calls skills) · **GEB learning** (how it improves after each
