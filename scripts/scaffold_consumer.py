@@ -73,7 +73,7 @@ def main() -> int:
     p.add_argument("--name", default=None,
                    help="instance id / file slug; default <tenant>-<domain> (e.g. acme-ads)")
     p.add_argument("--domain", required=True, help="marketing domain, e.g. Event")
-    p.add_argument("--tenant", required=True, help="tenant/customer name, e.g. Caylent")
+    p.add_argument("--tenant", required=True, help="tenant/customer name, e.g. Acme")
     p.add_argument("--role", default=None,
                    help="role id; omit to generate your own role for the domain (<domain>-operator), or pass a reference role id to reuse/fork")
     p.add_argument("--role-mode", choices=["reference", "own", "new"], default=None,

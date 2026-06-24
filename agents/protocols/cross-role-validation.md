@@ -39,7 +39,7 @@ Base roles and tenant overlays stay runtime-neutral. Which agent runtime runs a 
 
 - The `ads-adaptive-operator` reference role proves the Ads domain conforms to the schema.
 - The `event-adaptive-operator` reference role proves a second, different domain conforms to the same schema.
-- Real consumer instances (e.g. the 30x-ads and caylent-event repos) are the live proof that the protocol grows runnable agents across domains.
+- Real consumer instances living in their own pinned repos are the live proof that the protocol grows runnable agents across domains.
 
 ## Validation Command
 

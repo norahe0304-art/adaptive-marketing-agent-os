@@ -14,8 +14,8 @@ import yaml
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 # Two-repo aware: refs resolve against ROOT. In the protocol repo ROOT is this
-# repo; in a consumer repo (e.g. 30x-ads) ROOT is the consumer, where the
-# protocol is vendored under protocol/ and instance files live under agents/.
+# repo; in a consumer repo ROOT is the consumer, where the protocol is vendored
+# under protocol/ and instance files live under agents/.
 ROOT = REPO_ROOT
 
 
