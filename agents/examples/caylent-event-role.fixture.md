@@ -31,7 +31,7 @@ role_package:
     - post_run_delta
   role_instructions:
     operating_principles:
-      - Keep host adapter choice in overlay.
+      - Keep runtime and host choice in overlay.
       - Stop at propose in v1.
   skills:
     recommended:
@@ -42,7 +42,7 @@ role_package:
     available:
       - id: event-launch-kit
         name: Event Launch Kit
-        workflow_contract: agents/workflows/caylent-event-launch.workflow.md
+        workflow_contract: tenant_overlay_or_workflow
         description: Caylent event brief to HubSpot draft assets, approval packet, and launch readback.
         skills_called:
           - hubspot:hubspot
@@ -65,7 +65,7 @@ role_package:
       - provider account IDs
       - MCP server config
       - plugin install state
-      - host adapter implementation
+      - runtime or host binding
       - project secrets
   capability_manifest:
     boundary_schema: agents/protocols/capability-boundary.schema.md

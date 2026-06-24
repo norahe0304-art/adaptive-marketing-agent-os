@@ -61,7 +61,7 @@ role_package:
     operating_principles:
       - Treat event launch as a lifecycle, not a one-shot asset task.
       - Separate draft creation from publish, send, activate, and list mutation.
-      - Keep host adapter behavior outside the base role.
+      - Keep runtime and host choice outside the base role.
       - Keep CRM truth cited and read-only unless a workflow explicitly allows proposal.
       - Convert repeated stable launch steps into workflow or skill candidates.
 
@@ -125,7 +125,7 @@ role_package:
       - provider account IDs
       - MCP server config
       - plugin install state
-      - host adapter implementation
+      - runtime or host binding
       - project secrets
 
   capability_manifest:

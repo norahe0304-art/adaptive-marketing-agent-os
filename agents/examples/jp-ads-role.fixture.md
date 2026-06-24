@@ -43,7 +43,7 @@ role_package:
     available:
       - id: daily-maintenance
         name: Daily Maintenance
-        workflow_contract: agents/workflows/jetpartners-ads-daily-maintenance.workflow.md
+        workflow_contract: tenant_overlay_or_workflow
         description: JP Ads daily evidence queue, decisions, apply-lab gate, publish/readback, and learning route.
         skills_called:
           - ads-monitor
@@ -54,7 +54,7 @@ role_package:
         tenant_overlay_required: true
       - id: account-review
         name: Account Review
-        workflow_contract: agents/workflows/jetpartners-ads-readonly-review.workflow.md
+        workflow_contract: tenant_overlay_or_workflow
         description: JP Ads read-only review with proposal-first approval packet.
         skills_called:
           - ads
@@ -78,7 +78,7 @@ role_package:
       - provider account IDs
       - MCP server config
       - plugin install state
-      - host adapter implementation
+      - runtime or host binding
       - project secrets
   capability_manifest:
     boundary_schema: agents/protocols/capability-boundary.schema.md

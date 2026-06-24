@@ -2,11 +2,11 @@
 > L2 | 父级: /agents/AGENTS.md
 
 成员清单
-jetpartners-ads-readonly-review.workflow.md: Internal workflow contract behind the JP Ads review playbook, covering lead quality/search-term review plus approval-gated apply lab.
-jetpartners-ads-daily-maintenance.workflow.md: Internal workflow contract behind the JP Ads daily maintenance playbook, mapping 30x-ads morning brief, decision queue, apply-lab gate, dashboard readback, and learning route.
-caylent-event-launch.workflow.md: Internal workflow contract behind the Caylent Event launch playbook, covering HubSpot draft kit, approval loop, and draft-asset apply lab.
+（空）真实 workflow 是「用协议生成的实例」，住在消费方 repo。workflow 用 id 引用 role/overlay，所以跨 repo 搬迁零改动。
+
+已搬出的实例：JP Ads 五个 workflow -> 30x-ads/agents/workflows/；Caylent Event launch -> /Users/nora/caylent-event/agents/workflows/。
 
 边界
-workflows/ defines machine-readable execution contracts behind role playbooks. A workflow may call skills and define approval-gated `apply_lab` steps, but it does not execute platform mutations itself.
+workflows/ 是 execution-contract 层的占位与文档锚点。workflow schema（task_graph、capability_refs、apply_lab、evidence、readback）由 capability-boundary.schema.md / cross-role-validation.md 定义；真实 workflow 由 scaffold_consumer.py 生成模板后在消费方 repo 填实。
 
 [PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md

@@ -48,7 +48,7 @@ role_package:
       - provider account IDs
       - MCP server config
       - plugin install state
-      - host adapter implementation
+      - runtime or host binding
       - project secrets
   capability_manifest:
     boundary_schema: "agents/protocols/capability-boundary.schema.md"
@@ -97,13 +97,13 @@ role_package:
 
 ## Domain Role Constraint
 
-Domain roles may instantiate shared `evidence_contract`, `approval_policy`, `learning_rules`, `runtime_requirements`, and `capability_manifest`; they must not introduce new protocol fields, permission modes, approval states, host kinds, or evidence semantics. New shared semantics require a protocol update first.
+Domain roles may instantiate shared `evidence_contract`, `approval_policy`, `learning_rules`, `runtime_requirements`, and `capability_manifest`; they must not introduce new protocol fields, permission modes, approval states, or evidence semantics. New shared semantics require a protocol update first.
 
 Current role packages may bind surfaces only to capability profiles. V1 `mode: apply` is allowed only in workflow `apply_lab` steps with runtime binding, security review, an active `ApprovalReceipt`, and readback evidence.
 
 Role packages must not include concrete `tools`, `plugins`, `host_adapters`, legacy `capability_surface`, `mcp_boundary`, or `permissions` sections. Those sections duplicate the runtime binding or capability protocols and create drift.
 
-Concrete provider names, MCP bindings, plugin projection, host adapter implementation, tenant accounts, and project secrets belong in tenant overlays or workflow runtime bindings, not in base roles.
+Concrete provider names, MCP bindings, plugin projection, runtime or host binding, tenant accounts, and project secrets belong in tenant overlays or workflow runtime bindings, not in base roles.
 
 Role is the reusable product unit. Tenant attachments bind real systems. Playbooks expose business tasks. Workflow contracts execute those playbooks. Skills are atomic actions called by the workflow.
 

@@ -1,5 +1,5 @@
 <!--
-[INPUT]: Depends on role-package.schema.md for role_package fields and host-adapter.interface.md for host-neutral invocation.
+[INPUT]: Depends on role-package.schema.md for role_package fields.
 [OUTPUT]: Provides embedded capability rules used by role playbook steps and role abstract surfaces.
 [POS]: protocols safety guardrail consumed by roles and playbooks; not a separate user-facing layer.
 [PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
@@ -154,4 +154,4 @@ Concrete runtime bindings may map abstract surfaces like this:
 
 - No global tool exposure.
 - No provider config files in this protocol directory or base role package.
-- No host-specific behavior such as Slack thread UX or tenant adapter runtime.
+- No runtime- or host-specific behavior such as Slack thread UX or a particular agent runtime.

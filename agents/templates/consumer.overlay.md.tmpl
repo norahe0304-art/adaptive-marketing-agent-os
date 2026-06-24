@@ -1,0 +1,82 @@
+<!--
+[INPUT]: Depends on protocol/agents/roles/__ROLE_ID__.role.md and __TENANT__ operating evidence.
+[OUTPUT]: Provides the __TENANT__ tenant overlay for __NAME_TITLE__.
+[POS]: consumer instance tenant attachment; tenant truth only, never changes the shared protocol.
+[PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
+-->
+
+# __NAME_TITLE__ Overlay
+
+Tenant truth for __TENANT__, mounted on the `__ROLE_ID__` base role. Every fact
+here must point to an evidence source and have a review path.
+
+```yaml
+tenant_overlay:
+  identity:
+    id: __NAME__
+    tenant: __TENANT__
+    mounts_on: __ROLE_ID__
+    version: 0.1.0
+
+  tenant_truth_boundary:
+    allowed_here:
+      - stable operating contracts
+      - source pointers
+      - approval owners or approval surfaces
+    forbidden_here:
+      - reusable base-role rules
+      - shared Agent OS protocol
+      - uncited tenant facts
+      - credentials or provider secrets
+
+  source_of_truth:
+    # TODO: name each real system and its stable meaning, e.g.
+    #   runtime_repo: { source_pointer: ".", stable_meaning: "..." }
+
+  runtime_bindings:
+    binding_owner: tenant_overlay
+    abstract_surface_map:
+      # TODO: map each role abstract surface to a concrete provider, read-mode by default
+      memory_patch:
+        provider: tenant-memory
+        mode: propose
+
+  approval_surfaces:
+    # TODO: where humans approve and read back (e.g. slack_thread_receipt)
+
+  evidence_contract:
+    artifact_schema: protocol/agents/protocols/approval-evidence.schema.md#EvidenceArtifact
+    required:
+      - source URL or export path
+      - scope
+      - time window
+      - approval receipt for any future live action
+      - final readback
+
+  tenant_memory_records: []
+
+  overlay_memory_rule:
+    fields:
+      - source_of_truth
+      - evidence_url
+      - owner
+      - last_verified_at
+      - review_after
+      - promotion_target
+      - expiry_reason
+    promotion_targets:
+      tenant_memory: "Stable __TENANT__ truth."
+      workflow: "Repeated __TENANT__ procedure."
+      skill_candidate: "Stable execution sequence worth packaging."
+      protocol: "Shared OS change; requires cross-role proof."
+
+  learning_route:
+    default: tenant_memory
+    must_not_promote_to_base_role:
+      - "TODO: list tenant-only facts that must never reach the base role"
+```
+
+## Overlay Rule
+
+Durable cross-tenant rules must be proposed as GEB deltas, not silently copied
+into the base role. This file is the tenant adapter only.

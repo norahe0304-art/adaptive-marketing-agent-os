@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
-# [INPUT]: 读取 agents/mounted/*.agent.md 的 yaml 块，并检查其 role、tenant attachment、workflow、runtime、entrypoint 引用。
+# [INPUT]: 读取 agents/mounted/*.agent.md 的 yaml 块，并检查其 role、tenant attachment、playbook、work_substrate、entrypoints 引用。
 # [OUTPUT]: 对外提供 mounted agent 装配校验器；通过返回 0，违约返回 1 并打印第一个错误。
-# [POS]: scripts mounted-agent 校验器，审判 assembled agent 是否真的接上 role、tenant、playbook、runtime。
+# [POS]: scripts mounted-agent 校验器，审判 assembled agent 是否真的接上 role、tenant、playbook、work_substrate；runtime 不在协议内，不校验。
 # [PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
 from __future__ import annotations
 
+import argparse
 import re
 import sys
 from pathlib import Path
@@ -12,6 +13,10 @@ from pathlib import Path
 import yaml
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
+# Two-repo aware: refs resolve against ROOT. In the protocol repo ROOT is this
+# repo; in a consumer repo (e.g. 30x-ads) ROOT is the consumer, where the
+# protocol is vendored under protocol/ and instance files live under agents/.
+ROOT = REPO_ROOT
 
 
 class ContractError(Exception):
@@ -30,7 +35,7 @@ def resolve_ref(ref: str) -> Path:
     path = Path(ref)
     if path.is_absolute():
         return path
-    return REPO_ROOT / path
+    return ROOT / path
 
 
 def require_existing(path: Path, label: str, owner: Path) -> None:
@@ -46,7 +51,9 @@ def validate_agent(path: Path) -> None:
     for section in [
         "identity",
         "product_contract",
-        "host_runtime_policy",
+        "adaptivity_contract",
+        "install_contract",
+        "detach_contract",
         "boot_sequence",
         "playbooks",
         "runtime_boundaries",
@@ -55,19 +62,43 @@ def validate_agent(path: Path) -> None:
         if section not in agent:
             raise ContractError(f"{path}: missing {section}")
 
+    # Protocol = role + playbook + 回流. A mounted agent points at a base role, a
+    # tenant attachment, and a work substrate. Which agent runtime runs it is the
+    # user's choice, so no host/runtime field is required or checked here.
     product = agent["product_contract"]
-    for key in ["role", "tenant_attachment", "primary_runtime", "entrypoint_skill"]:
+    for key in ["role", "tenant_attachment", "work_substrate"]:
         if key not in product:
             raise ContractError(f"{path}: product_contract missing {key}")
         require_existing(resolve_ref(product[key]), key, path)
-    if product.get("primary_host") != "codex":
-        raise ContractError(f"{path}: product_contract.primary_host must be codex")
+    entrypoints = product.get("entrypoints", [])
+    if not isinstance(entrypoints, list) or not entrypoints:
+        raise ContractError(f"{path}: product_contract.entrypoints must be a non-empty list")
+    for ref in entrypoints:
+        require_existing(resolve_ref(ref), "entrypoints", path)
 
-    host_policy = agent["host_runtime_policy"]
-    if host_policy.get("default_host") != "codex":
-        raise ContractError(f"{path}: host_runtime_policy.default_host must be codex")
-    if host_policy.get("hermes_role") != "optional_adapter":
-        raise ContractError(f"{path}: host_runtime_policy.hermes_role must be optional_adapter")
+    adaptivity = agent["adaptivity_contract"]
+    if adaptivity.get("adaptive") is not True:
+        raise ContractError(f"{path}: adaptivity_contract.adaptive must be true")
+    for key in ["updates_allowed", "updates_forbidden", "promotion_requires"]:
+        if not isinstance(adaptivity.get(key), list) or not adaptivity[key]:
+            raise ContractError(f"{path}: adaptivity_contract.{key} must be a non-empty list")
+
+    install = agent["install_contract"]
+    if install.get("installable") is not True:
+        raise ContractError(f"{path}: install_contract.installable must be true")
+    for forbidden in ["credentials", "provider account secrets", "live mutation permission"]:
+        if forbidden not in install.get("does_not_install", []):
+            raise ContractError(f"{path}: install_contract.does_not_install must include {forbidden}")
+    for key in ["installs", "install_check"]:
+        if not isinstance(install.get(key), list) or not install[key]:
+            raise ContractError(f"{path}: install_contract.{key} must be a non-empty list")
+
+    detach = agent["detach_contract"]
+    if detach.get("detachable") is not True:
+        raise ContractError(f"{path}: detach_contract.detachable must be true")
+    for key in ["detaches", "preserves", "removal_readback_required", "blocked_when"]:
+        if not isinstance(detach.get(key), list) or not detach[key]:
+            raise ContractError(f"{path}: detach_contract.{key} must be a non-empty list")
 
     boot = agent["boot_sequence"]
     always_read = boot.get("always_read")
@@ -79,6 +110,16 @@ def validate_agent(path: Path) -> None:
     playbooks = agent["playbooks"]
     if not isinstance(playbooks, dict) or not playbooks:
         raise ContractError(f"{path}: playbooks must be a non-empty map")
+    if agent["identity"].get("id") == "jetpartners-ads-agent":
+        expected = {
+            "daily-maintenance",
+            "account-review",
+            "keyword-hygiene",
+            "account-health-check",
+            "monthly-report",
+        }
+        if set(playbooks) != expected:
+            raise ContractError(f"{path}: jetpartners-ads-agent playbooks must be {sorted(expected)}")
     for playbook_id, spec in playbooks.items():
         workflow = spec.get("workflow_contract")
         if not workflow:
@@ -91,10 +132,21 @@ def validate_agent(path: Path) -> None:
 
 
 def main() -> int:
-    targets = sorted((REPO_ROOT / "agents/mounted").glob("*.agent.md"))
+    global ROOT
+    parser = argparse.ArgumentParser(description="Validate mounted agent assembly against the protocol.")
+    parser.add_argument("--root", default=str(REPO_ROOT),
+                        help="repo root to resolve refs against (a consumer repo when JP lives elsewhere)")
+    parser.add_argument("--glob", default="agents/mounted/*.agent.md",
+                        help="glob (relative to --root) for mounted agent files")
+    args = parser.parse_args()
+    ROOT = Path(args.root).resolve()
+
+    targets = sorted(ROOT.glob(args.glob))
     if not targets:
-        print("validate_mounted_agents: no mounted agents found", file=sys.stderr)
-        return 1
+        # A spec/protocol repo carries no live tenant; the assembly proof lives
+        # in consumer repos. Empty is valid, not a failure.
+        print(f"validate_mounted_agents: no mounted agents under {ROOT}/{args.glob} (spec repo, ok)")
+        return 0
 
     for path in targets:
         try:
@@ -102,7 +154,11 @@ def main() -> int:
         except ContractError as err:
             print(f"FAIL  {err}", file=sys.stderr)
             return 1
-        print(f"ok    {path.relative_to(REPO_ROOT)}")
+        try:
+            rel = path.relative_to(ROOT)
+        except ValueError:
+            rel = path
+        print(f"ok    {rel}")
 
     print(f"PASS  {len(targets)} mounted agent(s) conform")
     return 0

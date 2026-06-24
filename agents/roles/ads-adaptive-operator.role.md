@@ -107,6 +107,36 @@ role_package:
           - ads-landing
         approval_gate: required_for_apply_lab
         tenant_overlay_required: true
+      - id: keyword-hygiene
+        name: Keyword Hygiene
+        workflow_contract: tenant_overlay_or_workflow
+        description: "Review search-term evidence, protect converter intent, propose negatives or exact/phrase positives, and require conflict audits around approved keyword mutations."
+        skills_called:
+          - ads-keywords
+          - ads-audit
+          - ads-landing
+        approval_gate: required_for_apply_lab
+        tenant_overlay_required: true
+      - id: account-health-check
+        name: Account Health Check
+        workflow_contract: tenant_overlay_or_workflow
+        description: "Run readiness, tracking, drift, access, and blocker diagnosis without implying live fixes."
+        skills_called:
+          - ads-health
+          - ads-monitor
+          - ads-audit
+        approval_gate: required_for_apply_lab
+        tenant_overlay_required: true
+      - id: monthly-report
+        name: Monthly Report
+        workflow_contract: tenant_overlay_or_workflow
+        description: "Create a client-facing month-window report with evidence, shipped changes, quality narrative, approval/delivery gate, and readback."
+        skills_called:
+          - ads-monthly-report
+          - ads-report
+          - ads-audit
+        approval_gate: required_for_apply_lab
+        tenant_overlay_required: true
 
   memory_scope:
     base_role_memory:
@@ -134,7 +164,7 @@ role_package:
       - provider account IDs
       - MCP server config
       - plugin install state
-      - host adapter implementation
+      - runtime or host binding
       - project secrets
 
   capability_manifest:

@@ -1,0 +1,82 @@
+<!--
+[INPUT]: Depends on __ROLE_ID__ role surfaces, __NAME__ overlay bindings, OMO governance, and GEB delta protocol.
+[OUTPUT]: Provides the __NAME_TITLE__ __PLAYBOOK_TITLE__ playbook workflow contract.
+[POS]: consumer instance workflow contract behind the role's __PLAYBOOK__ playbook.
+[PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
+-->
+
+# __NAME_TITLE__ __PLAYBOOK_TITLE__ Workflow
+
+Machine-readable contract behind the `__PLAYBOOK__` playbook. References role and
+overlay by id, so it is path-portable across repos.
+
+```yaml
+workflow_contract:
+  id: __NAME__-__PLAYBOOK__
+  role: __ROLE_ID__
+  overlay: __NAME__
+  default_mode: propose
+
+  task_graph:
+    - step: collect_evidence
+      mode: read
+      capability_refs:
+        - memory_patch
+      outputs:
+        - "TODO: evidence collected for this step"
+    - step: draft_proposal
+      mode: propose
+      capability_refs:
+        - memory_patch
+      outputs:
+        - "TODO: the human-reviewable proposal"
+
+  apply_lab:
+    enabled: false
+    runtime_binding_id: ""
+    max_risk_class_v1: reversible_low
+    allowed_operations: []
+    forbidden_operations: []
+    required_gates:
+      - runtime_security_review_id
+      - active ApprovalReceipt
+      - exact scope
+      - pre_apply EvidenceArtifact
+      - rollback plan
+      - post_apply readback EvidenceArtifact
+
+  future_live_action_policy:
+    default_state: apply_lab_requires_approval
+    allowed_only_after:
+      - runtime_security_review_id
+      - approval receipt
+      - exact scope
+      - pre-change evidence
+      - rollback note
+      - post-apply readback
+
+  evidence_packet:
+    required:
+      - "TODO: list required evidence artifacts"
+
+  readback:
+    include:
+      - what was reviewed
+      - what was proposed or applied
+      - evidence used
+      - learning route
+
+  semantic_delta:
+    default_route: workflow_patch
+    promotion_requires:
+      - repeated evidence
+      - owner
+      - review_after
+      - contradiction check
+```
+
+## Playbook Rule
+
+This is a role playbook, not a skill. The playbook owns the business route; this
+workflow owns steps, capability refs, approval gates, and readback. Skills are
+atomic actions the playbook may call. Fill every `TODO` from the real scenario.
