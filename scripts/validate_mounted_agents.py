@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # [INPUT]: 读取 agents/mounted/*.agent.md 的 yaml 块及其 base role 声明；检查 role、tenant attachment、playbook、work_substrate、entrypoints 引用。
 # [OUTPUT]: 对外提供 mounted agent 装配校验器；通过返回 0，违约返回 1 并打印第一个错误。
-# [POS]: scripts mounted-agent 校验器，审判 assembled agent 是否接上 role、tenant、work_substrate，且其 playbook 引用落在 base role 声明面内（不越界即可，非相等）；无 tenant 特例，runtime 不在协议内不校验。
+# [POS]: scripts mounted-agent 校验器，审判 assembled agent 是否接上 role、tenant、work_substrate，且 mount playbooks ⊆ role playbooks（子集，非相等；role 空声明则显式跳过并留痕）；无 tenant 特例，runtime 不在协议内不校验。
 # [PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
 from __future__ import annotations
 
@@ -119,17 +119,22 @@ def validate_agent(path: Path) -> None:
     playbooks = agent["playbooks"]
     if not isinstance(playbooks, dict) or not playbooks:
         raise ContractError(f"{path}: playbooks must be a non-empty map")
-    # Declaration-vs-reference, not tenant branches: every playbook a mount
-    # references must be one its base role declares. Completeness (which subset a
-    # tenant exposes) is product policy; consistency (no playbook outside the
-    # role's surface) is the assembly invariant. Source of truth is the role, so
-    # this holds for any role and any tenant — no customer name in the validator.
+    # Declaration-vs-reference, not tenant branches: mount playbooks ⊆ role
+    # playbooks. Completeness (which subset a tenant exposes) is product policy;
+    # consistency (no playbook outside the role's surface) is the assembly
+    # invariant. Source of truth is the role, so this holds for any role and any
+    # tenant — no customer name in the validator.
     declared = role_playbook_ids(resolve_ref(product["role"]))
-    undeclared = set(playbooks) - declared if declared else set()
-    if undeclared:
-        raise ContractError(
-            f"{path}: playbooks {sorted(undeclared)} are not declared by the role's "
-            f"surface {sorted(declared)}")
+    if not declared:
+        # The skip is a deliberate loose channel for a role still being filled;
+        # announce it so a later debugger never mistakes silence for a pass.
+        print(f"note  {path.name}: role declares no playbooks (available: []); skipping surface check")
+    else:
+        undeclared = set(playbooks) - declared
+        if undeclared:
+            raise ContractError(
+                f"{path}: playbooks {sorted(undeclared)} outside the role's surface "
+                f"{sorted(declared)} (require mount playbooks ⊆ role playbooks)")
     for playbook_id, spec in playbooks.items():
         workflow = spec.get("workflow_contract")
         if not workflow:
