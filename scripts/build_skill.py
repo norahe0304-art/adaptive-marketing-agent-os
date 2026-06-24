@@ -13,6 +13,12 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 
+
+def protocol_version() -> str:
+    # Single source of truth: the repo-root VERSION file. No hardcoded literals.
+    return (REPO_ROOT / "VERSION").read_text().strip()
+
+
 SKILL_MD = """---
 name: {skill_name}
 description: Grow a marketing agent from the Adaptive Marketing Agent OS protocol. Use when the user wants to create, scaffold, or "grow" a new marketing agent (Ads, Event, ...), pin the protocol, and produce a validated, runtime-neutral agent instance they can run on any runtime. Triggers: "grow an agent", "scaffold an agent", "new marketing agent", "用协议长一个 agent".
@@ -100,7 +106,7 @@ def main() -> int:
     p.add_argument("--dest", default=str(REPO_ROOT / "dist/skill/grow-marketing-agent"),
                    help="output skill directory (default: dist/skill/grow-marketing-agent, gitignored)")
     p.add_argument("--skill-name", default="grow-marketing-agent", help="skill name in SKILL.md frontmatter")
-    p.add_argument("--version", default="v0.3.2", help="protocol version to stamp")
+    p.add_argument("--version", default=protocol_version(), help="protocol version to stamp (default: repo-root VERSION)")
     args = p.parse_args()
 
     dest = Path(args.dest).resolve()

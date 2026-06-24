@@ -12,7 +12,7 @@
 #   Default: generates your own role (<domain>-operator) + instance (<tenant>-<domain>).
 #   Reuse a reference role: add --role <id>. Override id: add --name <id>.
 #
-# Env overrides: AMAO_VERSION (default v0.1.0), AMAO_REPO (clone URL).
+# Env overrides: AMAO_VERSION (empty = latest default branch), AMAO_REPO (clone URL).
 # ============================================================
 set -eu
 

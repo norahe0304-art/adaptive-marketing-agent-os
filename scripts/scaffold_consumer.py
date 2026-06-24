@@ -16,6 +16,11 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 TEMPLATES = REPO_ROOT / "agents/templates"
 
 
+def protocol_version() -> str:
+    # Single source of truth: the repo-root VERSION file. No hardcoded literals.
+    return (REPO_ROOT / "VERSION").read_text().strip()
+
+
 def slugify(text: str) -> str:
     return re.sub(r"[^a-z0-9]+", "-", text.lower()).strip("-")
 
@@ -78,7 +83,7 @@ def main() -> int:
     p.add_argument("--title", default=None, help="display title; default derived from --name")
     p.add_argument("--playbook-title", default=None, help="display title for the playbook")
     p.add_argument("--dest", required=True, help="consumer repo path to scaffold into")
-    p.add_argument("--version", default="v0.3.2", help="protocol version to stamp in the pin")
+    p.add_argument("--version", default=protocol_version(), help="protocol version to stamp in the pin (default: repo-root VERSION)")
     p.add_argument("--force", action="store_true", help="overwrite an existing agents/ in dest")
     p.add_argument("--no-validate", action="store_true", help="skip the post-scaffold validation run")
     args = p.parse_args()
@@ -130,6 +135,12 @@ def main() -> int:
     (agents / "workflows" / f"{args.name}-{args.playbook}.workflow.md").write_text(
         render("consumer.workflow.md.tmpl", repl))
     (agents / "AGENTS.md").write_text(render("consumer.AGENTS.md.tmpl", repl))
+    # L1 constitution closes the agents/AGENTS.md `父级: /AGENTS.md` link.
+    # Write-if-absent: never clobber a consumer repo that already owns a root AGENTS.md.
+    root_l1 = dest / "AGENTS.md"
+    root_l1_written = not root_l1.exists()
+    if root_l1_written:
+        root_l1.write_text(render("consumer.root.AGENTS.md.tmpl", repl))
 
     # Own a role locally: fork a reference role, or generate a blank stub to fill.
     if args.role_mode == "own":
@@ -145,6 +156,8 @@ def main() -> int:
         print(f"  role            -> protocol/agents/roles/{args.role}.role.md (reference, shared)")
     else:
         print(f"  role            -> agents/{args.role}.role.md (your own, {args.role_mode})")
+    if root_l1_written:
+        print(f"  root L1 (宪法)   -> AGENTS.md (seeded; closes the agents/ 父级 link)")
     print(f"  fill the TODO markers from the real scenario, then re-validate.")
 
     if args.no_validate:

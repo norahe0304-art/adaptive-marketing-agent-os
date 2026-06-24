@@ -12,7 +12,8 @@ consumer.role.md.tmpl: Base role stub for a consumer-owned role (--role-mode new
 consumer.overlay.md.tmpl: Tenant overlay stub — tenant truth boundary, runtime bindings, approval surfaces, memory records, learning route.
 consumer.workflow.md.tmpl: Playbook workflow stub — task graph, capability refs, apply_lab gate, evidence packet, readback, semantic delta.
 consumer.entrypoint.md.tmpl: Runtime-neutral doorway stub.
-consumer.AGENTS.md.tmpl: Consumer instance module map stub.
+consumer.AGENTS.md.tmpl: Consumer instance L2 module map stub (agents/AGENTS.md); declares 父级 /AGENTS.md.
+consumer.root.AGENTS.md.tmpl: Consumer repo L1 constitution stub (root AGENTS.md); seeded write-if-absent to close the agents/ 父级 link — never clobbers a consumer's own root.
 
 占位符
 __NAME__ / __NAME_TITLE__ / __DOMAIN__ / __TENANT__ / __ROLE_ID__ / __ROLE_PATH__ / __ROLE_TITLE__ / __PLAYBOOK__ / __PLAYBOOK_TITLE__
