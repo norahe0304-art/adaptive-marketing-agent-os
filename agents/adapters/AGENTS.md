@@ -10,7 +10,7 @@ codex.md: Codex runtime boot note; load mounted agent, overlay, workflow, run-st
 claude-code.md: Claude Code boot note; same contract, different execution surface.
 browser-automation.md: Browser automation boot note; use only approved read/observe/dry_run/propose surfaces unless apply_lab gates are active.
 local-runtime.md: Local runtime boot note; CLI or service wrappers read the same mounted contract and write structured readbacks.
-mcp-backed.md: MCP-backed execution note; MCP bindings attach at runtime/overlay layer and never become base role state.
+mcp-backed.md: MCP-backed execution note; MCP bindings attach at runtime/overlay layer and never become base role state; a missing binding blocks apply AND proposes the binding to wire (generative half), never degrading to manual.
 
 边界
 Runtime adapters are replaceable. The durable agent remains the consumer repo:
