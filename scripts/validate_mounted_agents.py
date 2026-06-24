@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # [INPUT]: 读取 agents/mounted/*.agent.md 的 yaml 块及其 base role 声明；检查 role、tenant attachment、playbook、work_substrate、entrypoints 引用。
 # [OUTPUT]: 对外提供 mounted agent 装配校验器；通过返回 0，违约返回 1 并打印第一个错误。
-# [POS]: scripts mounted-agent 校验器，审判 assembled agent 是否接上 role、tenant、work_substrate，且其 playbook 面与 role 声明一致；无 tenant 特例，runtime 不在协议内不校验。
+# [POS]: scripts mounted-agent 校验器，审判 assembled agent 是否接上 role、tenant、work_substrate，且其 playbook 引用落在 base role 声明面内（不越界即可，非相等）；无 tenant 特例，runtime 不在协议内不校验。
 # [PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
 from __future__ import annotations
 
