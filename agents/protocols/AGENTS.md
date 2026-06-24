@@ -5,7 +5,6 @@
 role-package.schema.md: Role guardrail，定义 base role 的 identity、instructions、abstract surfaces、memory、evidence、approval、learning。
 capability-boundary.schema.md: Capability guardrail，定义 playbook workflow step 的 mode 与 capability_refs，不作为独立安装层。
 approval-evidence.schema.md: Approval/evidence guardrail，定义 ApprovalReceipt、EvidenceArtifact 与 apply_lab 证据硬契约。
-host-adapter.interface.md: Host adapter guardrail，定义 slack/cli/portal/cron/api/codex 如何调用 mounted role。
 omo-execution-governance.md: OMO execution guardrail，定义 trigger/self-check/plan/delegate/evidence/QA/review/readback。
 geb-semantic-delta.md: GEB learning guardrail，定义 role、tenant attachment、playbook workflow、skill candidate 与 L1/L2/L3 的 post-run delta 回写。
 agent-onboarding.contract.md: Role-first onboarding，定义 role、tenant attachments、playbooks 的接入模型。

@@ -1,5 +1,5 @@
 <!--
-[INPUT]: Depends on role-package.schema.md, agent-onboarding.contract.md, host-adapter.interface.md, capability-boundary.schema.md, approval-evidence.schema.md, and geb-semantic-delta.md.
+[INPUT]: Depends on role-package.schema.md, agent-onboarding.contract.md, capability-boundary.schema.md, approval-evidence.schema.md, and geb-semantic-delta.md.
 [OUTPUT]: Provides a simple install role, attach tenant, run playbook, and detach tenant note for Adaptive Marketing Agent OS agents.
 [POS]: protocols optional packaging guardrail; not a fourth business object.
 [PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
@@ -34,7 +34,7 @@ role_install:
     - tenant truth
     - provider account IDs
     - runtime bindings
-    - host adapter implementation
+    - runtime or host binding
     - approval receipts
     - evidence archives
 tenant_attachment:
@@ -44,7 +44,6 @@ tenant_attachment:
   tenant_overlay: ""
   workflow_bindings: []
   runtime_bindings: []
-  host_adapters: []
   approval_surfaces: []
   evidence_roots: []
   learning_routes: []
@@ -60,6 +59,25 @@ playbook_activation:
   mounted_role: ""
   attached_tenant: ""
   default_mode: "propose"
+mounted_agent:
+  id: ""
+  installable: true
+  detachable: true
+  adaptive: true
+  role: ""
+  tenant_attachment: ""
+  playbooks: []
+  runtime_refs: []
+  entrypoint_refs: []
+  does_not_install:
+    - credentials
+    - provider account secrets
+    - live mutation permission
+  detach_preserves:
+    - base role
+    - workflow contracts
+    - audit evidence
+    - approved learning deltas
 ```
 
 ## Lifecycle
@@ -67,6 +85,7 @@ playbook_activation:
 ```text
 install_role
   -> attach_tenant
+  -> mount_agent
   -> activate_playbook
   -> run
   -> readback
@@ -76,8 +95,11 @@ install_role
 
 ## Rules
 
-- Role install is harmless: no tenant truth, no provider account, no host adapter implementation, no mutation permission.
+- Role install is harmless: no tenant truth, no provider account, no runtime or host binding, no mutation permission.
 - Tenant attach is reversible: detach removes project-private bindings without modifying the base role.
+- Mounted agent install is composition only: it adds references and routing, not credentials or live mutation permission.
+- Mounted agent detach removes tenant runtime projection, not the reusable role, playbooks, audit evidence, or approved learnings.
+- Adaptive behavior is post-run: GEB may patch tenant memory, playbook workflow tails, skill candidates, or protocol proposals after readback.
 - Provider runtime may be shared, but the tenant attachment decides which tenant and role may use it.
 - `apply` is never installed by a role. It can only be enabled by a workflow-scoped `apply_lab`.
 - Evidence and approval receipts are audit artifacts. Detach may remove live runtime access, but must not silently delete required audit evidence.
@@ -100,7 +122,7 @@ removal_readback:
   target: ""
   active_workflows: []
   runtime_bindings_revoked: []
-  host_adapters_unprojected: []
+  entrypoints_unprojected: []
   evidence_archives_retained: []
   tenant_memory_retained_or_exported: []
   blocked_reason: ""

@@ -1,6 +1,6 @@
 <!--
 [INPUT]: Depends on role-package.schema.md, agent-onboarding.contract.md, Ads and Event fixture files.
-[OUTPUT]: Provides cross-role validation proving shared schema vs domain-specific runtime binding and host adapter differences.
+[OUTPUT]: Provides cross-role validation proving shared schema vs domain-specific runtime binding differences.
 [POS]: protocols validation layer for proving the Agent OS is not Ads-only.
 [PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
 -->
@@ -29,11 +29,11 @@ Role outputs may include `post_run_delta` as a promised deliverable. Role files 
 
 `event-adaptive-operator` declares abstract Event surfaces such as `event_asset_system`, `crm_context_source`, `document_source`, and `calendar_source`.
 
-Tenant overlays map those abstract surfaces to concrete providers such as Google Ads, HubSpot, Salesforce, Supabase, Slack, or Hermes.
+Tenant overlays map those abstract surfaces to concrete providers such as Google Ads, HubSpot, Salesforce, or Supabase.
 
-## Host-Specific Adapter
+## Runtime Neutrality
 
-Base roles are host-neutral. Tenant overlays may require a collaboration host and name their preferred adapter.
+Base roles and tenant overlays stay runtime-neutral. Which agent runtime runs a playbook (Codex, Claude Code, Claude Tag, or another) is the user's choice and is never a protocol member. A tenant overlay may name a collaboration surface where humans approve and read back, but never a runtime.
 
 ## Seed Proofs
 

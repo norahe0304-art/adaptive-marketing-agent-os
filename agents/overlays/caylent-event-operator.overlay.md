@@ -1,13 +1,13 @@
 <!--
 [INPUT]: Depends on event-adaptive-operator.role.md, Caylent event operating evidence, and Caylent Event workflow contracts.
 [OUTPUT]: Provides Caylent tenant overlay for Event Adaptive Operator.
-[POS]: overlays tenant truth and host adapter selection layer mounted on the Event base role.
+[POS]: overlays tenant truth layer mounted on the Event base role; names Slack as an approval/readback surface, not a runtime.
 [PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
 -->
 
 # Caylent Event Operator Overlay
 
-This overlay mounts Caylent-specific operating truth on top of `event-adaptive-operator`. It is where Slack/Hermes belongs for this tenant; Hermes is not the Agent OS core.
+This overlay mounts Caylent-specific operating truth on top of `event-adaptive-operator`. Caylent's team approves and reads back in Slack threads, so Slack is named here as an approval/readback surface. Which agent runtime runs the work is the user's choice and is not encoded here.
 
 ```yaml
 tenant_overlay:
@@ -22,7 +22,7 @@ tenant_overlay:
       - tenant naming conventions
       - HubSpot portal binding notes
       - Salesforce read-only context notes
-      - Slack/Hermes host preference
+      - Slack approval/readback surface
       - approval owners and approval surfaces
       - launch checklist deltas
     forbidden_here:
@@ -31,17 +31,6 @@ tenant_overlay:
       - real secrets
       - uncited tenant facts
       - unapproved publish/send/activate permissions
-
-  host_adapters:
-    required:
-      - slack
-    optional:
-      - portal
-      - codex
-    preferred:
-      slack: hermes
-    unsupported: []
-    notes: "Caylent event operations use Slack as the required host and Hermes as the preferred Slack adapter."
 
   runtime_bindings:
     binding_owner: tenant_overlay
@@ -110,9 +99,9 @@ tenant_overlay:
       - launch readback
 
   tenant_memory_records:
-    - id: caylent-slack-hermes-host
-      fact: "Caylent Event operations require Slack and prefer Hermes as the Slack adapter."
-      source_of_truth: host_adapters.preferred
+    - id: caylent-slack-approval-surface
+      fact: "Caylent Event approvals and launch readbacks happen in Slack threads."
+      source_of_truth: operating_contract.approval_surfaces
       evidence_url: .omo/plans/adaptive-agent-review-board.zh-CN.html
       owner: event-operator
       last_verified_at: "2026-06-21"
@@ -157,7 +146,7 @@ tenant_overlay:
   learning_route:
     default: tenant_memory
     must_not_promote_to_base_role:
-      - Caylent host preference
+      - Caylent Slack approval surface
       - Caylent HubSpot naming rules
       - Caylent approval owners
       - Caylent Slack thread conventions
@@ -165,4 +154,4 @@ tenant_overlay:
 
 ## Overlay Rule
 
-This file is the tenant adapter. It may require Slack and prefer Hermes because Caylent Event needs that host, but this preference must not leak into the Event base role or the shared protocol.
+This file is the tenant adapter. It may name Slack as the approval/readback surface because Caylent's team works there, but this surface choice must not leak into the Event base role or the shared protocol, and it never names which agent runtime runs the work.

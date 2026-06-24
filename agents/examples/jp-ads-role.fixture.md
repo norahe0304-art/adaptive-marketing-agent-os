@@ -78,7 +78,7 @@ role_package:
       - provider account IDs
       - MCP server config
       - plugin install state
-      - host adapter implementation
+      - runtime or host binding
       - project secrets
   capability_manifest:
     boundary_schema: agents/protocols/capability-boundary.schema.md

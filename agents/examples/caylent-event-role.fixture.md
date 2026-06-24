@@ -31,7 +31,7 @@ role_package:
     - post_run_delta
   role_instructions:
     operating_principles:
-      - Keep host adapter choice in overlay.
+      - Keep runtime and host choice in overlay.
       - Stop at propose in v1.
   skills:
     recommended:
@@ -65,7 +65,7 @@ role_package:
       - provider account IDs
       - MCP server config
       - plugin install state
-      - host adapter implementation
+      - runtime or host binding
       - project secrets
   capability_manifest:
     boundary_schema: agents/protocols/capability-boundary.schema.md

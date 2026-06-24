@@ -97,6 +97,29 @@ tenant_overlay:
       account-review:
         workflow_contract: agents/workflows/jetpartners-ads-readonly-review.workflow.md
         evidence_artifacts: source_of_truth.daily_artifacts
+      keyword-hygiene:
+        workflow_contract: agents/workflows/jetpartners-ads-keyword-hygiene.workflow.md
+        evidence_artifacts: source_of_truth.daily_artifacts
+        source_surfaces:
+          - "/Users/nora/30x-ads/.claude/skills/ads-keywords/SKILL.md"
+          - "/Users/nora/30x-ads/scripts/audit-conflicts.ts"
+          - "/Users/nora/30x-ads/scripts/build-keyword-inventory.ts"
+      account-health-check:
+        workflow_contract: agents/workflows/jetpartners-ads-account-health-check.workflow.md
+        evidence_artifacts: source_of_truth.daily_artifacts
+        source_surfaces:
+          - "/Users/nora/30x-ads/.claude/skills/ads-health/SKILL.md"
+          - "/Users/nora/30x-ads/.claude/skills/ads-monitor/SKILL.md"
+          - "/Users/nora/30x-ads/scripts/preflight.ts"
+          - "/Users/nora/30x-ads/scripts/observe.ts"
+      monthly-report:
+        workflow_contract: agents/workflows/jetpartners-ads-monthly-report.workflow.md
+        evidence_artifacts: source_of_truth.daily_artifacts
+        source_surfaces:
+          - "/Users/nora/30x-ads/.claude/skills/ads-monthly-report/SKILL.md"
+          - "/Users/nora/30x-ads/.claude/skills/ads-report/SKILL.md"
+          - "/Users/nora/30x-ads/scripts/build-monitor-report.ts"
+          - "/Users/nora/30x-ads/scripts/publish-dashboard.ts"
     abstract_surface_map:
       paid_media_platform:
         provider: google-ads
@@ -118,17 +141,6 @@ tenant_overlay:
       memory_patch:
         provider: tenant-memory
         mode: propose
-
-  host_adapters:
-    required:
-      - codex
-    optional:
-      - portal
-      - slack
-      - hermes
-    preferred: {}
-    unsupported: []
-    notes: "JP Ads is Codex-first because daily work depends on repo-local artifacts and iterative operator decisions. Hermes may carry Slack intake, approval receipts, notifications, or readback posting, but it is not the agent runtime core."
 
   capability_overrides:
     default_mode: read

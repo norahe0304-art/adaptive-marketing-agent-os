@@ -3,7 +3,7 @@
 
 成员清单
 validate_roles.py: 角色包契约校验器，role-package.schema.md 的执行相；校验 agents/roles/*.role.md 与 agents/examples/*-role.fixture.md。
-validate_mounted_agents.py: Mounted agent 装配校验器；校验 agents/mounted/*.agent.md 是否接上 role、tenant attachment、workflow、runtime、entrypoint。
+validate_mounted_agents.py: Mounted agent 装配校验器；校验 agents/mounted/*.agent.md 是否接上 role、tenant attachment、playbook、work_substrate、entrypoints；runtime 不在协议内，不校验。
 githooks/pre-commit: 提交前闸门，调用 validate_roles.py 与 validate_mounted_agents.py；违约阻断提交。经 `git config core.hooksPath scripts/githooks` 生效。
 
 边界
