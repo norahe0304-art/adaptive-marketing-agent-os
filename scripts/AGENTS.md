@@ -4,7 +4,7 @@
 成员清单
 validate_roles.py: 角色包契约校验器，role-package.schema.md 的执行相；校验 agents/roles/*.role.md(参考 role 库)。
 validate_mounted_agents.py: Mounted agent 装配校验器；校验 agents/mounted/*.agent.md（或 --root/--glob 指向消费方 repo）是否接上 role、tenant attachment、work_substrate、entrypoints、run_state_contract、proactive learning gate，且 mount playbooks ⊆ role playbooks（子集，非相等；role 空声明则显式打印 note 并跳过 surface 检查；无 tenant 特例）；空 mounted 优雅返回 0（spec repo）。
-scaffold_consumer.py: 生成回路的「手」；读 agents/templates/ + 协议树，按场景参数在 <dest> 盖出 pin 好协议的最小可校验 agent 实例骨架，内容留 TODO 给 runtime 填。
+scaffold_consumer.py: 生成回路的「手」；读 agents/templates/ + 协议树，按场景参数在 <dest> 盖出 pin 好协议的最小可校验 agent 实例骨架与 L2 地图，内容留 TODO 给 runtime 填。
 build_skill.py: 第三条分发入口构建器；把 scaffolder + templates + 协议快照打包成自包含 skill bundle(含 SKILL.md)，别人装上就能长 agent，无需访问本 repo。输出默认 dist/(gitignored)。
 dry_run_agent.py: Runtime warm-up 校验器；读取消费方 mounted agent、role、overlay、workflow 与 run-state ledger，模拟含 proactive learning verdict 的 boot/readback skeleton，不调用外部系统、不写 provider。
 check_run_conformance.py: 行为一致性回放器；审判一次真运行的 run_readback（agents/state/runs/*.readback.yaml）是否守住 propose-first/apply 门禁、no-silent-success verdict、verdict 完整性、无明文密钥。结构校验管"契约写得对"，本器管"运行做得对"。随 scaffolder vendor 进 consumer；诚实限制:判 readback 声明,非 ground truth。

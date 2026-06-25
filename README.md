@@ -1,6 +1,6 @@
 # Adaptive Marketing Agent OS
 
-A runtime-neutral **protocol** for growing marketing agents. v0.3.9.
+A runtime-neutral **protocol** for growing marketing agents. v0.3.10.
 
 > **New here? → [QUICKSTART.md](QUICKSTART.md)** — grow your own agent in one command.
 
@@ -13,7 +13,7 @@ CLI, an internal tool — is **your choice and is never durable agent state**. T
 approval/evidence gates live in the playbook, so whatever runtime runs the work
 must pass them.
 
-> **Stability.** v0.3.9 is the stable baseline. The surface is **frozen**: a new
+> **Stability.** v0.3.10 is the stable baseline. The surface is **frozen**: a new
 > contract, adapter, judge, or field is added only to close a real bug, never to
 > gild. Minimal · stable · navigable — in that order.
 

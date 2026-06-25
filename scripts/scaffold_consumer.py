@@ -14,6 +14,18 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 TEMPLATES = REPO_ROOT / "agents/templates"
+TITLE_WORDS = {
+    "ads": "Ads",
+    "ai": "AI",
+    "api": "API",
+    "crm": "CRM",
+    "geb": "GEB",
+    "mcp": "MCP",
+    "omo": "OMO",
+    "seo": "SEO",
+    "url": "URL",
+    "utm": "UTM",
+}
 
 
 def protocol_version() -> str:
@@ -26,7 +38,7 @@ def slugify(text: str) -> str:
 
 
 def title_case(name: str) -> str:
-    return " ".join(part.capitalize() for part in name.replace("_", "-").split("-"))
+    return " ".join(TITLE_WORDS.get(part.lower(), part.capitalize()) for part in name.replace("_", "-").split("-"))
 
 
 def source_commit() -> str:
@@ -40,7 +52,7 @@ def source_commit() -> str:
         return "unknown"
 
 
-def vendor_protocol(dest: Path, version: str) -> None:
+def vendor_protocol(dest: Path, version: str, repl: dict) -> None:
     # Pin: copy the protocol invariants into <dest>/protocol/ (vendored-copy mechanism).
     proto = dest / "protocol"
     if proto.exists():
@@ -52,6 +64,9 @@ def vendor_protocol(dest: Path, version: str) -> None:
         shutil.copytree(REPO_ROOT / "agents" / sub, proto / "agents" / sub)
     for script in ["validate_roles.py", "validate_mounted_agents.py", "dry_run_agent.py", "check_run_conformance.py"]:
         shutil.copy2(REPO_ROOT / "scripts" / script, proto / "scripts" / script)
+    (proto / "AGENTS.md").write_text(render("consumer.protocol.AGENTS.md.tmpl", repl))
+    (proto / "agents" / "AGENTS.md").write_text(render("consumer.protocol.agents.AGENTS.md.tmpl", repl))
+    (proto / "scripts" / "AGENTS.md").write_text(render("consumer.protocol.scripts.AGENTS.md.tmpl", repl))
     (proto / "VERSION").write_text(
         "name: adaptive-marketing-agent-os\n"
         f"version: {version}\n"
@@ -119,15 +134,31 @@ def main() -> int:
         "__NAME__": args.name,
         "__NAME_TITLE__": args.title or title_case(args.name),
         "__DOMAIN__": args.domain,
+        "__DOMAIN_TITLE__": title_case(args.domain),
         "__TENANT__": args.tenant,
         "__ROLE_ID__": args.role,
         "__ROLE_PATH__": role_path,
         "__ROLE_TITLE__": args.role_title or title_case(args.role),
         "__PLAYBOOK__": args.playbook,
         "__PLAYBOOK_TITLE__": args.playbook_title or title_case(args.playbook),
+        "__LOCAL_ROLE_MEMBER__": "",
+        "__ROLE_SOURCE_DESC__": (
+            f"the pinned protocol reference role `{args.role}` "
+            f"({role_path})"
+        ),
     }
+    if args.role_mode in ("own", "new"):
+        repl["__LOCAL_ROLE_MEMBER__"] = (
+            f"{args.role}.role.md: Consumer-owned {title_case(args.domain)} base role. "
+            "Tenant-neutral role package shaped by protocol/agents/protocols/role-package.schema.md; "
+            f"fill TODOs with reusable {title_case(args.domain)} principles only.\n"
+        )
+        repl["__ROLE_SOURCE_DESC__"] = (
+            f"the local consumer-owned `{args.role}` base role "
+            f"({role_path})"
+        )
 
-    vendor_protocol(dest, args.version)
+    vendor_protocol(dest, args.version, repl)
     (agents / "workflows").mkdir(parents=True, exist_ok=True)
     (agents / "state" / "runs").mkdir(parents=True, exist_ok=True)
     (agents / "state" / "deltas").mkdir(parents=True, exist_ok=True)
@@ -137,8 +168,12 @@ def main() -> int:
     (agents / f"{args.name}.entrypoint.md").write_text(render("consumer.entrypoint.md.tmpl", repl))
     (agents / "workflows" / f"{args.name}-{args.playbook}.workflow.md").write_text(
         render("consumer.workflow.md.tmpl", repl))
+    (agents / "workflows" / "AGENTS.md").write_text(render("consumer.workflows.AGENTS.md.tmpl", repl))
     (agents / "AGENTS.md").write_text(render("consumer.AGENTS.md.tmpl", repl))
     (agents / "state" / "AGENTS.md").write_text(render("consumer.state.AGENTS.md.tmpl", repl))
+    (agents / "state" / "runs" / "AGENTS.md").write_text(render("consumer.state.runs.AGENTS.md.tmpl", repl))
+    (agents / "state" / "deltas" / "AGENTS.md").write_text(render("consumer.state.deltas.AGENTS.md.tmpl", repl))
+    (agents / "state" / "memory" / "AGENTS.md").write_text(render("consumer.state.memory.AGENTS.md.tmpl", repl))
     (agents / "state" / "memory" / "tenant-memory.md").write_text(
         render("consumer.tenant-memory.md.tmpl", repl))
     (agents / "state" / "runs" / ".gitkeep").write_text("")

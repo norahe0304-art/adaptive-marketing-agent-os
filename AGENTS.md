@@ -15,7 +15,7 @@ scripts/ - Contract validators and git pre-commit hook (executes role package an
 </directory>
 
 <config>
-README.md - Human entrypoint for v0.3.9 repo purpose, structure, and validation commands
+README.md - Human entrypoint for v0.3.10 repo purpose, structure, and validation commands
 </config>
 
 <config>
@@ -40,7 +40,7 @@ Role is the reusable product unit. A tenant attachment binds that role to one cu
 - V1 `apply` exists only as workflow-scoped `apply_lab`: default mode remains `propose`; mutation requires runtime binding, typed approval, evidence, exact scope, and readback.
 - GEB runs after work: every runtime must report `persisted`, `proposed`, or `no-op`, then route learning to role, tenant attachment, playbook, skill candidate, protocol, state ledger, or L1/L2/L3 docs.
 - 内核只有三件:role · playbook · GEB learning。其余(ledger / adapters / validators / contracts)是服务于这三件的深度,不是新支柱。
-- Surface frozen at v0.3.9: a new contract, adapter, judge, or field is added only to close a real bug, never to gild. File moves under `agents/protocols/` break pinned consumer paths and are a major-version decision, not routine cleanup — stability outranks the ≤8-per-folder heuristic.
+- Surface frozen at v0.3.10: a new contract, adapter, judge, or field is added only to close a real bug, never to gild. File moves under `agents/protocols/` break pinned consumer paths and are a major-version decision, not routine cleanup — stability outranks the ≤8-per-folder heuristic.
 </rules>
 
 法则: 极简·稳定·导航·版本精确

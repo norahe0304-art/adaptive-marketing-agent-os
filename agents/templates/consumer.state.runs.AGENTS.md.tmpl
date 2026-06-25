@@ -1,0 +1,15 @@
+# runs/
+> L2 | 父级: /agents/state/AGENTS.md
+
+Per-run readbacks for the __NAME_TITLE__ agent. Runtime surfaces write structured
+records here after real or dry-run executions; raw transcripts stay out.
+
+成员清单
+.gitkeep: Keeps the run readback directory present until the first `*.readback.yaml` exists.
+
+边界
+runs/ stores bounded readback records only: task outcome, evidence refs,
+approval state, changed files, blocked items, and reusable-learning verdict.
+No credentials, OAuth tokens, raw exports, raw transcripts, or unreviewed facts.
+
+[PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
